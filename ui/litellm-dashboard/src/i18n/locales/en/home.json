@@ -1,0 +1,16 @@
+{
+  "home": {
+    "title": "Home",
+    "createVirtualKey": "Create New Virtual Key",
+    "usageSectionLabel": "Usage, last {{days}} days",
+    "usageLoadFailed": "Failed to load usage",
+    "retry": "Retry",
+    "whatsNew": "What's new in LiteLLM?",
+    "leaderboard": "Leaderboard",
+    "leaderboardSubtitle": "Share of tokens over the last {{days}} days, with the change between the first and second half of the period",
+    "updates": "Updates",
+    "viewAll": "View all",
+    "postsLoadFailed": "Failed to load posts",
+    "noPosts": "No posts yet"
+  }
+}

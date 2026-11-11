@@ -1,0 +1,77 @@
+{
+  "shell": {
+    "commandPalette": {
+      "title": "命令面板",
+      "description": "搜索页面、操作或虚拟密钥",
+      "searchPlaceholder": "搜索页面和操作...",
+      "searchKeysPlaceholder": "按别名或 ID 搜索密钥...",
+      "searchTrigger": "搜索或跳转到...",
+      "searchKeysTrigger": "搜索密钥...",
+      "searching": "正在搜索...",
+      "shortcut": "搜索",
+      "types": {
+        "key": "密钥",
+        "page": "页面",
+        "action": "操作"
+      },
+      "groups": {
+        "pages": "页面",
+        "actions": "操作",
+        "keys": "密钥",
+        "recentKeys": "最近使用的密钥"
+      },
+      "empty": {
+        "keyError": "无法搜索密钥",
+        "noRecentKeys": "暂无最近使用的密钥",
+        "noResults": "未找到“{{query}}”的结果"
+      },
+      "actions": {
+        "searchVirtualKeys": "搜索虚拟密钥",
+        "searchVirtualKeysHint": "按别名或 ID 查找密钥",
+        "filterKeys": "在密钥表中筛选“{{query}}”",
+        "filterKeysHint": "打开虚拟密钥页面并应用此搜索"
+      }
+    },
+    "account": {
+      "tier": "版本",
+      "premium": "高级版",
+      "standard": "标准版",
+      "upgradeHint": "升级到高级版以使用更多功能",
+      "role": "角色",
+      "email": "邮箱",
+      "userId": "用户 ID",
+      "copyEmail": "复制邮箱",
+      "copyUserId": "复制用户 ID",
+      "hideNewFeatures": "隐藏新功能提示",
+      "hidePrompts": "隐藏所有提示",
+      "hideBlogPosts": "隐藏博客文章",
+      "hideBouncingIcon": "隐藏跳动图标",
+      "hideLiteAdmin": "隐藏{{name}}",
+      "changePassword": "修改密码",
+      "logout": "退出登录",
+      "menuLabel": "{{identity}} 的账户菜单",
+      "unknownIdentity": "未知用户",
+      "unknownRole": "未知角色",
+      "thanks": "感谢使用 LiteLLM！"
+    },
+    "theme": {
+      "switchToLight": "切换为浅色模式",
+      "switchToDark": "切换为深色模式"
+    },
+    "workspace": {
+      "switchLabel": "切换工作区。当前：{{workspace}}",
+      "chat": "聊天",
+      "chatDescription": "使用大模型、MCP 和智能体的聊天界面",
+      "chatDisabled": "管理员可在设置中启用",
+      "moyai": "Moyai",
+      "moyaiDescription": "云端编码智能体",
+      "aiGateway": "AI 网关"
+    },
+    "navbar": {
+      "productDocumentation": "产品文档",
+      "liteLlmBrand": "LiteLLM 品牌标志",
+      "expandSidebar": "展开侧边栏",
+      "collapseSidebar": "收起侧边栏"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "common": {
+    "language": {
+      "label": "Language",
+      "english": "English",
+      "chinese": "Simplified Chinese",
+      "switchToEnglish": "Switch to English",
+      "switchToChinese": "Switch to Chinese",
+      "ariaLabel": "Change language. Current language: {{language}}"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "copy": "Copy",
+      "delete": "Delete",
+      "edit": "Edit",
+      "refresh": "Refresh",
+      "retry": "Retry",
+      "save": "Save",
+      "search": "Search",
+      "applyFilters": "Apply Filters",
+      "reset": "Reset",
+      "copied": "Copied"
+    },
+    "table": {
+      "refresh": "Refresh",
+      "filters": "Filters",
+      "clearAll": "Clear all",
+      "removeFilter": "Remove {{filter}} filter",
+      "columns": "Columns",
+      "view": "View",
+      "rowsPerPage": "Rows per page",
+      "noResults": "No results",
+      "showing": "Showing {{start}}-{{end}} of {{count}}",
+      "pageOf": "Page {{page}} of {{count}}",
+      "firstPage": "Go to first page",
+      "previousPage": "Go to previous page",
+      "nextPage": "Go to next page",
+      "lastPage": "Go to last page"
+    },
+    "error": {
+      "loadFailed": "Failed to load"
+    },
+    "delete": {
+      "confirmPrefix": "Type",
+      "confirmSuffix": "to confirm deletion:",
+      "deleting": "Deleting...",
+      "delete": "Delete"
+    },
+    "pageControls": "Page controls",
+    "status": {
+      "error": "Error",
+      "loading": "Loading",
+      "loadingIndicator": "loading",
+      "loadingEllipsis": "Loading...",
+      "saving": "Saving...",
+      "unknown": "Unknown"
+    }
+  }
+}

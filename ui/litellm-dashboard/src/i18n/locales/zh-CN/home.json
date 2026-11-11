@@ -1,0 +1,16 @@
+{
+  "home": {
+    "title": "首页",
+    "createVirtualKey": "创建虚拟密钥",
+    "usageSectionLabel": "最近 {{days}} 天的用量",
+    "usageLoadFailed": "无法加载用量",
+    "retry": "重试",
+    "whatsNew": "LiteLLM 新动态",
+    "leaderboard": "排行榜",
+    "leaderboardSubtitle": "最近 {{days}} 天的 Token 占比，以及周期前半段与后半段之间的变化",
+    "updates": "最新动态",
+    "viewAll": "查看全部",
+    "postsLoadFailed": "无法加载文章",
+    "noPosts": "暂无文章"
+  }
+}

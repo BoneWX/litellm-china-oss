@@ -1,0 +1,77 @@
+{
+  "shell": {
+    "commandPalette": {
+      "title": "Command palette",
+      "description": "Search for a page, an action or a virtual key",
+      "searchPlaceholder": "Search pages and actions…",
+      "searchKeysPlaceholder": "Search keys by alias or ID…",
+      "searchTrigger": "Search or jump to…",
+      "searchKeysTrigger": "Search keys…",
+      "searching": "Searching…",
+      "shortcut": "Search",
+      "types": {
+        "key": "Key",
+        "page": "Page",
+        "action": "Action"
+      },
+      "groups": {
+        "pages": "Pages",
+        "actions": "Actions",
+        "keys": "Keys",
+        "recentKeys": "Recent keys"
+      },
+      "empty": {
+        "keyError": "Unable to search keys",
+        "noRecentKeys": "No recent keys",
+        "noResults": "No results for “{{query}}”"
+      },
+      "actions": {
+        "searchVirtualKeys": "Search virtual keys",
+        "searchVirtualKeysHint": "Find a key by alias or ID",
+        "filterKeys": "Filter the keys table for “{{query}}”",
+        "filterKeysHint": "Open Virtual Keys with this search applied"
+      }
+    },
+    "account": {
+      "tier": "Tier",
+      "premium": "Premium",
+      "standard": "Standard",
+      "upgradeHint": "Upgrade to Premium for advanced features",
+      "role": "Role",
+      "email": "Email",
+      "userId": "User ID",
+      "copyEmail": "Copy email",
+      "copyUserId": "Copy user ID",
+      "hideNewFeatures": "Hide New Feature Indicators",
+      "hidePrompts": "Hide All Prompts",
+      "hideBlogPosts": "Hide Blog Posts",
+      "hideBouncingIcon": "Hide Bouncing Icon",
+      "hideLiteAdmin": "Hide {{name}}",
+      "changePassword": "Change Password",
+      "logout": "Logout",
+      "menuLabel": "Account menu for {{identity}}",
+      "unknownIdentity": "unknown user",
+      "unknownRole": "Unknown role",
+      "thanks": "Thanks for using LiteLLM!"
+    },
+    "theme": {
+      "switchToLight": "Switch to light mode",
+      "switchToDark": "Switch to dark mode"
+    },
+    "workspace": {
+      "switchLabel": "Switch workspace. Current: {{workspace}}",
+      "chat": "Chat",
+      "chatDescription": "Chat UI for using LLMs, MCPs and Agents",
+      "chatDisabled": "Admins can enable this in Settings",
+      "moyai": "Moyai",
+      "moyaiDescription": "Cloud Coding Agent",
+      "aiGateway": "AI Gateway"
+    },
+    "navbar": {
+      "productDocumentation": "Product documentation",
+      "liteLlmBrand": "LiteLLM Brand",
+      "expandSidebar": "Expand sidebar",
+      "collapseSidebar": "Collapse sidebar"
+    }
+  }
+}
