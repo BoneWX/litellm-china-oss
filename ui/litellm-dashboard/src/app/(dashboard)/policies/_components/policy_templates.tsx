@@ -9,6 +9,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/toast";
 import { ShieldCheck, ShieldAlert, FlaskConical, CircleDollarSign, CheckCircle2 } from "lucide-react";
 import { getPolicyTemplates } from "@/components/networking";
+import {
+  localizePolicyTemplate,
+  localizePolicyTemplateComplexity,
+  localizePolicyTemplateTag,
+} from "@/i18n/policyTemplateLocalization";
 
 interface PolicyTemplateCardProps {
   title: string;
@@ -35,7 +40,8 @@ const PolicyTemplateCard: React.FC<PolicyTemplateCardProps> = ({
   complexity,
   onUseTemplate,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? i18n.language;
   return (
     <Card className="h-full transition-shadow hover:shadow-md">
       <CardContent className="flex h-full flex-col">
@@ -43,7 +49,11 @@ const PolicyTemplateCard: React.FC<PolicyTemplateCardProps> = ({
           <div className={`rounded-lg p-2 ${iconBg}`}>
             <Icon className={`size-6 ${iconColor}`} />
           </div>
-          <Badge variant="outline">{t("policies.templates.complexity", { level: complexity })}</Badge>
+          <Badge variant="outline">
+            {t("policies.templates.complexity", {
+              level: localizePolicyTemplateComplexity(complexity, language),
+            })}
+          </Badge>
         </div>
 
         <h3 className="mb-2 text-base font-semibold">{title}</h3>
@@ -110,7 +120,8 @@ const PolicyTemplates: React.FC<PolicyTemplatesProps> = ({
   accessToken,
 }) => {
   const term = useTerminology();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? i18n.language;
   const [templates, setTemplates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
@@ -221,7 +232,7 @@ const PolicyTemplates: React.FC<PolicyTemplatesProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <Checkbox checked={selectedTags.has(tag)} onCheckedChange={() => handleTagToggle(tag)} />
-                      <span className="text-sm">{tag}</span>
+                      <span className="text-sm">{localizePolicyTemplateTag(tag, language)}</span>
                     </div>
                     <span className="text-xs font-medium text-muted-foreground">{count}</span>
                   </label>
@@ -239,21 +250,24 @@ const PolicyTemplates: React.FC<PolicyTemplatesProps> = ({
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredTemplates.map((template, index) => (
-              <PolicyTemplateCard
-                key={template.id || index}
-                title={template.title}
-                description={template.description}
-                icon={iconMap[template.icon] || ShieldCheck}
-                iconColor={template.iconColor}
-                iconBg={template.iconBg}
-                guardrails={template.guardrails}
-                tags={template.tags || []}
-                inherits={template.inherits}
-                complexity={template.complexity}
-                onUseTemplate={() => onUseTemplate(template)}
-              />
-            ))}
+            {filteredTemplates.map((template, index) => {
+              const localizedTemplate = localizePolicyTemplate(template, language);
+              return (
+                <PolicyTemplateCard
+                  key={template.id || index}
+                  title={localizedTemplate.title}
+                  description={localizedTemplate.description}
+                  icon={iconMap[template.icon] || ShieldCheck}
+                  iconColor={template.iconColor}
+                  iconBg={template.iconBg}
+                  guardrails={template.guardrails}
+                  tags={(template.tags || []).map((tag: string) => localizePolicyTemplateTag(tag, language))}
+                  inherits={template.inherits}
+                  complexity={template.complexity}
+                  onUseTemplate={() => onUseTemplate(template)}
+                />
+              );
+            })}
           </div>
 
           {filteredTemplates.length === 0 && (

@@ -17,6 +17,7 @@ import { X } from "lucide-react";
 import { UiLoadingSpinner } from "@/components/ui/ui-loading-spinner";
 import { SearchSelect } from "@/components/shared/SearchSelect";
 import { modelHubCall, enrichPolicyTemplateStream } from "@/components/networking";
+import { localizePolicyTemplate } from "@/i18n/policyTemplateLocalization";
 
 interface TemplateParameter {
   name: string;
@@ -47,7 +48,9 @@ const TemplateParameterModal: React.FC<TemplateParameterModalProps> = ({
   accessToken,
 }) => {
   const term = useTerminology();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? i18n.language;
+  const templateDisplay = template ? localizePolicyTemplate(template, language) : null;
   const [parameterValues, setParameterValues] = useState<Record<string, string>>({});
   const [competitorMode, setCompetitorMode] = useState<"ai" | "manual">("ai");
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -247,7 +250,7 @@ const TemplateParameterModal: React.FC<TemplateParameterModalProps> = ({
     <Dialog open={visible} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent className="sm:max-w-175">
         <DialogHeader>
-          <DialogTitle className="text-lg">{template?.title}</DialogTitle>
+          <DialogTitle className="text-lg">{templateDisplay?.title}</DialogTitle>
           <DialogDescription>{t("policies.templateParameters.description")}</DialogDescription>
         </DialogHeader>
 

@@ -15,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle2, Info } from "lucide-react";
 import { formatGuardrailMode } from "@/app/(dashboard)/guardrails/_components/guardrail_info_helpers";
+import { localizePolicyTemplate } from "@/i18n/policyTemplateLocalization";
 
 interface GuardrailInfo {
   guardrail_name: string;
@@ -43,7 +44,9 @@ const GuardrailSelectionModal: React.FC<GuardrailSelectionModalProps> = ({
   progressInfo,
 }) => {
   const term = useTerminology();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? i18n.language;
+  const templateDisplay = template ? localizePolicyTemplate(template, language) : null;
   const [selectedGuardrails, setSelectedGuardrails] = useState<Set<string>>(new Set());
 
   // Prepare guardrail info with existence status
@@ -99,7 +102,7 @@ const GuardrailSelectionModal: React.FC<GuardrailSelectionModalProps> = ({
       <DialogContent className="sm:max-w-175">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
-            {template?.title}
+            {templateDisplay?.title}
             {progressInfo && (
               <Badge variant="secondary">
                 {t("policies.guardrailSelection.progress", {

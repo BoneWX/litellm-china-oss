@@ -18,6 +18,7 @@ import {
   testPolicyTemplate,
   enrichPolicyTemplateStream,
 } from "@/components/networking";
+import { localizePolicyTemplate, localizePolicyTemplateComplexity } from "@/i18n/policyTemplateLocalization";
 
 interface SuggestedTemplate {
   template_id: string;
@@ -66,7 +67,8 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
   allTemplates,
 }) => {
   const term = useTerminology();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? i18n.language;
   const [attackExamples, setAttackExamples] = useState<string[]>([""]);
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -293,7 +295,11 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
     try {
       for (const template of templatesToEnrich) {
         const paramName = template.llm_enrichment.parameter;
-        setEnrichStatusMessage(t("policies.aiSuggestionModal.enrich.discoveringFor", { template: template.title }));
+        setEnrichStatusMessage(
+          t("policies.aiSuggestionModal.enrich.discoveringFor", {
+            template: localizePolicyTemplate(template, language).title,
+          }),
+        );
 
         // Keep existing guardrails until streaming completes to avoid temporary empty payloads.
         setEnrichedDefs((prev) => {
@@ -438,7 +444,9 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-sm text-foreground">{template.title}</span>
+                      <span className="font-semibold text-sm text-foreground">
+                        {localizePolicyTemplate(template, language).title}
+                      </span>
                       {template.complexity && (
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
@@ -449,7 +457,7 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
                                 : "bg-purple-50 text-purple-500 border-purple-100 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-900"
                           }`}
                         >
-                          {template.complexity}
+                          {localizePolicyTemplateComplexity(template.complexity, language)}
                         </span>
                       )}
                       {template.estimated_latency_ms != null && (
@@ -473,7 +481,9 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
                         </Tooltip>
                       )}
                     </div>
-                    <p className="text-xs leading-relaxed text-muted-foreground">{template.description}</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      {localizePolicyTemplate(template, language).description}
+                    </p>
                     <div className="flex flex-wrap items-center gap-1.5 mt-2">
                       {template.guardrails &&
                         template.guardrails.slice(0, 4).map((g: string) => (
@@ -548,13 +558,13 @@ const AiSuggestionModal: React.FC<AiSuggestionModalProps> = ({
           </div>
           <div className="flex flex-wrap gap-1.5 mb-1.5">
             {Array.from(selectedIds).map((id) => {
-              const t = selectedTemplates.find((template) => template.id === id);
-              return t ? (
+              const selectedTemplate = selectedTemplates.find((template) => template.id === id);
+              return selectedTemplate ? (
                 <span
                   key={id}
                   className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-info/10 text-info border border-info/20"
                 >
-                  {t.title}
+                  {localizePolicyTemplate(selectedTemplate, language).title}
                 </span>
               ) : null;
             })}

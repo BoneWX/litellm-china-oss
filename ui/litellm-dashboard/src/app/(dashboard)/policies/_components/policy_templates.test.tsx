@@ -2,8 +2,9 @@ import React from "react";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/../tests/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as networking from "@/components/networking";
+import i18n from "@/i18n/i18n";
 import PolicyTemplates from "./policy_templates";
 
 vi.mock("@/components/networking");
@@ -46,8 +47,13 @@ const defaultProps = {
 };
 
 describe("PolicyTemplates", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
+  });
+
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
   });
 
   it("should render the section header after loading", async () => {
@@ -145,6 +151,31 @@ describe("PolicyTemplates", () => {
     expect(screen.queryByText("Beta Template")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /clear all/i }));
     expect(screen.getByText("Beta Template")).toBeInTheDocument();
+  });
+
+  it("should localize catalog content while keeping raw template data for creation", async () => {
+    await i18n.changeLanguage("zh-CN");
+    const template = makeTemplate({
+      id: "advanced-au-pii-protection",
+      title: "Advanced PII Protection (Australia)",
+      description:
+        "Protects Australian-specific identifiers, international employee data, financial information, credentials, protected class information, and industry-specific sensitive data.",
+      tags: ["PII Protection", "Australia"],
+      complexity: "High",
+    });
+    vi.mocked(networking.getPolicyTemplates).mockResolvedValue([template]);
+    const user = userEvent.setup();
+    renderWithProviders(<PolicyTemplates {...defaultProps} />);
+
+    expect(await screen.findByText("高级 PII 保护（澳大利亚）")).toBeInTheDocument();
+    expect(
+      screen.getByText("保护澳大利亚特有的身份标识、国际员工数据、财务信息、凭据、受保护群体信息以及行业敏感数据。"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("高复杂度")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: /PII 保护/ })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "使用模板" }));
+    expect(defaultProps.onUseTemplate).toHaveBeenCalledWith(template);
   });
 
   it("should not fetch templates when accessToken is null", () => {

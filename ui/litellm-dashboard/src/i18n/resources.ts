@@ -13,6 +13,7 @@ import commonZhCN from "./locales/zh-CN/common.json";
 import homeZhCN from "./locales/zh-CN/home.json";
 import modelsZhCN from "./locales/zh-CN/models.json";
 import navigationZhCN from "./locales/zh-CN/navigation.json";
+import policiesZhCN from "./locales/zh-CN/policies.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
 import usageLogZhCN from "./locales/zh-CN/usage-log.json";
 
@@ -39,6 +40,7 @@ export const zhCNResources = {
   ...homeZhCN,
   ...modelsZhCN,
   ...navigationZhCN,
+  ...policiesZhCN,
   ...shellZhCN,
   ...usageLogZhCN,
 };

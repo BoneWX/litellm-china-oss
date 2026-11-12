@@ -2,7 +2,8 @@ import React from "react";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/../tests/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import i18n from "@/i18n/i18n";
 import GuardrailSelectionModal from "./guardrail_selection_modal";
 
 const makeGuardrailDef = (name: string, description = "A guardrail description") => ({
@@ -26,14 +27,34 @@ const defaultProps = {
 };
 
 describe("GuardrailSelectionModal", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
+  });
+
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
   });
 
   it("should render guardrail names from the template", async () => {
     renderWithProviders(<GuardrailSelectionModal {...defaultProps} />);
     expect(await screen.findByText("guardrail-new-1")).toBeInTheDocument();
     expect(screen.getByText("guardrail-new-2")).toBeInTheDocument();
+  });
+
+  it("should localize a known template title without changing guardrail identifiers", async () => {
+    await i18n.changeLanguage("zh-CN");
+    const props = {
+      ...defaultProps,
+      template: makeTemplate([makeGuardrailDef("au-pii-tax-identifiers")], {
+        id: "advanced-au-pii-protection",
+        title: "Advanced PII Protection (Australia)",
+      }),
+    };
+    renderWithProviders(<GuardrailSelectionModal {...props} />);
+
+    expect(await screen.findByText("高级 PII 保护（澳大利亚）")).toBeInTheDocument();
+    expect(screen.getByText("au-pii-tax-identifiers")).toBeInTheDocument();
   });
 
   it("should pre-select only new guardrails when the modal opens", async () => {
