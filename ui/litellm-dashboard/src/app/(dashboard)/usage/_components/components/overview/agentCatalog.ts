@@ -1,5 +1,4 @@
 import anthropicLogo from "../../../../../../../public/assets/logos/anthropic.svg";
-import claudeLogo from "../../../../../../../public/assets/logos/claude.svg";
 import cursorLogo from "../../../../../../../public/assets/logos/cursor.svg";
 import copilotLogo from "../../../../../../../public/assets/logos/github_copilot.svg";
 import githubLogo from "../../../../../../../public/assets/logos/github.svg";
@@ -14,7 +13,7 @@ import xaiLogo from "../../../../../../../public/assets/logos/xai.svg";
 import type { components } from "@/lib/http/schema";
 import type { DailyData, SpendMetrics } from "@/components/UsagePage/types";
 
-export const claudeLogoUrl = claudeLogo.src;
+export const claudeLogoUrl = "/assets/logos/claude.svg";
 
 /** One row of `GET /tag/summary`. */
 export type TagSummaryRow = components["schemas"]["TagSummaryMetrics"];

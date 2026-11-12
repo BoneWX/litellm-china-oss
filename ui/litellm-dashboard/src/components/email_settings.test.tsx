@@ -12,10 +12,6 @@ const { serviceHealthCheck, setCallbacksCall } = vi.hoisted(() => ({
 
 vi.mock("@/components/networking", () => ({ serviceHealthCheck, setCallbacksCall }));
 
-vi.mock("./email_events", () => ({
-  EmailEventSettings: () => <div>email event settings</div>,
-}));
-
 const alerts = [
   {
     name: "email",
@@ -121,10 +117,10 @@ describe("EmailSettings", () => {
     });
   });
 
-  it("renders the email event settings section", () => {
+  it("does not render the enterprise email event settings section", () => {
     renderWithProviders(<EmailSettings accessToken="sk-test" premiumUser alerts={alerts} />);
 
-    expect(screen.getByText("email event settings")).toBeInTheDocument();
+    expect(screen.queryByText("email event settings")).not.toBeInTheDocument();
   });
 
   it("toggles credential visibility when eye icon is clicked", async () => {

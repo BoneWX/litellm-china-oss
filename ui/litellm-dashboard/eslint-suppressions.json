@@ -1558,14 +1558,6 @@
       "count": 1
     }
   },
-  "src/components/email_events/email_event_settings.tsx": {
-    "local/filename-pascal-case": {
-      "count": 1
-    },
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "src/components/email_settings.tsx": {
     "local/filename-pascal-case": {
       "count": 1
@@ -1735,7 +1727,7 @@
       "count": 5
     },
     "no-restricted-syntax": {
-      "count": 133
+      "count": 130
     },
     "prefer-const": {
       "count": 26
