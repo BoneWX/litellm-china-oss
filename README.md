@@ -1,4 +1,4 @@
-# LiteLLM China Localization
+# LiteLLM China Localization (OSS-only)
 
 > 面向中国业务场景的 LiteLLM 社区衍生项目。
 >
@@ -6,7 +6,7 @@
 
 本项目基于 [BerriAI/litellm](https://github.com/BerriAI/litellm) 开发，重点补充中国法定节假日调价、简体中文界面和人民币金额展示能力。项目的目标是为中国区的 LiteLLM 使用者提供一套可审查、可部署、可持续向上游同步的本地化实现。
 
-本项目当前发布在 [BoneWX/litellm-china](https://github.com/BoneWX/litellm-china)，并将 [BerriAI/litellm](https://github.com/BerriAI/litellm) 配置为上游仓库，以便持续同步官方修复。
+本项目当前发布在 [BoneWX/litellm-china-oss](https://github.com/BoneWX/litellm-china-oss)。这是一个仅包含开源代码的社区发行版，不包含 BerriAI 的商业企业组件。
 
 ## 项目状态
 
@@ -17,6 +17,29 @@
 - 不保证与上游 LiteLLM 的功能、API 或升级节奏完全一致。
 - 不保证中国法定节假日数据永久准确，使用前应以中国政府网发布的正式通知为准。
 - 不代表 Berri AI 或 LiteLLM 官方提供商业支持、安全承诺或合规背书。
+
+### OSS-only 发行范围
+
+本发行版只包含 MIT 许可的开源代码、本项目新增的中国本地化修改，以及这些代码所依赖的第三方公开组件。
+
+为确保可以公开分发，本发行版已主动移除：
+
+- 上游商业目录 `enterprise/`。
+- `litellm-enterprise` Python 依赖及对应 workspace 配置。
+- 构建后安装的 `litellm_enterprise` Python 模块。
+- 各 Dockerfile 中的企业目录复制和运行时挂载。
+- `litellm/proxy/enterprise` 兼容链接。
+- 仅用于企业 UI 构建的 `docker/build_admin_ui.sh`。
+
+因此，以下上游企业功能不属于本发行版的服务范围：
+
+- 企业 SSO、企业认证扩展和企业管理路由。
+- 企业项目管理、托管文件、托管向量存储及相关接口。
+- 企业邮件、PagerDuty 等告警回调。
+- 企业版 Secret Detection、Guardrail 和安全扩展。
+- 其他依赖 `litellm_enterprise` 或企业许可证的功能。
+
+设置 `LITELLM_LICENSE` 不会恢复这些功能，因为对应企业代码并未包含在镜像中。需要这些能力时，请使用 LiteLLM 官方产品或取得 BerriAI 的正式授权。
 
 ## 主要特性
 
@@ -91,8 +114,8 @@ POST /config/off_peak_holiday_calendars/{calendar_name}/{year}/confirm
 获取本项目：
 
 ```bash
-git clone https://github.com/BoneWX/litellm-china.git
-cd litellm-china
+git clone https://github.com/BoneWX/litellm-china-oss.git
+cd litellm-china-oss
 ```
 
 安装、数据库、认证和代理启动方式沿用上游 LiteLLM 文档：
@@ -101,6 +124,21 @@ cd litellm-china
 - [LiteLLM Proxy 快速开始](https://docs.litellm.ai/docs/simple_proxy)
 
 部署前请根据实际环境设置数据库、主密钥、代理管理员账号和模型 API Key。不要将 `.env`、API Key、数据库密码或生产日志提交到仓库。
+
+### 使用预构建 OSS 镜像
+
+```bash
+docker pull ghcr.io/bonewx/litellm:v1.109.0-holiday-cny-20261110-oss
+```
+
+可以使用不可变摘要固定镜像：
+
+```bash
+docker pull \
+  ghcr.io/bonewx/litellm@sha256:82b579f69c02e058ed8364ad14e27279d943538678cde85e2d98cfcc422464e6
+```
+
+该镜像保持上游 `4000/tcp` 端口，并按上游方式配置数据库、主密钥、模型和认证。镜像不包含 `enterprise/` 或 `litellm_enterprise`。
 
 ## 测试
 
@@ -152,20 +190,26 @@ origin   本项目自己的仓库
 upstream BerriAI/litellm
 ```
 
-同步上游：
+本仓库为了保持公开历史干净，刻意没有携带上游的完整提交历史，因此不能直接把 `upstream/main` 合并进来，否则可能重新引入企业目录。
+
+同步时应先获取并审查上游差异：
 
 ```bash
 git fetch upstream --prune
-git switch main
-git merge --ff-only upstream/main
-git push origin main
+git diff d5ca88900c4ec558fdf9c7f9084484896221a366..upstream/main --stat
 ```
 
-定制功能应放在独立分支中开发：
+只选择与本项目相关的开源修改，在新的功能分支中重新应用，并排除以下路径：
+
+```text
+enterprise/
+litellm/proxy/enterprise
+```
+
+定制功能或上游同步应放在独立分支中开发和验证：
 
 ```bash
-git fetch upstream
-git switch -c feature/my-change upstream/main
+git switch -c feature/my-change main
 git push -u origin feature/my-change
 ```
 
@@ -182,19 +226,22 @@ git push -u origin feature/my-change
 
 ### 本项目修改
 
-- 独立仓库：[BoneWX/litellm-china](https://github.com/BoneWX/litellm-china)
+- 独立仓库：[BoneWX/litellm-china-oss](https://github.com/BoneWX/litellm-china-oss)
 - 维护者：BoneWX
 - 主要方向：中国节假日日历、错峰计费、中文界面、人民币展示及国内构建支持
+- 发行形式：不包含 BerriAI 商业企业组件的 OSS-only 构建
 - 修改内容：见 Git 提交历史和本文件“主要特性”章节
 
 上游版权声明和 MIT 许可证保留在 [LICENSE](LICENSE) 中。本项目新增的修改同样以 MIT 许可证发布；其中涉及上游代码的部分继续受上游许可证约束。
 
 ## 许可证
 
-除上游明确标注为其他许可证的目录外，本项目采用 MIT 许可证。上游 `LICENSE` 当前说明：
+除上游明确标注为其他许可证的内容外，本项目采用 MIT 许可证。上游 `LICENSE` 当前说明：
 
 - `enterprise/` 目录（如果存在）受该目录内单独的许可证约束。
 - 其他内容采用 MIT 许可证。
+
+本 OSS-only 发行版不包含 `enterprise/`，保留该说明是为了完整保存上游许可证原文。
 
 分发本项目时应保留：
 

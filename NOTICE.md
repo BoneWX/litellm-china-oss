@@ -16,6 +16,15 @@ The complete upstream license text is preserved in `LICENSE`.
 
 Community modifications in this project are maintained by BoneWX and are released under the same MIT terms, without removing or replacing the upstream copyright notice.
 
+This is an OSS-only distribution. It intentionally excludes:
+
+- The upstream commercial `enterprise/` source directory.
+- The `litellm-enterprise` dependency and installed `litellm_enterprise` Python package.
+- Enterprise COPY and runtime-mount instructions in the container build.
+- Enterprise-only admin UI and compatibility link assets.
+
+The BerriAI Enterprise license and code are not included or sublicensed by this project. Users who require enterprise SSO, enterprise callback integrations, managed files, managed vector stores, enterprise projects, secret detection, or other enterprise-only functionality must use the upstream LiteLLM offering or obtain the appropriate authorization from BerriAI.
+
 The modifications currently focus on:
 
 - China holiday calendars for off-peak pricing
