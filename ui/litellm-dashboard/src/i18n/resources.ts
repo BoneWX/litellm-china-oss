@@ -7,6 +7,7 @@ import navigationEn from "./locales/en/navigation.json";
 import shellEn from "./locales/en/shell.json";
 import usageLogEn from "./locales/en/usage-log.json";
 import baseEn from "./locales/en.json";
+import agentsZhCN from "./locales/zh-CN/agents.json";
 import apiKeysZhCN from "./locales/zh-CN/api-keys.json";
 import authZhCN from "./locales/zh-CN/auth.json";
 import commonZhCN from "./locales/zh-CN/common.json";
@@ -34,6 +35,7 @@ export const enResources = {
 };
 
 export const zhCNResources = {
+  ...agentsZhCN,
   ...apiKeysZhCN,
   ...authZhCN,
   ...commonZhCN,

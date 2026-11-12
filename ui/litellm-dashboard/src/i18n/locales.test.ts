@@ -77,6 +77,16 @@ describe("zh-CN locale", () => {
 
     expect(mismatches).toEqual([]);
   });
+
+  it("uses navigation labels for referenced feature locations", () => {
+    expect(zhCN.agents.panel.description).toContain(zhCN.navigation.items.aiHub);
+    expect(zhCN.agents.panel.authAlert.description).toContain(zhCN.navigation.items.apiKeys);
+    expect(zhCN.agents.addForm.ready.noKey).toContain(zhCN.navigation.items.apiKeys);
+    expect(zhCN.agents.info.settings.accessGroups.title).toBe(zhCN.navigation.items.accessGroups);
+    expect(zhCN.agents.info.settings.mcpServers.title).toBe(zhCN.navigation.items.mcpServers);
+    expect(zhCN.agents.addForm.governance.guardrails.title).toBe(zhCN.navigation.items.guardrails);
+    expect(zhCN.agents.identityDetails.viewLogs).toContain(zhCN.navigation.items.logs);
+  });
 });
 
 describe("preferredLanguageFor", () => {

@@ -152,6 +152,9 @@
     "formConfig": {
       "basic": {
         "title": "Basic Information",
+        "displayNamePlaceholder": "e.g., Customer Support Agent",
+        "descriptionPlaceholder": "Describe what this agent does...",
+        "urlHint": "Base URL where the agent is hosted (optional)",
         "protocolVersionHelp": "LiteLLM serves this version to clients and converts the upstream agent's responses to match it, regardless of the original agent's version."
       },
       "skills": {
@@ -161,16 +164,23 @@
         "title": "Capabilities"
       },
       "optional": {
-        "title": "Optional Settings"
+        "title": "Optional Settings",
+        "supportsAuthenticatedExtendedCard": "Supports Authenticated Extended Card"
       },
       "litellm": {
-        "title": "LiteLLM Parameters"
+        "title": "LiteLLM Parameters",
+        "modelOptional": "Model (Optional)"
       },
       "cost": {
-        "title": "Cost Configuration"
+        "title": "Cost Configuration",
+        "costPerQuery": "Cost Per Query ($)",
+        "inputCostPerToken": "Input Cost Per Token ($)",
+        "outputCostPerToken": "Output Cost Per Token ($)"
       },
       "tracing": {
-        "title": "Tracing"
+        "title": "Tracing",
+        "enable": "Enable Tracing",
+        "enableHint": "Enable request tracing for this agent"
       },
       "skillFields": {
         "id": "Skill ID",
@@ -242,8 +252,11 @@
     "costView": {
       "title": "Cost Configuration",
       "costPerQuery": "Cost Per Query",
+      "costPerQueryHint": "Fixed cost per query",
       "inputCostPerToken": "Input Cost Per Token",
-      "outputCostPerToken": "Output Cost Per Token"
+      "inputCostPerTokenHint": "Cost per input token",
+      "outputCostPerToken": "Output Cost Per Token",
+      "outputCostPerTokenHint": "Cost per output token"
     },
     "virtualKeys": {
       "title": "Virtual Keys",

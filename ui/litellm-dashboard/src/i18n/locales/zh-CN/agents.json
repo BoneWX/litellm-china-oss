@@ -1,0 +1,605 @@
+{
+  "agents": {
+    "killSwitchConfig": {
+      "authTypes": {
+        "none": "无",
+        "bearer": "Bearer Token",
+        "apiKey": "API Key 请求头",
+        "basic": "Basic 认证"
+      },
+      "errors": {
+        "invalidJson": "请求体必须是有效的 JSON"
+      }
+    },
+    "killSwitchFields": {
+      "errors": {
+        "nameRequired": "名称必填",
+        "tokenRequired": "Token 必填",
+        "apiKeyRequired": "API Key 必填",
+        "usernameRequired": "用户名必填",
+        "passwordRequired": "密码必填"
+      },
+      "auth": {
+        "bearerToken": "Bearer Token",
+        "headerName": "请求头名称",
+        "apiKey": "API Key",
+        "username": "用户名",
+        "password": "密码"
+      },
+      "webhookUrl": {
+        "label": "Webhook URL",
+        "hint": "触发终止开关时 LiteLLM 调用的绝对 http(s) URL。留空可移除终止开关"
+      },
+      "method": "方法",
+      "headers": {
+        "title": "请求头",
+        "add": "添加请求头",
+        "keyPlaceholder": "请求头名称",
+        "valuePlaceholder": "请求头值"
+      },
+      "queryParams": {
+        "title": "查询参数",
+        "add": "添加查询参数",
+        "keyPlaceholder": "参数名称",
+        "valuePlaceholder": "参数值"
+      },
+      "body": {
+        "label": "JSON 请求体",
+        "hint": "作为请求体发送的可选 JSON 对象"
+      },
+      "authentication": "身份验证",
+      "removeItem": "移除 {{item}}"
+    },
+    "dangerZone": {
+      "toasts": {
+        "fired": "终止开关已触发（HTTP {{status}}）",
+        "fireFailed": "触发终止开关失败"
+      },
+      "title": "危险操作",
+      "killSwitch": "终止开关",
+      "configuredDescription": "调用已配置的 Webhook 以停止此智能体的上游运行时。这可能中断所有使用该智能体的用户，并且无法从 LiteLLM 恢复",
+      "notConfigured": "尚未配置。请在设置中添加终止开关 Webhook 以启用此操作",
+      "fire": "触发终止开关",
+      "lastResult": "上次结果：HTTP {{status}}",
+      "confirm": {
+        "title": "为 {{name}} 触发终止开关？",
+        "outageTitle": "此操作可能导致服务中断",
+        "outageDescription": "LiteLLM 将立即调用 {{method}} {{url}}。该 Webhook 对智能体执行的操作不受 LiteLLM 控制，且无法在此处回滚",
+        "typeToConfirm": "输入 <name/> 以确认：",
+        "inputLabel": "确认智能体名称",
+        "cancel": "取消",
+        "firing": "正在触发..."
+      }
+    },
+    "identityDetails": {
+      "evidence": {
+        "loadFailed": "无法加载身份验证证据",
+        "lastMatch": "上次通过验证的身份匹配：{{date}}",
+        "awaiting": "已配置，等待身份验证请求",
+        "unbound": "身份尚未绑定，执行已禁用"
+      },
+      "execution": {
+        "enabled": "已启用",
+        "disabled": "已禁用"
+      },
+      "loading": "加载中",
+      "regionLabel": "智能体身份",
+      "title": "智能体身份：Microsoft Entra ID",
+      "tenant": "租户：",
+      "clientId": "应用程序（客户端）ID：",
+      "servicePrincipal": "企业应用程序对象 ID：",
+      "notConfigured": "未配置",
+      "executionSummary": "执行状态：{{execution}} · 模式：{{mode}}",
+      "evidenceNote": "最近的证据来自与此绑定匹配且已通过验证的 Entra Token。证据会跨重启持久保存，并在绑定发生变化时清除。工具和模型权限会单独检查。",
+      "refresh": "刷新身份验证证据",
+      "viewLogs": "查看请求日志"
+    },
+    "identityFields": {
+      "providers": {
+        "none": "不显式绑定身份",
+        "microsoftEntra": "Microsoft Entra ID"
+      },
+      "executionModes": {
+        "autonomous": "自主执行",
+        "delegated": "代表用户执行",
+        "both": "两种模式都允许"
+      },
+      "execution": {
+        "enabled": "已启用",
+        "disabled": "已禁用"
+      },
+      "errors": {
+        "providersLoadFailed": "无法加载网关的可信身份提供商"
+      },
+      "regionLabel": "智能体身份",
+      "title": "智能体身份",
+      "description": "将现有的身份提供商应用程序连接到此智能体。智能体名称和运行时地址可以独立变化。",
+      "provider": "身份提供商",
+      "tenant": {
+        "label": "受信任的 Entra 租户",
+        "required": "请选择受信任的租户",
+        "placeholder": "选择网关信任的租户",
+        "noneAvailable": "没有可用的受信任 Entra 租户。请先在网关上配置 JWT 签发方和受众验证。管理后台的 Microsoft SSO 需要单独配置。"
+      },
+      "clientId": {
+        "label": "应用程序（客户端）ID",
+        "required": "请输入 Entra 应用程序客户端 ID",
+        "invalid": "请输入有效的应用程序客户端 UUID",
+        "description": "在 <registrations>Entra 应用注册</registrations> 中找到此智能体应用，然后打开“概述”。此处不需要客户端密钥。"
+      },
+      "executionMode": "执行模式",
+      "servicePrincipal": {
+        "label": "企业应用程序对象 ID",
+        "required": "请输入服务主体对象 ID",
+        "invalid": "请输入有效的服务主体 UUID",
+        "description": "打开 <enterprise>Entra 企业应用程序</enterprise>，选择此应用并复制其对象 ID。“应用注册”中的对象 ID 是另一个值。"
+      },
+      "requiredRoles": {
+        "label": "必需的应用角色",
+        "description": "自主应用程序 Token 所需的应用角色，以逗号分隔"
+      },
+      "requiredScopes": {
+        "label": "必需的委派范围",
+        "required": "请输入委派范围",
+        "note": "用户必须先通过此网关的 Microsoft SSO 登录。后续委派调用必须同时满足用户和智能体权限。"
+      },
+      "executionLabel": "执行",
+      "verificationNote": "LiteLLM 会先验证智能体的 Entra Token，再匹配此身份。保存这些字段只会配置绑定，实际验证来自已通过身份验证的请求。运行时身份验证请求头需要单独配置。"
+    },
+    "formKit": {
+      "noMatchingOptions": "没有匹配项"
+    },
+    "formConfig": {
+      "basic": {
+        "title": "基本信息",
+        "displayNamePlaceholder": "例如 客户支持智能体",
+        "descriptionPlaceholder": "描述此智能体的功能...",
+        "urlHint": "智能体托管的基础 URL（可选）",
+        "protocolVersionHelp": "LiteLLM 会向客户端提供此版本，并将上游智能体的响应转换为该版本，无论上游智能体的原始版本是什么。"
+      },
+      "skills": {
+        "title": "技能"
+      },
+      "capabilities": {
+        "title": "能力"
+      },
+      "optional": {
+        "title": "可选设置",
+        "supportsAuthenticatedExtendedCard": "支持需要身份验证的扩展智能体卡片"
+      },
+      "litellm": {
+        "title": "LiteLLM 参数",
+        "modelOptional": "模型（可选）"
+      },
+      "cost": {
+        "title": "成本配置",
+        "costPerQuery": "每次查询成本（￥）",
+        "inputCostPerToken": "每 Token 输入成本（￥）",
+        "outputCostPerToken": "每 Token 输出成本（￥）"
+      },
+      "tracing": {
+        "title": "链路追踪",
+        "enable": "启用链路追踪",
+        "enableHint": "为此智能体启用请求链路追踪"
+      },
+      "skillFields": {
+        "id": "技能 ID",
+        "idPlaceholder": "例如 hello_world",
+        "name": "技能名称",
+        "namePlaceholder": "例如 返回 hello world",
+        "description": "描述",
+        "descriptionPlaceholder": "此技能的功能",
+        "tags": "标签",
+        "tagsPlaceholder": "输入标签后按 Enter",
+        "examples": "示例",
+        "examplesPlaceholder": "输入示例后按 Enter"
+      }
+    },
+    "formFields": {
+      "errors": {
+        "required": "必填",
+        "enterField": "请输入{{field}}"
+      },
+      "skills": {
+        "remove": "移除技能",
+        "add": "添加技能"
+      },
+      "staticHeaders": {
+        "errors": {
+          "nameRequired": "请求头名称必填",
+          "valueRequired": "值必填"
+        },
+        "namePlaceholder": "请求头名称（例如 Authorization）",
+        "valuePlaceholder": "值（例如 Bearer token123）",
+        "remove": "移除静态请求头",
+        "add": "添加静态请求头"
+      },
+      "agentName": {
+        "label": "智能体名称",
+        "hint": "智能体的唯一标识符",
+        "required": "请输入唯一的智能体名称",
+        "placeholder": "例如 customer-support-agent"
+      },
+      "requiredSection": "{{section}}（必填）",
+      "authHeaders": {
+        "title": "身份验证请求头",
+        "staticHeaders": "静态请求头",
+        "staticHeadersHint": "无论客户端请求如何，都会发送给后端智能体的请求头。由管理员配置，冲突时以静态值为准。",
+        "forwardHeaders": "转发客户端请求头",
+        "forwardHeadersHint": "从客户端请求中提取并转发给智能体的请求头名称。输入名称后按 Enter。",
+        "forwardHeadersPlaceholder": "例如 x-api-key、Authorization"
+      },
+      "killSwitch": "终止开关"
+    },
+    "dynamicFields": {
+      "errors": {
+        "malformed": "{{field}} 不完整或格式错误",
+        "enterField": "请输入{{field}}"
+      },
+      "agentName": {
+        "label": "智能体名称",
+        "hint": "智能体的唯一标识符",
+        "required": "请输入唯一的智能体名称",
+        "placeholder": "例如 my-langgraph-agent"
+      },
+      "description": {
+        "label": "描述",
+        "hint": "简要说明此智能体的功能",
+        "placeholder": "描述此智能体的功能..."
+      },
+      "killSwitch": "终止开关"
+    },
+    "costView": {
+      "title": "成本配置",
+      "costPerQuery": "每次查询成本",
+      "costPerQueryHint": "每次查询的固定成本",
+      "inputCostPerToken": "每 Token 输入成本",
+      "inputCostPerTokenHint": "每个输入 Token 的成本",
+      "outputCostPerToken": "每 Token 输出成本",
+      "outputCostPerTokenHint": "每个输出 Token 的成本"
+    },
+    "virtualKeys": {
+      "title": "虚拟密钥",
+      "loading": "正在加载密钥...",
+      "empty": "此智能体未分配虚拟密钥。",
+      "unnamed": "未命名密钥"
+    },
+    "table": {
+      "empty": {
+        "filteredTitle": "没有匹配的智能体",
+        "title": "暂无智能体",
+        "filteredDescription": "调整搜索条件以查看更多智能体。",
+        "description": "添加智能体后，即可在组织中使用。"
+      },
+      "loading": "正在加载智能体…",
+      "searchPlaceholder": "按名称、ID 或描述搜索智能体...",
+      "clearSearch": "清除搜索",
+      "healthCheck": {
+        "label": "健康检查",
+        "hint": "启用后仅显示 URL 可访问的智能体"
+      },
+      "actions": {
+        "open": "打开智能体操作",
+        "delete": "删除"
+      },
+      "columns": {
+        "name": "智能体名称",
+        "id": "智能体 ID",
+        "spend": "花费（CNY）",
+        "model": "模型",
+        "created": "创建时间",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "noModel": "无",
+      "status": {
+        "jwtConfigured": "JWT 已配置",
+        "active": "已启用",
+        "needsSetup": "需要配置"
+      }
+    },
+    "cardDiscovery": {
+      "errors": {
+        "noAccessToken": "没有可用的访问令牌",
+        "fillConnectionDetails": "请先填写上方智能体的连接信息",
+        "enterBaseUrl": "请先输入智能体的基础 URL",
+        "discoverFailed": "发现智能体卡片失败"
+      },
+      "rediscover": "重新发现",
+      "discover": "发现",
+      "title": "从智能体 URL 发现",
+      "titleHint": "LiteLLM 将从该 URL 获取 {{path}}，并允许你选择通过代理公开的技能和能力。",
+      "parentDrivenIntro": "使用上方填写的连接信息。我们将获取：",
+      "fillFieldsFirst": "请先填写上方字段",
+      "manualIntro": "粘贴上游智能体的基础 URL。我们将依次尝试 <cardfile/>、<agentfile/> 和 <rootfile/>。",
+      "failedTitle": "发现失败",
+      "dismissError": "关闭错误",
+      "cardLoaded": "上游智能体卡片已加载",
+      "nameLabel": "名称（显示给 API 客户端）",
+      "namePlaceholder": "智能体名称",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "此智能体的功能",
+      "skills": "技能",
+      "skillsSelected": "已选择 {{selected}} / {{total}}",
+      "noSkills": "上游智能体卡片中没有技能",
+      "capabilities": "能力",
+      "capabilitiesHint": "此处仅列出 LiteLLM 当前可以忠实代理的能力。推送通知、扩展等其他能力即将支持。",
+      "notAdvertised": "上游未声明"
+    },
+    "panel": {
+      "toasts": {
+        "deleted": "智能体“{{name}}”已成功删除",
+        "deleteFailed": "删除智能体失败"
+      },
+      "title": "智能体",
+      "description": "列出组织中可用的 A2A 规范智能体。前往 AI 中心即可将智能体公开。",
+      "authAlert": {
+        "title": "智能体如何完成身份验证？",
+        "description": "智能体可以使用虚拟密钥，或通过 JWT 使用可信身份提供商完成身份验证。添加或编辑智能体时可配置身份绑定。使用 JWT 身份验证不需要虚拟密钥。"
+      },
+      "addAgent": "新建智能体",
+      "deleteDialog": {
+        "title": "删除智能体",
+        "description": "确定要删除智能体 {{name}} 吗？此操作无法撤销。",
+        "cancel": "取消",
+        "confirm": "删除"
+      }
+    },
+    "info": {
+      "toasts": {
+        "loadFailed": "加载智能体信息失败",
+        "updated": "智能体已成功更新",
+        "updateFailed": "更新智能体失败"
+      },
+      "notFound": "未找到智能体",
+      "backToList": "返回智能体列表",
+      "unlimited": "无限制",
+      "backToAgent": "返回智能体",
+      "backToAgents": "返回智能体列表",
+      "unnamed": "未命名智能体",
+      "tabs": {
+        "overview": "概览",
+        "settings": "设置"
+      },
+      "details": {
+        "agentId": "智能体 ID",
+        "agentName": "智能体名称",
+        "displayName": "显示名称",
+        "description": "描述",
+        "url": "URL",
+        "version": "版本",
+        "protocolVersion": "协议版本",
+        "streaming": "流式响应",
+        "pushNotifications": "推送通知",
+        "stateTransitionHistory": "状态转换历史",
+        "skills": "技能",
+        "model": "模型",
+        "makePublic": "设为公开",
+        "iconUrl": "图标 URL",
+        "documentationUrl": "文档 URL",
+        "tpmLimit": "TPM 限制",
+        "rpmLimit": "RPM 限制",
+        "sessionTpmLimit": "每会话 TPM 限制",
+        "sessionRpmLimit": "每会话 RPM 限制",
+        "accessGroups": "访问组",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间"
+      },
+      "yes": "是",
+      "no": "否",
+      "skillsConfigured_one": "已配置 {{count}} 个",
+      "skillsConfigured_other": "已配置 {{count}} 个",
+      "none": "无",
+      "mcpPermissions": {
+        "title": "MCP 工具权限",
+        "servers": "MCP 服务器",
+        "accessGroups": "MCP 访问组",
+        "toolsets": "MCP 工具集",
+        "toolsPerServer": "每个服务器的工具权限"
+      },
+      "skillsSection": {
+        "title": "技能",
+        "fallbackName": "技能 {{number}}",
+        "id": "ID：",
+        "description": "描述：",
+        "tags": "标签：",
+        "examples": "示例："
+      },
+      "settings": {
+        "title": "智能体设置",
+        "edit": "编辑设置",
+        "agentId": "智能体 ID",
+        "rateLimits": "速率限制",
+        "tpmLimit": "TPM 限制",
+        "rpmLimit": "RPM 限制",
+        "sessionTpmLimit": "每会话 TPM 限制",
+        "sessionRpmLimit": "每会话 RPM 限制",
+        "accessGroups": {
+          "title": "访问组",
+          "label": "访问组",
+          "hint": "附加的访问组会在密钥和团队权限之上，进一步限制此智能体可访问的模型、MCP 服务器和智能体。留空表示不额外限制。",
+          "placeholder": "选择访问组（可选）"
+        },
+        "mcpServers": {
+          "title": "MCP 服务器",
+          "label": "允许的 MCP 服务器",
+          "hint": "选择此智能体可访问的 MCP 服务器或访问组。绑定到此智能体的密钥只能访问此处授权的服务器。",
+          "placeholder": "选择 MCP 服务器或访问组（可选）"
+        },
+        "cancel": "取消",
+        "save": "保存更改",
+        "editHint": "点击“编辑设置”修改智能体配置。"
+      }
+    },
+    "addForm": {
+      "steps": {
+        "configure": "配置",
+        "entitlements": "权限",
+        "governance": "治理",
+        "agentManagement": "智能体管理",
+        "ready": "完成",
+        "ariaLabel": "智能体创建步骤"
+      },
+      "agentType": {
+        "custom": "自定义 / 其他"
+      },
+      "toasts": {
+        "noAccessToken": "没有可用的访问令牌",
+        "selectExistingKey": "请选择要分配的现有密钥",
+        "buildFailed": "构建智能体数据失败",
+        "createFailedWithError": "创建智能体失败：{{error}}",
+        "createFailed": "创建智能体失败"
+      },
+      "entitlements": {
+        "description": "配置此智能体可以使用哪些模型、智能体和 MCP 工具。将字段留空表示全部允许，但仍受密钥和团队权限限制。",
+        "models": {
+          "label": "允许的模型",
+          "hint": "限制此智能体可以调用的模型。留空表示全部允许。",
+          "loading": "正在加载模型...",
+          "placeholder": "选择模型，留空表示全部允许"
+        },
+        "agents": {
+          "label": "允许的智能体（子智能体）",
+          "hint": "限制此智能体可以作为子智能体调用的其他智能体。留空表示全部允许。",
+          "loading": "正在加载智能体...",
+          "placeholder": "选择智能体，留空表示全部允许"
+        },
+        "accessGroups": {
+          "label": "访问组",
+          "hint": "为此智能体附加访问组。附加的访问组会在密钥和团队权限之上限制可访问的模型、MCP 服务器和智能体。留空表示不额外限制。",
+          "placeholder": "选择访问组（可选）"
+        },
+        "mcpServers": {
+          "label": "允许的 MCP 服务器",
+          "hint": "选择此智能体可以访问的 MCP 服务器或访问组",
+          "placeholder": "选择 MCP 服务器或访问组（可选）"
+        }
+      },
+      "governance": {
+        "tracing": {
+          "title": "链路追踪",
+          "inbound": {
+            "label": "对此智能体发起的调用要求 {{header}}",
+            "description": "仅接受带 Trace ID 的此智能体调用，例如作为子智能体被调用时。"
+          },
+          "outbound": {
+            "label": "此智能体发起的调用要求 {{header}}",
+            "description": "要求此智能体发起的 LLM 和 MCP 调用包含 {{header}}，以便跟踪会话。"
+          }
+        },
+        "budgets": {
+          "title": "预算与速率限制",
+          "requiresOutbound": "请在链路追踪中启用“此智能体发起的调用要求 {{header}}”，以配置预算和速率限制。",
+          "session": {
+            "title": "会话预算",
+            "maxIterations": {
+              "label": "最大迭代次数",
+              "placeholder": "例如 25",
+              "hint": "每个会话允许的 LLM 调用次数硬性上限"
+            },
+            "maxBudget": {
+              "label": "每会话最大预算（￥）",
+              "placeholder": "例如 5.00",
+              "hint": "返回 429 前每个 Trace 允许的最大花费"
+            }
+          }
+        },
+        "rateLimits": {
+          "agent": {
+            "title": "智能体速率限制",
+            "description": "应用于此智能体所有调用方的全局速率限制。",
+            "tpm": {
+              "label": "TPM 限制",
+              "placeholder": "例如 100000"
+            },
+            "rpm": {
+              "label": "RPM 限制",
+              "placeholder": "例如 100"
+            }
+          },
+          "session": {
+            "tpm": {
+              "label": "每会话 TPM 限制",
+              "placeholder": "例如 10000"
+            },
+            "rpm": {
+              "label": "每会话 RPM 限制",
+              "placeholder": "例如 20"
+            },
+            "title": "每会话速率限制",
+            "description": "每个会话（{{header}}）的速率限制。每个会话使用独立计数器。"
+          }
+        },
+        "guardrails": {
+          "title": "护栏",
+          "description": "为此智能体应用护栏。选中的护栏会在此智能体发起的所有调用上运行。"
+        }
+      },
+      "configure": {
+        "agentType": {
+          "label": "智能体类型",
+          "hint": "选择要创建的智能体类型",
+          "notListed": "未找到所需类型？",
+          "genericBadge": "通用",
+          "customDescription": "适用于使用身份提供商或虚拟密钥的出站智能体"
+        },
+        "custom": {
+          "agentName": {
+            "label": "智能体名称",
+            "required": "请输入智能体名称",
+            "placeholder": "例如 my-custom-agent"
+          },
+          "description": {
+            "label": "描述",
+            "placeholder": "描述此智能体的功能…"
+          }
+        },
+        "typeSettings": "{{type}} 设置",
+        "enterField": "请输入{{field}}"
+      },
+      "assignKey": {
+        "agentNameFallback": "your-agent",
+        "team": {
+          "label": "分配到团队",
+          "hint": "可以选择虚拟密钥所属的团队。智能体身份及其权限需要单独管理。"
+        },
+        "entraNotice": "此智能体将使用 Microsoft Entra ID 进行身份验证，你可以跳过虚拟密钥创建。",
+        "createNew": {
+          "title": "为此智能体创建新密钥",
+          "description": "专用于此智能体的密钥。",
+          "keyName": {
+            "label": "密钥名称",
+            "placeholder": "例如 my-agent-key"
+          },
+          "recommended": "推荐"
+        },
+        "existing": {
+          "title": "分配现有密钥",
+          "description": "将你已有的密钥重新分配给此智能体。",
+          "loading": "正在加载密钥…",
+          "placeholder": "按密钥名称搜索…"
+        },
+        "skip": {
+          "entra": "使用 Entra JWT 身份验证",
+          "later": "暂时跳过，稍后再分配密钥"
+        }
+      },
+      "ready": {
+        "title": "智能体已创建！",
+        "keyAssigned": "虚拟密钥 <alias/> 已分配到此智能体。",
+        "entraConfigured": "Microsoft Entra ID 已配置。发送一个通过身份验证的智能体请求以验证连接。",
+        "noKey": "未分配虚拟密钥。你可以前往“虚拟密钥”页面创建一个。"
+      },
+      "dialog": {
+        "logoLabel": "智能体",
+        "title": "新建智能体",
+        "back": "← 返回",
+        "cancel": "取消",
+        "next": "下一步 →",
+        "creating": "正在创建...",
+        "create": "创建智能体 →",
+        "done": "完成"
+      }
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import React from "react";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import AgentsPanel from "./AgentsPanel";
 import * as networking from "@/components/networking";
+import i18n from "@/i18n/i18n";
 
 vi.mock("@/components/networking", () => ({
   getAgentsList: vi.fn().mockResolvedValue({ agents: [] }),
@@ -19,15 +20,32 @@ vi.mock("./agent_info", () => ({
 }));
 
 describe("AgentsPanel", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // mockReset (not mockClear) so an unconsumed *Once queue cannot leak into the next test
     vi.mocked(networking.getAgentsList).mockReset().mockResolvedValue({ agents: [] });
     vi.mocked(networking.deleteAgentCall).mockReset().mockResolvedValue({});
+    await i18n.changeLanguage("en");
+  });
+
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
   });
 
   it("should render the Agents panel title", () => {
     render(<AgentsPanel accessToken="test-token" userRole="Admin" />);
     expect(screen.getByText("Agents")).toBeInTheDocument();
+  });
+
+  it("should render Chinese guidance with matching feature names", async () => {
+    await i18n.changeLanguage("zh-CN");
+    render(<AgentsPanel accessToken="test-token" userRole="Admin" />);
+
+    expect(screen.getByText("智能体")).toBeInTheDocument();
+    expect(screen.getByText(/AI 中心/)).toBeInTheDocument();
+    expect(screen.getByText("智能体如何完成身份验证？")).toBeInTheDocument();
+    expect(screen.getAllByText(/虚拟密钥/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/JWT/)).toBeInTheDocument();
+    expect(screen.getByText("新建智能体")).toBeInTheDocument();
   });
 
   it("should show Add New Agent button for admin users", () => {
