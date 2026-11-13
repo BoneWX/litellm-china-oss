@@ -1,0 +1,699 @@
+{
+  "mcpServers": {
+    "duplicateServerCheck": {
+      "duplicateIdentifier": "具有此名称或别名的 MCP 服务器已存在。"
+    },
+    "serverCostConfig": {
+      "title": "成本配置",
+      "titleTooltipLabel": "关于成本配置",
+      "titleTooltip": "配置此 MCP 服务器工具调用的成本。可设置默认费率并按工具覆盖。",
+      "defaultCost": {
+        "label": "每次查询默认成本（￥）",
+        "tooltipLabel": "关于默认成本",
+        "tooltip": "每次调用此服务器的工具时收取的默认成本。",
+        "help": "为此服务器的所有工具调用设置默认成本"
+      },
+      "toolCosts": {
+        "label": "指定工具成本（￥）",
+        "tooltipLabel": "关于按工具成本",
+        "tooltip": "覆盖特定工具的默认成本。留空表示使用默认费率。",
+        "availableTools": "可用工具",
+        "useDefaultPlaceholder": "使用默认值"
+      },
+      "summary": {
+        "title": "成本汇总：",
+        "defaultCost": "• 默认成本：每次查询 ￥{{cost}}",
+        "toolCost": "• {{toolName}}：每次查询 ￥{{cost}}"
+      }
+    },
+    "connectionStatus": {
+      "title": "连接状态",
+      "incomplete": {
+        "title": "填写必填字段以测试连接",
+        "description": "填写 URL、传输方式和身份验证以测试 MCP 服务器连接"
+      },
+      "state": {
+        "testing": "正在测试 MCP 服务器连接...",
+        "successful": "连接成功",
+        "readyToSubmit": "可以提交",
+        "failed": "连接失败",
+        "readyToTest": "可以测试连接"
+      },
+      "server": "服务器：{{server}}",
+      "badge": {
+        "connecting": "正在连接...",
+        "connected": "已连接",
+        "failed": "失败"
+      },
+      "loadingTools": "正在测试连接并加载工具...",
+      "previewUnavailable": "工具预览不可用",
+      "error": {
+        "title": "连接失败",
+        "stackTrace": "堆栈跟踪",
+        "retry": "重试"
+      },
+      "noTools": {
+        "title": "连接成功！",
+        "description": "此 MCP 服务器未找到工具"
+      }
+    },
+    "logoSelector": {
+      "label": "图标",
+      "tooltipLabel": "关于图标",
+      "tooltip": "选择常用图标或粘贴任意图片 URL。图标会显示在管理页面和聊天页面。",
+      "selectedLabel": "已选择",
+      "customUrlPlaceholder": "或粘贴自定义图标 URL..."
+    },
+    "permissionManagement": {
+      "title": "权限管理 / 访问控制",
+      "subtitle": "配置访问权限和安全设置（可选）",
+      "allowAllKeys": {
+        "label": "允许所有 LiteLLM 密钥",
+        "tooltip": "启用后，每个 API 密钥都可以访问此 MCP 服务器。",
+        "description": "如果此服务器应对所有密钥“公开”，请启用。"
+      },
+      "internalNetworkOnly": {
+        "label": "仅限内部网络",
+        "tooltip": "开启后，除非服务器 ID 明确发布到 public_mcp_servers，否则请求必须来自内部网络。关闭后允许公网 IP。身份验证和访问权限仍然生效。",
+        "description": "开启以限制公网 IP。明确发布的服务器 ID 仍可从公网 IP 访问。"
+      },
+      "delegateAuth": {
+        "label": "将身份验证委托给上游（PKCE 直通）",
+        "tooltip": "开启后，LiteLLM 会跳过此服务器自身的 API 密钥或 SSO 检查，让客户端直接与上游 MCP 服务器完成 PKCE。仅在身份验证类型为 oauth2 时生效。此路由不会进行花费跟踪或按密钥限流。",
+        "description": "绕过 LiteLLM 身份验证，让客户端直接向上游 OAuth MCP 服务器进行身份验证。"
+      },
+      "oauthPassthrough": {
+        "label": "OAuth 直通",
+        "tooltip": "开启后，此服务器按 OAuth 直通处理：网关代理上游 /.well-known/oauth-protected-resource 元数据，在未提供 Bearer 令牌时按规范返回 401，并透传上游 401/403 响应。仅在身份验证类型为无且附加请求头包含 Authorization 时生效。",
+        "description": "转发上游 OAuth 发现和 401 挑战，使客户端直接与上游 MCP 服务器协商 OAuth。"
+      },
+      "internalDelegateWarning": {
+        "title": "内部服务器使用上游 OAuth 委托",
+        "description": "此 MCP 服务器配置为仅限内部，但将身份验证委托给上游。匿名用户可能在没有 LiteLLM 会话的情况下访问上游 OAuth2 /authorize 流程。请确保上游提供商和网络强制执行访问控制。"
+      },
+      "accessGroups": {
+        "label": "MCP 访问组",
+        "tooltip": "指定此 MCP 服务器的访问组。用户必须属于其中至少一个组才能访问服务器。",
+        "placeholder": "选择现有组或输入以创建新组"
+      },
+      "extraHeaders": {
+        "label": "附加请求头",
+        "tooltip": "将传入请求中的自定义请求头转发到此 MCP 服务器，例如 Authorization、X-Custom-Header、User-Agent",
+        "configuredCount": "已配置 {{count}} 个",
+        "currentlyPlaceholder": "当前：{{headers}}",
+        "placeholder": "输入请求头名称，例如 Authorization、X-Custom-Header"
+      },
+      "staticHeaders": {
+        "label": "静态请求头",
+        "tooltip": "每次请求此 MCP 服务器时都发送这些键值对请求头。",
+        "headerNameRequired": "请求头名称必填",
+        "headerNamePlaceholder": "请求头名称（例如 X-API-Key）",
+        "clearHeaderName": "清除请求头名称",
+        "headerValueRequired": "请求头值必填",
+        "headerValuePlaceholder": "请求头值",
+        "clearHeaderValue": "清除请求头值",
+        "add": "添加静态请求头"
+      }
+    },
+    "createMcpServer": {
+      "payloadErrors": {
+        "invalidToolDisplayName": "工具显示名称“{{displayName}}”无效。只能包含字母、数字、下划线和连字符，不能包含空格。",
+        "invalidStdioJson": "stdio 配置中的 JSON 无效",
+        "invalidTokenValidationJson": "Token 验证规则中的 JSON 无效"
+      },
+      "toasts": {
+        "browserTokenHeld": "Token 仅保存在当前浏览器会话中。现在可以预览和配置工具，Token 不会保存到 LiteLLM。",
+        "oauthAuthorized": "OAuth 授权成功！请点击“创建 MCP 服务器”保存配置。",
+        "created": "MCP 服务器创建成功",
+        "submittedForReview": "MCP 服务器已提交管理员审核",
+        "submittedForReviewDescription": "管理员批准后，服务器会出现在你的 MCP 服务器列表中。",
+        "createFailed": "创建 MCP 服务器失败：{{reason}}",
+        "submitFailed": "提交 MCP 服务器失败：{{reason}}"
+      },
+      "logoAlt": "MCP 图标",
+      "title": {
+        "admin": "添加新的 MCP 服务器",
+        "submitForReview": "提交 MCP 服务器审核"
+      },
+      "reviewNotice": "你的提交将发送给管理员审核。批准后，服务器会出现在 MCP 服务器列表中。请求必须使用团队范围的 API 密钥。",
+      "serverName": {
+        "label": "MCP 服务器名称",
+        "tooltip": "最佳实践是使用能说明服务器用途的名称，例如 GitHub_MCP、Email_Service。不能包含空格或连字符，请使用下划线。名称必须符合 SEP-986，否则会被拒绝。",
+        "placeholder": "例如 GitHub_MCP、Zapier_MCP"
+      },
+      "alias": {
+        "label": "别名",
+        "tooltip": "此服务器的简短唯一标识符。未填写时默认使用服务器名称。不能包含空格或连字符，请使用下划线。",
+        "placeholder": "例如 GitHub_MCP、Zapier_MCP"
+      },
+      "description": {
+        "label": "描述",
+        "placeholder": "简要说明此服务器的功能"
+      },
+      "sourceUrl": {
+        "label": "GitHub / 来源 URL"
+      },
+      "transport": {
+        "label": "传输类型",
+        "required": "请选择传输类型",
+        "placeholder": "选择传输方式"
+      },
+      "url": {
+        "label": "MCP 服务器 URL",
+        "required": "请输入服务器 URL"
+      },
+      "maxConcurrentRequests": {
+        "label": "最大并发请求数（可选）",
+        "tooltip": "LiteLLM 同时对此服务器执行工具调用的最大数量。其他调用会等待空闲名额。留空表示不限制。",
+        "placeholder": "例如 10"
+      },
+      "rpm": {
+        "label": "RPM 限制（所有调用方）",
+        "tooltip": "此服务器在所有密钥和团队范围内每分钟允许的最大请求数。留空表示不限制。",
+        "placeholder": "例如 60"
+      },
+      "auth": {
+        "sectionTitle": "身份验证设置",
+        "typeLabel": "身份验证",
+        "typeRequired": "请选择身份验证类型",
+        "typePlaceholder": "选择身份验证类型",
+        "valueLabel": "身份验证值",
+        "valueTooltip": "所选身份验证类型下每次请求发送的 Token、密码或请求头值。",
+        "valueWhitespace": "身份验证值不能只有空白字符",
+        "valuePlaceholder": "输入 Token 或密钥"
+      },
+      "actions": {
+        "cancel": "取消",
+        "creating": "正在创建...",
+        "submit": "添加 MCP 服务器"
+      }
+    },
+    "servers": {
+      "sort": {
+        "label": "排序",
+        "options": {
+          "createdDesc": "最近创建",
+          "updatedDesc": "最近更新",
+          "nameAsc": "名称（A→Z）",
+          "health": "健康状态（异常优先）"
+        }
+      },
+      "deleteDialog": {
+        "title": "删除 MCP 服务器？",
+        "body": "此操作永久生效且无法撤销，所有关联配置都会被删除。",
+        "fields": {
+          "name": "名称",
+          "id": "ID",
+          "url": "URL"
+        },
+        "cancel": "取消",
+        "deleting": "正在删除...",
+        "delete": "删除"
+      },
+      "filters": {
+        "team": {
+          "label": "团队",
+          "allServers": "所有服务器",
+          "allAvailableServers": "所有可用服务器",
+          "personal": "个人"
+        },
+        "accessGroup": {
+          "label": "访问组",
+          "all": "所有访问组",
+          "helpLabel": "关于访问组",
+          "help": "MCP 访问组是一组有权访问特定 MCP 服务器的用户或团队。可使用访问组控制并组织哪些用户能够连接哪些服务器。"
+        }
+      },
+      "toasts": {
+        "deleted": "MCP 服务器已成功删除"
+      },
+      "missingAuth": "缺少必需的身份验证参数。",
+      "header": {
+        "title": "MCP 服务器",
+        "subtitle": "配置和管理 MCP 服务器",
+        "myConnections": "我的连接",
+        "importFromJson": "从 JSON 导入",
+        "addServer": "+ 添加新的 MCP 服务器",
+        "submitServer": "+ 提交 MCP 服务器"
+      },
+      "tabs": {
+        "allServers": "所有服务器",
+        "toolsets": "工具集",
+        "connect": "连接",
+        "semanticFilter": "语义过滤",
+        "toolSearch": "工具搜索",
+        "networkSettings": "网络设置",
+        "submitted": "已提交的 MCP",
+        "liveConnections": "实时连接"
+      },
+      "searchPlaceholder": "按名称、别名、URL 或 ID 搜索",
+      "resultCount": "显示 {{shown}} / {{total}} 个服务器",
+      "loading": "正在加载 MCP 服务器...",
+      "empty": {
+        "noServers": "尚未配置 MCP 服务器。点击“+ 添加新的 MCP 服务器”开始。",
+        "noMatches": "没有服务器符合当前筛选条件或搜索内容。"
+      }
+    },
+    "serverCard": {
+      "actionsMenu": {
+        "label": "服务器操作",
+        "testConnection": "测试连接",
+        "delete": "删除"
+      },
+      "stdioDisabled": "stdio 已禁用",
+      "oauthFlowUnset": {
+        "badge": "未设置 OAuth 流程",
+        "tooltip": "此 OAuth 服务器尚未设置流程（机器对机器或交互式）。请打开并选择 OAuth 流程类型，以便 LiteLLM 按预期进行身份验证。"
+      },
+      "missingFields": {
+        "summary_one": "缺少 {{count}} 个用户字段",
+        "summary_other": "缺少 {{count}} 个用户字段",
+        "tooltipTitle": "缺少用户字段：",
+        "set": "设置"
+      },
+      "healthChip": {
+        "checking": "正在检查",
+        "health": "健康状态：{{status}}",
+        "lastCheck": "上次检查：{{time}}",
+        "error": "错误",
+        "noData": "无健康数据",
+        "clickToRecheck": "点击重新检查"
+      },
+      "userFieldsRow": {
+        "label": "每用户凭据",
+        "set": "设置",
+        "update": "更新"
+      },
+      "byokRow": {
+        "label": "BYOK 凭据",
+        "connected": "已连接",
+        "update": "更新",
+        "connect": "连接"
+      }
+    },
+    "serverView": {
+      "backToServers": "返回所有服务器",
+      "unnamedServer": "未命名服务器",
+      "copyServerName": "复制服务器名称",
+      "copyServerId": "复制服务器 ID",
+      "hideFullUrl": "隐藏完整 URL",
+      "showFullUrl": "显示完整 URL",
+      "tabs": {
+        "overview": "概览",
+        "tools": "MCP 工具",
+        "settings": "设置",
+        "userCredentials": "用户凭据"
+      },
+      "overview": {
+        "transport": "传输方式",
+        "authentication": "身份验证",
+        "hostUrl": "主机 URL",
+        "costConfiguration": "成本配置"
+      },
+      "settings": {
+        "title": "MCP 服务器设置",
+        "edit": "编辑设置",
+        "definedInConfig": "已在配置中定义。请修改 YAML 配置以进行更改",
+        "fields": {
+          "serverName": "服务器名称",
+          "alias": "别名",
+          "description": "描述",
+          "url": "URL",
+          "transport": "传输方式",
+          "authentication": "身份验证",
+          "extraHeaders": "附加请求头",
+          "allowAllKeys": "允许所有密钥",
+          "networkAccess": "网络访问",
+          "delegateAuth": "将身份验证委托给上游",
+          "oauthPassthrough": "OAuth 直通",
+          "accessGroups": "访问组",
+          "allowedTools": "允许的工具",
+          "cost": "成本"
+        },
+        "status": {
+          "enabled": "已启用",
+          "disabled": "已禁用",
+          "enabledPkcePassthrough": "已启用（PKCE 直通）",
+          "allToolsEnabled": "已启用所有工具"
+        }
+      }
+    },
+    "tools": {
+      "title": "MCP 工具",
+      "additionalHeaders": "附加请求头",
+      "hide": "隐藏",
+      "configure": "配置",
+      "headersRequired": "此服务器需要附加请求头。点击“配置”提供值。",
+      "headerPlaceholder": "输入 {{headerName}}",
+      "loadTools": "加载工具",
+      "headersConfigured": "已配置 {{headerCount}} 个请求头",
+      "availableTools": "可用工具",
+      "authRequired": "需要身份验证",
+      "authenticateToView": "进行身份验证以查看可用工具",
+      "authenticateUpstream": "向上游提供商进行身份验证以查看可用工具",
+      "authorize": "授权",
+      "searchPlaceholder": "搜索工具...",
+      "loading": "正在加载工具...",
+      "error": "错误：{{message}}",
+      "noTools": {
+        "title": "没有可用工具",
+        "description": "此服务器未找到工具"
+      },
+      "noMatches": {
+        "title": "未找到工具",
+        "description": "没有工具匹配“{{searchTerm}}”"
+      },
+      "logoAlt": "{{serverName}} 图标",
+      "selected": "已选择",
+      "playground": {
+        "title": "工具测试台",
+        "emptyTitle": "选择要测试的工具",
+        "emptyDescription": "从左侧栏选择工具，使用自定义输入开始测试其功能。"
+      }
+    },
+    "toolConfiguration": {
+      "toolRow": {
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "customName": "自定义名称",
+        "callable": "✓ 用户可以调用此工具",
+        "notCallable": "✗ 用户不能调用此工具",
+        "editTitle": "编辑显示名称和描述",
+        "displayNameLabel": "显示名称",
+        "displayNameInvalid": "只能包含字母、数字、下划线和连字符，不能包含空格。",
+        "displayNameHelp": "覆盖用户看到的工具名称。留空表示使用原始名称。",
+        "descriptionLabel": "描述",
+        "noDescription": "暂无描述",
+        "descriptionHelp": "覆盖向用户显示的工具描述。留空表示使用原始内容。"
+      },
+      "title": "工具配置",
+      "viewModes": {
+        "riskGroups": "风险分组",
+        "flatList": "平铺列表"
+      },
+      "intro": "<strong>选择用户可以调用的工具：</strong>只有勾选的工具才会提供给用户，未勾选的工具会被阻止执行。",
+      "loading": "正在加载工具...",
+      "loadError": "无法加载工具",
+      "noToolsFromSpec": "未从规范中加载工具",
+      "expectedTools": "预期工具：{{tools}}",
+      "noTools": {
+        "title": "没有可配置的工具",
+        "hint": "连接到带工具的 MCP 服务器以进行配置"
+      },
+      "incomplete": {
+        "title": "填写必填字段以配置工具",
+        "hint": "填写 URL、传输方式和身份验证以加载可用工具"
+      },
+      "enabledSummary_one": "已为用户访问启用 {{enabled}} / {{count}} 个工具",
+      "enabledSummary_other": "已为用户访问启用 {{enabled}} / {{count}} 个工具",
+      "searchPlaceholder": "按名称或描述搜索工具...",
+      "noMatches": "未找到匹配“{{searchTerm}}”的工具",
+      "suggestedTools": "建议工具",
+      "allTools": "所有工具",
+      "tools": "工具",
+      "enableAll": "全部启用",
+      "disableAll": "全部禁用"
+    },
+    "toolTestPanel": {
+      "defaultInputDescription": "此工具的输入",
+      "toasts": {
+        "resultCopied": "结果已复制到剪贴板",
+        "resultCopyFailed": "复制结果失败",
+        "toolNameCopied": "工具名称已复制到剪贴板",
+        "toolNameCopyFailed": "复制工具名称失败"
+      },
+      "logoAlt": "{{serverName}} 图标",
+      "title": "测试工具：",
+      "copyToolNameTitle": "点击复制工具名称",
+      "provider": "提供商：{{serverName}}",
+      "close": "关闭",
+      "inputParameters": "输入参数",
+      "inputParametersTooltip": "配置此次工具调用的输入参数",
+      "toolResult": "工具结果",
+      "empty": {
+        "title": "可以调用工具",
+        "description": "配置输入参数后点击“调用工具”，结果会显示在这里。"
+      },
+      "success": "工具执行成功",
+      "duration": "• {{seconds}} 秒",
+      "formatted": "格式化",
+      "copyResponse": "复制响应",
+      "calling": {
+        "title": "正在调用工具...",
+        "description": "请稍候，我们正在处理你的请求"
+      },
+      "failed": "工具调用失败",
+      "textResponse": "文本响应",
+      "imageResponse": "图片响应",
+      "imageAlt": "工具结果",
+      "embeddedResource": "内嵌资源",
+      "resourceType": "资源类型：{{resourceType}}",
+      "viewResource": "查看资源"
+    },
+    "userEnvVarsModal": {
+      "title": "设置你的凭据",
+      "perUserBadge": "每用户",
+      "fallbackServerName": "MCP 服务器",
+      "loadFailed": "无法加载环境变量",
+      "noFields": "此服务器未配置每用户字段。",
+      "intro": "这些值仅对你可见。管理员配置此 MCP 服务器时要求提供这些每用户凭据。已保存的值不会再次显示，已设置的字段留空表示保持不变，输入新值表示设置或修改。",
+      "form": {
+        "setBadge": "已设置",
+        "required": "{{name}} 必填",
+        "overwritePlaceholder": "输入新值以覆盖",
+        "placeholder": "输入你的 {{name}}",
+        "clear": "清除",
+        "cancel": "取消",
+        "save": "保存凭据"
+      },
+      "toasts": {
+        "saved": "凭据已保存",
+        "saveFailed": "保存环境变量失败：{{error}}",
+        "cleared": "凭据已清除",
+        "clearFailed": "清除环境变量失败：{{error}}"
+      },
+      "clearDialog": {
+        "title": "清除已保存凭据",
+        "description": "这会删除你为 {{server}} 保存的所有每用户值。在重新设置之前，后续对此服务器的 MCP 请求都会失败。",
+        "cancel": "取消",
+        "confirm": "清除凭据"
+      }
+    },
+    "serverUserCredentialsPanel": {
+      "title": "用户凭据",
+      "description": "为此服务器保存的每用户 OAuth2 Token 和 BYOK API 密钥。撤销后会从数据库删除并清除缓存副本，用户必须重新连接后才能通过网关调用此服务器。",
+      "refresh": "刷新",
+      "refreshAriaLabel": "刷新用户凭据",
+      "credentialTypes": {
+        "byokApiKey": "BYOK API 密钥"
+      },
+      "loading": "正在加载用户凭据...",
+      "loadError": "无法加载用户凭据",
+      "empty": "没有用户为此服务器保存凭据。",
+      "tableLabel": "已保存的用户凭据",
+      "columns": {
+        "user": "用户",
+        "type": "类型",
+        "connected": "连接时间",
+        "expires": "到期时间",
+        "updated": "更新时间",
+        "actions": "操作"
+      },
+      "revoke": "撤销",
+      "revokeAriaLabel": "撤销用户 {{user}} 的凭据",
+      "revokeError": "无法撤销凭据",
+      "revokeSuccess": {
+        "title": "凭据已撤销",
+        "description": "用户 {{user}} 保存的 {{type}} 凭据已删除。"
+      },
+      "revokeDialog": {
+        "title": "撤销已保存凭据",
+        "target": "这会删除为用户 {{user}} 保存的 {{type}} 凭据。",
+        "consequence": "用户重新连接前，后续对此服务器的 MCP 请求会失败。",
+        "cancel": "取消",
+        "confirm": "撤销"
+      }
+    },
+    "connect": {
+      "title": "连接 MCP 客户端",
+      "description": "通过 LiteLLM MCP 从任意 MCP 客户端直接使用工具。让你的 AI 助手通过简单安全的连接执行实际任务。",
+      "featureCard": {
+        "serverHeaderToggle": "通过传递 <code>x-mcp-servers</code> 请求头，将工具限制到特定 MCP 服务器或 MCP 组",
+        "optionsTitle": "两种方式",
+        "optionServer": "<strong>方式 1：</strong>获取特定服务器：<code>\"<server/>\"</code>",
+        "optionGroup": "<strong>方式 2：</strong>获取一组 MCP：<code>\"{{group}}\"</code>",
+        "optionMix": "也可以混合使用：<code>\"{{example}}\"</code>"
+      },
+      "codeBlocks": {
+        "environmentVariable": "环境变量",
+        "serverUrl": "服务器 URL",
+        "headersConfiguration": "请求头配置"
+      },
+      "serverInfoCard": {
+        "title": "MCP 服务器信息",
+        "description": "LiteLLM MCP 服务器的连接详情"
+      },
+      "implementationExampleCard": {
+        "title": "实现示例"
+      },
+      "litellmTab": {
+        "title": "LiteLLM Proxy API 集成",
+        "description": "连接 LiteLLM Proxy Responses API，与多个模型提供商无缝集成工具",
+        "virtualKeyCard": {
+          "title": "虚拟密钥设置",
+          "description": "配置 LiteLLM Proxy 虚拟密钥用于身份验证",
+          "instructions": "从 LiteLLM Proxy 管理后台获取虚拟密钥，或联系管理员"
+        },
+        "exampleDescription": "使用 LiteLLM Proxy Responses API 的完整 cURL 示例"
+      },
+      "openaiTab": {
+        "title": "OpenAI Responses API 集成",
+        "description": "将 OpenAI Responses API 连接到 LiteLLM MCP 服务器，实现无缝工具集成",
+        "apiKeyCard": {
+          "title": "API 密钥设置",
+          "description": "配置 OpenAI API 密钥用于身份验证",
+          "instructions": "从 <docs>OpenAI 平台 <icon/></docs> 获取 API 密钥"
+        },
+        "exampleDescription": "使用 Responses API 的完整 cURL 示例"
+      },
+      "cursorTab": {
+        "title": "Cursor IDE 集成",
+        "description": "通过 LiteLLM MCP 直接在 Cursor IDE 中使用工具，让 AI 助手无需离开编码环境即可执行实际任务。",
+        "setupTitle": "设置说明",
+        "steps": {
+          "openSettings": {
+            "title": "打开 Cursor 设置",
+            "body": "使用快捷键 <kbd>⇧+⌘+J</kbd>（Mac）或 <kbd>Ctrl+Shift+J</kbd>（Windows/Linux）"
+          },
+          "navigate": {
+            "title": "进入 MCP 工具",
+            "body": "前往“MCP Tools”标签页并点击“New MCP Server”"
+          },
+          "addConfiguration": {
+            "title": "添加配置",
+            "body": "复制下方 JSON 配置并粘贴到 Cursor，然后使用 <kbd>Cmd+S</kbd> 或 <kbd>Ctrl+S</kbd> 保存"
+          }
+        },
+        "configurationCard": {
+          "title": "配置",
+          "description": "Cursor MCP 配置"
+        }
+      },
+      "httpTab": {
+        "title": "可流式 HTTP 传输",
+        "description": "使用 HTTP 传输连接 LiteLLM MCP，兼容任何支持 HTTP 流式传输的 MCP 客户端。",
+        "connectionCard": {
+          "title": "通用 MCP 连接",
+          "description": "在任何支持 HTTP 传输的 MCP 客户端中使用此 URL",
+          "instructions": "不同 MCP 客户端支持不同传输方式。请参考客户端文档以确定适当的传输方法。"
+        },
+        "learnMore": "进一步了解 MCP 传输"
+      }
+    }
+  },
+  "mcpTools": {
+    "byokCredentialModal": {
+      "errors": {
+        "connectFailed": "连接失败"
+      },
+      "fallbackServiceName": "服务",
+      "toasts": {
+        "apiKeyRequired": "请输入 API 密钥",
+        "connected": "已连接到 {{server}}"
+      },
+      "back": "返回",
+      "intro": {
+        "title": "连接 {{server}}",
+        "description": "LiteLLM 需要访问 {{server}} 才能完成你的请求。",
+        "howItWorksTitle": "工作原理",
+        "howItWorks": "LiteLLM 充当安全桥接层。你的请求会通过 MCP 客户端直接路由到 {{server}} 的 API。",
+        "requestedAccess": "请求的访问权限",
+        "continue": "继续身份验证",
+        "cancel": "取消"
+      },
+      "apiKey": {
+        "title": "提供 API 密钥",
+        "description": "输入你的 {{server}} API 密钥以授权此连接。",
+        "label": "{{server}} API 密钥",
+        "placeholder": "输入 API 密钥",
+        "helpLink": "在哪里查找 API 密钥？",
+        "saveForFuture": "保存密钥以供将来使用",
+        "securityNote": "密钥会安全存储并通过 HTTPS 传输，不会与第三方共享。",
+        "authorize": "连接并授权"
+      }
+    },
+    "crudPermissionPanel": {
+      "risk": {
+        "high": "高风险",
+        "medium": "中风险",
+        "low": "安全",
+        "unknown": "未分类"
+      },
+      "allowedCount": "已允许 {{allowed}} / {{total}}",
+      "groupState": {
+        "allOn": "全部开启",
+        "partial": "部分开启",
+        "allOff": "全部关闭"
+      },
+      "allowAllAria": "允许所有 {{label}} 工具",
+      "toolState": {
+        "on": "开",
+        "off": "关"
+      }
+    }
+  },
+  "mcpServerManagement": {
+    "toolPermissions": {
+      "inherited": {
+        "accessGroup": "通过访问组：{{name}}",
+        "toolset": "通过工具集：{{name}}",
+        "toolPermission": "通过工具权限"
+      },
+      "fetchFailed": "获取工具失败",
+      "serversFailed": {
+        "title": "无法加载 MCP 服务器",
+        "description": "此列表不完整，直接授予或通过访问组授予的服务器可能缺失。请重新加载后再修改工具权限"
+      },
+      "emptyAccessGroup": {
+        "title": "访问组“{{group}}”没有服务器",
+        "description": "没有 MCP 服务器列出此组，因此它不会授予任何权限。config.yaml 中定义的服务器通过 <code>access_groups</code> 键加入组；<code>mcp_access_groups</code> 在这里会被忽略"
+      },
+      "toolsetsFailed": {
+        "title": "无法加载工具集",
+        "description": "通过所选工具集访问的服务器未在下方列出"
+      },
+      "loadingServers": "正在加载 MCP 服务器...",
+      "allToolsAllowed": "允许所有工具，包括以后添加到此服务器的工具",
+      "ambiguousKeys": "也由 {{keys}} 授予，但该名称还指向另一个服务器。在这些服务器不再共享该名称之前，这里的工具会保持允许",
+      "lockedByToolset_one": "{{tools}} 由所选工具集授予，因此在这里保持允许；请编辑工具集以撤销",
+      "lockedByToolset_other": "{{tools}} 由所选工具集授予，因此在这里保持允许；请编辑工具集以撤销",
+      "viewModes": {
+        "riskGroups": "风险分组",
+        "flatList": "平铺列表"
+      },
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "loadingTools": "正在加载工具...",
+      "loadToolsFailed": "无法加载工具",
+      "noDescription": "暂无描述",
+      "noTools": "没有可用工具"
+    },
+    "serverSelector": {
+      "placeholder": "选择 MCP 服务器",
+      "optionTypes": {
+        "accessGroup": "访问组",
+        "mcpServer": "MCP 服务器",
+        "toolset": "工具集"
+      },
+      "allProxyServers": "所有代理 MCP 服务器",
+      "noServers": "没有 MCP 服务器",
+      "blockAll": "全部阻止",
+      "empty": "未找到 MCP 服务器"
+    }
+  },
+  "mcpOAuthCallback": {
+    "authorizationComplete": "授权已完成。你可以关闭此窗口并返回 LiteLLM 管理后台。",
+    "manualCloseHint": "如果窗口没有自动关闭，所有内容仍已保存，你可以手动关闭。",
+    "loading": "加载中..."
+  }
+}

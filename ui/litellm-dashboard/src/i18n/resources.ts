@@ -15,8 +15,10 @@ import budgetScheduleZhCN from "./locales/zh-CN/budget-schedule.json";
 import budgetsZhCN from "./locales/zh-CN/budgets.json";
 import commonZhCN from "./locales/zh-CN/common.json";
 import deploymentHealthZhCN from "./locales/zh-CN/deployment-health.json";
+import guardrailsZhCN from "./locales/zh-CN/guardrails.json";
 import homeZhCN from "./locales/zh-CN/home.json";
 import memoryZhCN from "./locales/zh-CN/memory.json";
+import mcpZhCN from "./locales/zh-CN/mcp.json";
 import modelsZhCN from "./locales/zh-CN/models.json";
 import navigationZhCN from "./locales/zh-CN/navigation.json";
 import organizationsZhCN from "./locales/zh-CN/organizations.json";
@@ -24,6 +26,7 @@ import policiesZhCN from "./locales/zh-CN/policies.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
 import skillsZhCN from "./locales/zh-CN/skills.json";
 import teamsZhCN from "./locales/zh-CN/teams.json";
+import toolsZhCN from "./locales/zh-CN/tools.json";
 import usageLogZhCN from "./locales/zh-CN/usage-log.json";
 import usersZhCN from "./locales/zh-CN/users.json";
 import workflowsZhCN from "./locales/zh-CN/workflows.json";
@@ -53,8 +56,10 @@ export const zhCNResources = {
   ...budgetsZhCN,
   ...commonZhCN,
   ...deploymentHealthZhCN,
+  ...guardrailsZhCN,
   ...homeZhCN,
   ...memoryZhCN,
+  ...mcpZhCN,
   ...modelsZhCN,
   ...navigationZhCN,
   ...organizationsZhCN,
@@ -62,6 +67,7 @@ export const zhCNResources = {
   ...shellZhCN,
   ...skillsZhCN,
   ...teamsZhCN,
+  ...toolsZhCN,
   ...usageLogZhCN,
   ...usersZhCN,
   ...workflowsZhCN,

@@ -1,0 +1,294 @@
+{
+  "searchTools": {
+    "page": {
+      "title": "搜索工具",
+      "subtitle": "配置和管理搜索提供商",
+      "addButton": "+ 新建搜索工具",
+      "missingAuth": "缺少必需的身份验证参数。",
+      "toasts": {
+        "deleted": "搜索工具已删除",
+        "deleteFailed": "删除搜索工具失败",
+        "updated": "搜索工具已更新",
+        "updateFailed": "更新搜索工具失败"
+      },
+      "deleteModal": {
+        "title": "删除搜索工具",
+        "message": "确定要删除此搜索工具吗？此操作无法撤销。",
+        "infoTitle": "搜索工具信息",
+        "fields": {
+          "name": "名称",
+          "id": "ID",
+          "provider": "提供商",
+          "description": "描述"
+        }
+      },
+      "editModal": {
+        "title": "编辑搜索工具",
+        "cancel": "取消",
+        "ok": "确定"
+      },
+      "editForm": {
+        "labels": {
+          "name": "搜索工具名称",
+          "provider": "搜索提供商",
+          "apiKey": "API Key",
+          "cost": "每次查询成本（CNY）",
+          "description": "描述"
+        },
+        "descriptions": {
+          "apiKey": "搜索提供商的 API Key",
+          "cost": "覆盖此工具的成本映射价格。留空则使用提供商默认价格"
+        },
+        "placeholders": {
+          "name": "例如 my-perplexity-search",
+          "provider": "选择搜索提供商",
+          "apiKey": "输入 API Key",
+          "cost": "例如 0.007",
+          "description": "此搜索工具的说明"
+        },
+        "errors": {
+          "nameRequired": "请输入搜索工具名称",
+          "providerRequired": "请选择搜索提供商",
+          "costNegative": "每次查询成本不能为负数"
+        }
+      }
+    },
+    "createForm": {
+      "title": "新建搜索工具",
+      "labels": {
+        "name": "搜索工具名称",
+        "provider": "搜索提供商",
+        "apiKey": "API Key",
+        "cost": "每次查询成本（CNY，可选）",
+        "description": "描述（可选）"
+      },
+      "hints": {
+        "name": "用于识别此搜索工具配置的唯一名称，例如 perplexity-search、tavily-news-search。",
+        "provider": "选择要使用的搜索提供商。不同提供商具备不同能力和价格。",
+        "apiKey": "用于向搜索提供商进行身份验证的 API Key。该密钥会被安全存储。",
+        "cost": "你协商的每次搜索查询价格。它会覆盖响应成本头和花费日志中的 LiteLLM 成本映射价格。留空则使用提供商默认价格。"
+      },
+      "placeholders": {
+        "name": "例如 perplexity-search、my-tavily-tool",
+        "provider": "选择搜索提供商",
+        "apiKey": "输入你的 API Key",
+        "cost": "例如 0.007",
+        "description": "简要说明此搜索工具的用途"
+      },
+      "noProviders": "没有匹配的搜索提供商",
+      "help": "需要帮助？",
+      "helpTooltip": "在 GitHub 上获取帮助",
+      "testConnection": "测试连接",
+      "submit": "添加搜索工具",
+      "testResultsTitle": "连接测试结果",
+      "close": "关闭",
+      "errors": {
+        "nameRequired": "请输入搜索工具名称",
+        "nameInvalid": "名称只能包含字母、数字、连字符和下划线",
+        "providerRequired": "请选择搜索提供商",
+        "costNegative": "每次查询成本不能为负数"
+      },
+      "toasts": {
+        "created": "搜索工具创建成功",
+        "createFailed": "创建搜索工具失败：{{error}}",
+        "testMissingFields": "测试前请填写搜索提供商和 API Key"
+      }
+    },
+    "connectionTest": {
+      "toastSuccess": "连接测试成功！",
+      "unknownErrorOccurred": "发生未知错误",
+      "unknownError": "未知错误",
+      "authFailed": "身份验证失败：API Key 或凭据无效",
+      "authError": "身份验证错误，请检查 API Key",
+      "fallbackProvider": "搜索提供商",
+      "testing": "正在测试与 {{provider}} 的连接...",
+      "success": "已成功连接到 {{provider}}！",
+      "testQuery": "测试查询：<query/>",
+      "resultsRetrieved": "已获取结果：{{results}}",
+      "failed": "连接 {{provider}} 失败",
+      "errorLabel": "错误：",
+      "errorType": "错误类型：",
+      "hideDetails": "隐藏详情",
+      "showDetails": "显示详情",
+      "fullDetails": "完整错误详情",
+      "troubleshooting": {
+        "title": "排查建议：",
+        "apiKey": "确认 API Key 正确且有效",
+        "serviceStatus": "检查搜索提供商服务是否正常",
+        "quota": "确认提供商账户中有足够的额度",
+        "docs": "查看提供商文档以了解其他要求"
+      },
+      "docsLink": "查看搜索文档"
+    },
+    "table": {
+      "empty": {
+        "title": "尚未配置搜索工具",
+        "description": "添加搜索工具后，模型即可使用网络搜索。"
+      },
+      "loading": "正在加载搜索工具…",
+      "configEditHint": "配置文件中的搜索工具无法在管理后台编辑，请修改配置文件。",
+      "configDeleteHint": "配置文件中的搜索工具无法在管理后台删除，请修改配置文件。",
+      "actions": {
+        "open": "打开搜索工具操作",
+        "edit": "编辑搜索工具",
+        "delete": "删除搜索工具"
+      },
+      "columns": {
+        "id": "搜索工具 ID",
+        "name": "名称",
+        "provider": "提供商",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "source": "来源",
+        "actions": "操作"
+      },
+      "source": {
+        "config": "配置文件",
+        "db": "数据库"
+      }
+    },
+    "view": {
+      "back": "返回所有搜索工具",
+      "copyName": "复制搜索工具名称",
+      "copyId": "复制搜索工具 ID",
+      "provider": "提供商",
+      "apiKey": "API Key",
+      "apiKeyNotSet": "未设置",
+      "cost": "每次查询成本",
+      "costDefault": "提供商默认价格",
+      "createdAt": "创建时间",
+      "createdUnknown": "未知",
+      "description": "描述"
+    },
+    "tester": {
+      "title": "测试搜索工具",
+      "placeholder": "输入搜索查询...",
+      "search": "搜索",
+      "emptyTitle": "测试你的搜索工具",
+      "emptyDescription": "在上方输入查询以查看搜索结果",
+      "searching": "正在搜索...",
+      "queryLabel": "搜索查询",
+      "resultCount_one": "{{count}} 条结果",
+      "resultCount_other": "{{count}} 条结果",
+      "latency": "{{latency}}ms",
+      "openResult": "在新标签页打开结果",
+      "showLess": "收起",
+      "showMore": "展开",
+      "noResults": "未找到结果",
+      "noResultsHint": "尝试其他搜索查询",
+      "previous": "历史搜索",
+      "clearAll": "全部清除",
+      "toasts": {
+        "emptyQuery": "请输入搜索查询",
+        "cleared": "搜索历史已清除"
+      }
+    }
+  },
+  "toolPolicies": {
+    "view": {
+      "adminOnly": {
+        "title": "工具策略",
+        "message": "工具策略仅管理员可用。"
+      }
+    },
+    "panel": {
+      "title": "工具策略",
+      "metrics": {
+        "newToday": "今日新增",
+        "totalTools": "已发现工具总数",
+        "blockedTools": "已阻止工具",
+        "activeTeams": "活跃团队",
+        "trendUp": "较昨日 +{{value}}",
+        "trendDown": "较昨日 {{value}}"
+      },
+      "needsReview": {
+        "title": "需要审核",
+        "description_one": "发现 {{count}} 个新工具，需要制定策略。",
+        "description_other": "发现 {{count}} 个新工具，需要制定策略。",
+        "review": "审核"
+      },
+      "errors": {
+        "loadFailed": "加载工具失败",
+        "updateInputPolicy": "更新输入策略失败：{{message}}",
+        "updateOutputPolicy": "更新输出策略失败：{{message}}",
+        "unknown": "未知错误"
+      }
+    },
+    "table": {
+      "loading": "正在加载工具…",
+      "searchPlaceholder": "按工具名称搜索",
+      "empty": {
+        "noToolsTitle": "尚未发现工具",
+        "noToolsDescription": "发起一次返回 tool_calls 的聊天补全请求以开始自动发现。",
+        "noMatchTitle": "没有匹配的工具",
+        "noMatchDescription": "没有工具符合当前搜索或筛选条件。"
+      },
+      "filters": {
+        "title": "筛选条件",
+        "description": "缩小已发现工具范围",
+        "inputPolicy": "输入策略",
+        "outputPolicy": "输出策略",
+        "teamName": "团队名称",
+        "keyName": "密钥名称",
+        "allInputPolicies": "所有输入策略",
+        "allOutputPolicies": "所有输出策略",
+        "allTeams": "所有团队",
+        "allKeys": "所有密钥"
+      },
+      "columns": {
+        "discovered": "发现时间",
+        "toolName": "工具名称",
+        "inputPolicy": "输入策略",
+        "outputPolicy": "输出策略",
+        "callCount": "调用次数",
+        "teamName": "团队名称",
+        "keyHash": "密钥哈希",
+        "keyName": "密钥名称",
+        "user": "用户",
+        "userTooltip": "拥有发现此工具的密钥的用户。按顺序显示第一个可用值：用户别名、用户邮箱或用户 ID。",
+        "userAgent": "User-Agent"
+      }
+    },
+    "detail": {
+      "back": "返回工具策略",
+      "loadFailed": "加载工具详情失败。",
+      "callCount": "{{value}} 次调用",
+      "meta": {
+        "userAgent": "User-Agent：",
+        "firstDiscovered": "首次发现：",
+        "lastUsed": "最后使用："
+      },
+      "policies": {
+        "inputTitle": "输入策略",
+        "inputFallbackDescription": "控制此工具允许接收哪些数据。",
+        "outputTitle": "输出策略",
+        "outputFallbackDescription": "控制下游工具如何信任此工具的输出。"
+      },
+      "overrides": {
+        "title": "已对团队或密钥阻止",
+        "team": "团队：{{team}}",
+        "key": "密钥：{{key}}",
+        "remove": "移除"
+      },
+      "block": {
+        "title": "对团队或密钥阻止",
+        "scope": "范围",
+        "team": "团队",
+        "key": "密钥",
+        "keyPlaceholder": "选择密钥",
+        "noKeys": "未找到密钥",
+        "submitTeam": "对团队阻止",
+        "submitKey": "对密钥阻止"
+      },
+      "invocations": {
+        "title": "最近调用"
+      },
+      "errors": {
+        "updateInputPolicy": "更新输入策略失败：{{message}}",
+        "updateOutputPolicy": "更新输出策略失败：{{message}}",
+        "addOverride": "添加覆盖规则失败：{{message}}",
+        "removeOverride": "移除覆盖规则失败：{{message}}"
+      }
+    }
+  }
+}

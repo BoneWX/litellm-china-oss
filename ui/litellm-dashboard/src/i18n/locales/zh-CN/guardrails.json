@@ -1,0 +1,353 @@
+{
+  "guardrails": {
+    "panel": {
+      "tabs": {
+        "garden": "护栏库",
+        "guardrails": "护栏",
+        "playground": "测试台",
+        "submitted": "已提交护栏"
+      },
+      "addMenu": {
+        "trigger": "新建护栏",
+        "provider": "添加提供商护栏",
+        "customCode": "创建自定义代码护栏"
+      }
+    },
+    "table": {
+      "loading": "正在加载护栏…",
+      "empty": {
+        "title": "暂无护栏",
+        "description": "添加护栏以开始过滤请求和响应。"
+      },
+      "columns": {
+        "guardrailId": "护栏 ID",
+        "name": "名称",
+        "provider": "提供商",
+        "mode": "模式",
+        "defaultOn": "默认启用",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "actions": "操作"
+      },
+      "defaultOnStatus": {
+        "on": "默认启用",
+        "off": "默认关闭"
+      },
+      "actions": {
+        "open": "打开护栏操作",
+        "delete": "删除"
+      },
+      "configDeleteHint": "配置文件中的护栏无法从管理后台删除。",
+      "unnamed": "未命名护栏"
+    },
+    "deleteModal": {
+      "title": "删除护栏",
+      "danglingReferenceWarning": "列出此护栏的密钥、团队和策略将静默停止运行该护栏。使用此护栏的策略流水线步骤会导致所有请求返回 400，除非步骤的 on_error 为 next 或 allow，或者在其未设置 on_error 时 on_fail 为相应值。",
+      "message": "确定要删除护栏 {{name}} 吗？此操作无法撤销。",
+      "infoTitle": "护栏信息",
+      "info": {
+        "name": "名称",
+        "id": "ID",
+        "provider": "提供商",
+        "mode": "模式",
+        "defaultOn": "默认启用",
+        "yes": "是",
+        "no": "否"
+      },
+      "toast": {
+        "deleted": "护栏“{{name}}”已成功删除",
+        "deleteFailed": "删除护栏失败"
+      }
+    },
+    "modeOptions": {
+      "loggingOnlyScope": {
+        "default": "默认（请求和响应）",
+        "input": "仅输入（请求）",
+        "output": "仅输出（响应）"
+      },
+      "streamScope": {
+        "both": "流式和非流式",
+        "streaming": "仅流式",
+        "nonStreaming": "仅非流式"
+      }
+    },
+    "modeDisplay": {
+      "mode": "模式",
+      "defaultOn": "默认启用",
+      "defaultOff": "默认关闭",
+      "loggingOnlyScope": "仅记录范围",
+      "continueAfterFlagged": "标记请求后继续执行",
+      "on": "启用",
+      "off": "关闭"
+    },
+    "settingsActions": {
+      "editCode": "编辑代码",
+      "editSettings": "编辑设置",
+      "delete": "删除"
+    },
+    "readOnlyDetails": {
+      "guardrailId": "护栏 ID",
+      "guardrailName": "护栏名称",
+      "unnamed": "未命名护栏",
+      "provider": "提供商",
+      "defaultOn": "默认启用",
+      "yes": "是",
+      "no": "否",
+      "piiProtection": "PII 保护",
+      "piiEntitiesConfigured_one": "已配置 PII 实体",
+      "piiEntitiesConfigured_other": "已配置 PII 实体",
+      "createdAt": "创建时间",
+      "lastUpdated": "最后更新",
+      "decisionModel": {
+        "heading": "决策模型",
+        "checks": "检查项",
+        "columns": {
+          "check": "检查项",
+          "action": "操作",
+          "threshold": "阈值"
+        }
+      }
+    },
+    "addForm": {
+      "title": "创建护栏",
+      "modeDescriptions": {
+        "preCall": "LLM 调用前：在 LLM 调用前检查输入（推荐）",
+        "duringCall": "LLM 调用期间：与 LLM 调用并行执行，并在检查完成前暂缓响应",
+        "postCall": "LLM 调用后：在 LLM 调用后仅检查输出",
+        "loggingOnly": "仅记录：仅在日志回调中运行，不影响 LLM 调用",
+        "preMcpCall": "MCP 工具调用前：在 MCP 工具执行前验证工具调用",
+        "duringMcpCall": "MCP 工具调用期间：与 MCP 工具执行并行执行以进行监控",
+        "postMcpCall": "MCP 工具调用后：在 MCP 工具执行后检查工具结果"
+      },
+      "fields": {
+        "name": {
+          "label": "护栏名称",
+          "required": "请输入护栏名称",
+          "placeholder": "输入此护栏的名称"
+        },
+        "provider": {
+          "label": "护栏提供商",
+          "required": "请选择提供商",
+          "placeholder": "选择护栏提供商",
+          "empty": "没有匹配的提供商"
+        },
+        "mode": {
+          "label": "模式",
+          "hint": "护栏的应用方式",
+          "required": "请选择模式"
+        },
+        "alwaysOn": {
+          "label": "始终启用",
+          "hint": "启用后，此护栏默认应用于所有请求。",
+          "placeholder": "选择选项",
+          "yes": "是",
+          "no": "否"
+        },
+        "skipSystemMessages": {
+          "label": "在护栏中跳过系统消息",
+          "hint": "仅适用于统一护栏：在护栏评估输入中忽略 role: system（OpenAI Chat 和 Anthropic Messages）。模型仍会收到完整消息。使用全局默认值时会遵循 litellm_settings.skip_system_message_in_guardrail。"
+        },
+        "skipToolMessages": {
+          "label": "在护栏中跳过工具消息",
+          "hint": "仅适用于统一护栏：在护栏评估输入中忽略 role: tool（OpenAI Chat 和 Anthropic Messages）。模型仍会收到完整消息。使用全局默认值时会遵循 litellm_settings.skip_tool_message_in_guardrail。"
+        }
+      },
+      "endpoint": {
+        "intro": "为特定调用类型配置设置。大多数护栏不需要此项，除非你使用 <code>/v1/realtime</code> 等特定端点，否则可以跳过。",
+        "callType": {
+          "label": "调用类型",
+          "placeholder": "选择调用类型",
+          "comingSoon": "更多调用类型即将支持。"
+        },
+        "realtime": {
+          "title": "/v1/realtime 设置",
+          "endSessionAfter": {
+            "label": "违规 X 次后结束会话",
+            "description": "达到指定违规次数后自动关闭会话。留空表示永不自动关闭。",
+            "placeholder": "例如 3"
+          },
+          "onViolation": {
+            "label": "违规时",
+            "warn": {
+              "label": "警告",
+              "description": "机器人播报消息，会话继续"
+            },
+            "endSession": {
+              "label": "结束会话",
+              "description": "机器人播报消息并立即关闭连接"
+            }
+          },
+          "message": {
+            "label": "用户听到的消息",
+            "description": "此护栏触发时机器人朗读的内容。留空时使用默认违规消息。",
+            "placeholder": "例如：我无法继续此对话，请拨打 1-800-774-2678 联系我们。"
+          }
+        }
+      },
+      "steps": {
+        "basicInfo": "基本信息",
+        "topics": "主题",
+        "patterns": "模式",
+        "keywords": "关键词",
+        "endpointSettings": "端点设置（可选）",
+        "piiConfiguration": "PII 配置",
+        "decisionModelConfiguration": "决策模型配置",
+        "providerConfiguration": "提供商配置",
+        "optional": "可选",
+        "edit": "编辑"
+      },
+      "actions": {
+        "cancel": "取消",
+        "previous": "上一步",
+        "next": "下一步",
+        "create": "创建护栏"
+      },
+      "toasts": {
+        "loadFailed": "加载护栏配置失败",
+        "piiEntityRequired": "请至少选择一个 PII 实体以继续",
+        "fixHighlightedFields": "创建护栏失败，请修正高亮字段",
+        "contentFilterRequired": "请至少配置一项内容过滤设置（分类、模式、关键词或竞品意图）",
+        "invalidJson": "配置中的 JSON 无效",
+        "criterionRequired": "请至少添加一项评估标准",
+        "criterionWeights": "标准权重之和必须为 100%（当前为 {{total}}%）",
+        "toolRuleRequired": "请至少添加一条工具权限规则",
+        "created": "护栏创建成功",
+        "createFailed": "创建护栏失败：{{message}}"
+      }
+    }
+  },
+  "guardrailsMonitor": {
+    "page": {
+      "title": "护栏监控"
+    },
+    "overview": {
+      "title": "护栏监控",
+      "description": "监控所有请求中的护栏运行表现",
+      "export": {
+        "label": "导出数据",
+        "comingSoon": "即将支持"
+      },
+      "metrics": {
+        "totalEvaluations": "评估总数",
+        "blockedRequests": "已拦截请求",
+        "passRate": "通过率",
+        "avgLatency": "平均增加延迟",
+        "latencyValue": "{{value}}ms",
+        "guardrailCost": "护栏成本",
+        "activeGuardrails": "活动护栏"
+      },
+      "columns": {
+        "status": "状态",
+        "guardrail": "护栏",
+        "provider": "提供商",
+        "requests": "请求数",
+        "failRate": "失败率",
+        "avgLatency": "平均增加延迟",
+        "latencyValue": "{{value}}ms",
+        "usageUnits": "用量单位",
+        "cost": "成本"
+      },
+      "loading": "加载中",
+      "loadFailed": "加载数据失败，请重试。",
+      "empty": "此时间段没有数据",
+      "table": {
+        "title": "护栏运行表现",
+        "description": "点击护栏以查看详情、日志和配置",
+        "evaluationSettings": "评估设置"
+      },
+      "costMath": {
+        "title": "成本计算方式",
+        "formula": "护栏 + 护栏 + … = 护栏成本",
+        "explanation": "每个护栏的成本等于其计数器单位数乘以成本映射中的单价。打开护栏可查看各计数器的计算明细。"
+      },
+      "unpricedTooltip": "{{summary}}：这些单位没有已知价格，因此未计入成本"
+    },
+    "usageUnits": {
+      "unpricedSummary_one": "{{value}} 个单位未定价",
+      "unpricedSummary_other": "{{value}} 个单位未定价",
+      "noKnownPrice": "没有已知价格，未计入",
+      "unpricedLeftOut_one": "{{value}} 个未定价单位未计入",
+      "unpricedLeftOut_other": "{{value}} 个未定价单位未计入"
+    },
+    "usageBreakdown": {
+      "ariaLabel": "用量和成本",
+      "title": "用量与成本",
+      "description": "提供商为此护栏报告的计费单位以及 LiteLLM 的定价",
+      "empty": "此时间段未记录可计费用量单位。",
+      "metrics": {
+        "cost": "成本",
+        "usageUnits": "用量单位",
+        "counterCount_one": "{{count}} 个计数器",
+        "counterCount_other": "{{count}} 个计数器"
+      },
+      "columns": {
+        "counter": "计数器",
+        "units": "单位",
+        "cost": "成本",
+        "unpricedUnits": "未定价单位",
+        "team": "团队",
+        "key": "密钥"
+      },
+      "noTeam": "无团队",
+      "noKey": "无密钥",
+      "tables": {
+        "byCounter": "按计数器",
+        "byTeam": "按团队",
+        "byKey": "按密钥"
+      },
+      "costMath": {
+        "title": "成本计算方式",
+        "formula": "已定价单位 × 单价 = 成本，按计数器分别计算",
+        "explanation": "单价来自 LiteLLM 内置的成本映射。"
+      },
+      "unitsMath": {
+        "title": "用量单位汇总方式",
+        "formula": "计数器 + 计数器 + … = 用量单位",
+        "explanation": "单位是提供商为此护栏报告的可计费计数器，会在所有调用中累加。"
+      }
+    },
+    "logViewer": {
+      "actions": {
+        "notRun": "未运行",
+        "blocked": "已拦截",
+        "passed": "已通过",
+        "flagged": "已标记"
+      },
+      "filters": {
+        "all": "全部",
+        "blocked": "已拦截",
+        "flagged": "已标记",
+        "passed": "已通过"
+      },
+      "title": "请求日志",
+      "titleWithName": "日志 — {{name}}",
+      "loading": "加载中…",
+      "summary": "显示 {{shown}} / {{total}} 条",
+      "empty": "此时间段没有日志。请选择护栏和日期范围。",
+      "sample": "示例：",
+      "noMatches": "没有可显示的日志。请调整筛选条件或日期范围。"
+    },
+    "evaluationSettings": {
+      "title": "评估设置",
+      "descriptionPrefix": "配置 AI 评估，用于",
+      "descriptionGeneric": "配置 AI 评估以在日志上重新运行",
+      "prompt": {
+        "label": "评估提示词",
+        "reset": "重置为默认值",
+        "help": "发送给评估模型的系统提示词。输出会通过 response_format 结构化。"
+      },
+      "schema": {
+        "label": "响应结构"
+      },
+      "model": {
+        "label": "模型",
+        "loading": "正在加载模型…",
+        "placeholder": "选择模型",
+        "signedOut": "登录后查看模型",
+        "empty": "没有可用模型"
+      },
+      "cancel": "取消",
+      "run": "运行评估"
+    }
+  }
+}
