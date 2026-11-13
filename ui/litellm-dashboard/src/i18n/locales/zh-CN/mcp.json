@@ -589,6 +589,376 @@
         },
         "learnMore": "进一步了解 MCP 传输"
       }
+    },
+    "fieldRules": {
+      "tagsControl": {
+        "emptyText": "输入以添加"
+      }
+    },
+    "stdioConfiguration": {
+      "label": "Stdio 配置（JSON）",
+      "errors": {
+        "required": "请输入 Stdio 配置",
+        "invalidJson": "请输入有效的 JSON"
+      }
+    },
+    "openApiFormSection": {
+      "specUrl": {
+        "label": "OpenAPI 规范 URL",
+        "tooltip": "OpenAPI 规范（JSON 或 YAML）的 URL。MCP 工具将根据规范中定义的 API 端点自动生成。",
+        "required": "请输入 OpenAPI 规范 URL"
+      }
+    },
+    "openApiQuickPicker": {
+      "title": "常用 API"
+    },
+    "useTestMcpConnection": {
+      "errors": {
+        "toolsListFailed": "获取工具列表失败"
+      }
+    },
+    "serverEdit": {
+      "toasts": {
+        "updated": "MCP 服务器已成功更新",
+        "updateFailed": "更新 MCP 服务器失败"
+      },
+      "tools": {
+        "loadFailed": "加载工具失败"
+      },
+      "tabs": {
+        "server": "服务器配置",
+        "cost": "成本配置"
+      },
+      "formLabel": "编辑 MCP 服务器",
+      "fields": {
+        "serverName": "MCP 服务器名称",
+        "alias": "别名",
+        "description": "描述",
+        "transport": "传输类型",
+        "transportRequired": "传输类型必填",
+        "url": "MCP 服务器 URL",
+        "urlRequired": "请输入服务器 URL",
+        "specUrl": "OpenAPI 规范 URL",
+        "specUrlTooltip": "OpenAPI 规范（JSON 或 YAML）的 URL。MCP 工具将根据规范中定义的 API 端点自动生成。",
+        "specUrlRequired": "请输入 OpenAPI 规范 URL",
+        "maxConcurrentRequests": "最大并发请求数（可选）",
+        "maxConcurrentRequestsPlaceholder": "例如 10",
+        "rpm": "RPM 限制（所有调用方）",
+        "rpmPlaceholder": "例如 60"
+      },
+      "stdio": {
+        "envInvalidJson": "请输入有效的 JSON"
+      },
+      "aws": {
+        "intro": "适用于托管在 AWS Bedrock AgentCore 上的 MCP 服务器。",
+        "viewDocs": "查看文档 ->",
+        "region": {
+          "label": "AWS 区域",
+          "tooltip": "用于 SigV4 签名的 AWS 区域，例如 us-east-1"
+        },
+        "serviceName": {
+          "label": "AWS 服务名称",
+          "tooltip": "用于 SigV4 签名的 AWS 服务名称，默认为 bedrock-agentcore。"
+        },
+        "accessKeyId": {
+          "label": "AWS 访问密钥 ID",
+          "tooltip": "可选。未提供时使用 boto3 凭据链，例如 IAM 角色和环境变量。"
+        },
+        "secretAccessKey": {
+          "label": "AWS 私有访问密钥",
+          "tooltip": "可选。提供 AWS 访问密钥 ID 时必填。"
+        },
+        "sessionToken": {
+          "label": "AWS 会话令牌",
+          "tooltip": "可选。仅临时 STS 凭据需要。"
+        },
+        "roleArn": {
+          "label": "AWS 角色 ARN"
+        },
+        "sessionName": {
+          "label": "AWS 会话名称",
+          "tooltip": "可选。AssumeRole 调用的会话名称，会显示在 CloudTrail 日志中。留空时自动生成。"
+        }
+      },
+      "actions": {
+        "cancel": "取消",
+        "save": "保存更改"
+      }
+    },
+    "oauthFormFields": {
+      "upstreamResource": {
+        "label": "资源指示符（可选）"
+      },
+      "m2m": {
+        "clientId": {
+          "label": "客户端 ID",
+          "placeholder": "输入 OAuth 客户端 ID",
+          "placeholderEditing": "输入 OAuth 客户端 ID（留空以保留现有值）"
+        },
+        "clientSecret": {
+          "label": "客户端密钥",
+          "placeholder": "输入 OAuth 客户端密钥",
+          "placeholderEditing": "输入 OAuth 客户端密钥（留空以保留现有值）"
+        },
+        "scopes": {
+          "label": "范围（可选）",
+          "placeholder": "添加范围"
+        }
+      },
+      "interactive": {
+        "clientId": {
+          "tooltip": "仅当 MCP 服务器无法处理动态客户端注册时提供。"
+        },
+        "clientSecret": {
+          "tooltip": "仅当 MCP 服务器无法处理动态客户端注册时提供。"
+        },
+        "scopes": {
+          "label": "范围（可选）",
+          "placeholder": "添加范围"
+        },
+        "authorizationUrl": {
+          "label": "授权 URL（可选）"
+        },
+        "tokenUrl": {
+          "label": "Token URL（可选）"
+        },
+        "authorize": {
+          "authorizing": "正在等待授权...",
+          "exchanging": "正在交换授权码..."
+        }
+      }
+    },
+    "idJagFormFields": {
+      "clientId": {
+        "label": "客户端 ID",
+        "placeholder": "输入 OAuth 客户端 ID",
+        "placeholderEditing": "输入 OAuth 客户端 ID（留空以保留现有值）"
+      },
+      "clientSecret": {
+        "label": "客户端密钥",
+        "placeholder": "输入 OAuth 客户端密钥",
+        "placeholderEditing": "输入 OAuth 客户端密钥（留空以保留现有值）"
+      },
+      "audience": {
+        "label": "受众（可选）"
+      },
+      "resource": {
+        "label": "资源指示符（可选）"
+      },
+      "subjectTokenType": {
+        "label": "主体 Token 类型（可选）"
+      },
+      "scopes": {
+        "label": "范围（可选）",
+        "placeholder": "添加范围"
+      }
+    },
+    "tokenExchangeFormFields": {
+      "clientId": {
+        "label": "客户端 ID",
+        "placeholder": "输入 OAuth 客户端 ID",
+        "placeholderEditing": "输入 OAuth 客户端 ID（留空以保留现有值）"
+      },
+      "clientSecret": {
+        "label": "客户端密钥",
+        "placeholder": "输入 OAuth 客户端密钥",
+        "placeholderEditing": "输入 OAuth 客户端密钥（留空以保留现有值）"
+      },
+      "audience": {
+        "label": "受众（可选）"
+      },
+      "subjectTokenType": {
+        "label": "主体 Token 类型（可选）"
+      },
+      "scopes": {
+        "label": "范围（可选）",
+        "placeholder": "添加范围"
+      }
+    },
+    "awsSigV4Fields": {
+      "intro": "适用于托管在 AWS Bedrock AgentCore 上的 MCP 服务器。",
+      "viewDocs": "查看文档 ->",
+      "region": {
+        "label": "AWS 区域",
+        "tooltip": "用于 SigV4 签名的 AWS 区域，例如 us-east-1"
+      },
+      "serviceName": {
+        "label": "AWS 服务名称",
+        "tooltip": "用于 SigV4 签名的 AWS 服务名称，默认为 bedrock-agentcore。"
+      },
+      "accessKeyId": {
+        "label": "AWS 访问密钥 ID",
+        "tooltip": "可选。未提供时使用 boto3 凭据链，例如 IAM 角色和环境变量。"
+      },
+      "secretAccessKey": {
+        "label": "AWS 私有访问密钥",
+        "tooltip": "可选。提供 AWS 访问密钥 ID 时必填。"
+      },
+      "sessionToken": {
+        "label": "AWS 会话令牌",
+        "tooltip": "可选。仅临时 STS 凭据需要。"
+      },
+      "roleArn": {
+        "label": "AWS 角色 ARN"
+      },
+      "sessionName": {
+        "label": "AWS 会话名称",
+        "tooltip": "可选。AssumeRole 调用的会话名称，会显示在 CloudTrail 日志中。留空时自动生成。"
+      }
+    },
+    "passthroughAuthorizeSection": {
+      "authorizationUrl": {
+        "label": "授权 URL（可选）"
+      },
+      "tokenUrl": {
+        "label": "Token URL（可选）"
+      },
+      "scopes": {
+        "label": "范围（可选）",
+        "placeholder": "添加范围"
+      },
+      "authorize": {
+        "authorizing": "正在等待授权...",
+        "exchanging": "正在交换授权码..."
+      }
+    },
+    "submissionsTab": {
+      "confirmDialog": {
+        "cancel": "取消",
+        "approve": "批准",
+        "reject": "拒绝"
+      },
+      "rulesPanel": {
+        "cancel": "取消"
+      },
+      "reviewActions": {
+        "approve": "批准",
+        "reject": "拒绝"
+      }
+    },
+    "toolsetsTab": {
+      "modal": {
+        "createTitle": "新建工具集",
+        "descriptionLabel": "描述",
+        "cancel": "取消",
+        "saveChanges": "保存更改"
+      },
+      "header": {
+        "newToolset": "新建工具集"
+      },
+      "deleteDialog": {
+        "cancel": "取消",
+        "delete": "删除"
+      }
+    },
+    "toolsetTableColumns": {
+      "actions": {
+        "delete": "删除"
+      },
+      "columns": {
+        "description": "描述",
+        "actions": "操作"
+      }
+    },
+    "importMcpServers": {
+      "close": "关闭"
+    },
+    "gatewaySessionsTab": {
+      "columns": {
+        "actions": "操作"
+      },
+      "stats": {
+        "liveSessions": "活动会话"
+      },
+      "liveSessions": {
+        "regionLabel": "活动会话"
+      },
+      "disconnectSession": {
+        "label": "断开连接"
+      },
+      "confirm": {
+        "cancel": "取消",
+        "confirm": "断开连接"
+      }
+    },
+    "networkSettings": {
+      "clientDialog": {
+        "addTitle": "添加客户端",
+        "aliasLabel": "别名",
+        "cancel": "取消"
+      },
+      "allowedClients": {
+        "add": "添加客户端"
+      }
+    },
+    "standardsSettings": {
+      "fields": {
+        "description": {
+          "label": "描述"
+        },
+        "alias": {
+          "label": "别名"
+        }
+      }
+    },
+    "semanticFilterTestPanel": {
+      "tabs": {
+        "api": "API 用量"
+      },
+      "api": {
+        "title": "API 用量"
+      }
+    },
+    "semanticFilterSettings": {
+      "saveSuccess": {
+        "close": "关闭"
+      },
+      "toasts": {
+        "updated": "设置已成功更新。更改会在 10 秒内应用到所有 Pod。"
+      },
+      "fields": {
+        "embeddingModel": {
+          "label": "嵌入模型",
+          "loadingPlaceholder": "正在加载模型...",
+          "empty": "没有可用的嵌入模型"
+        },
+        "topK": {
+          "label": "前 K 个结果"
+        },
+        "similarityThreshold": {
+          "label": "相似度阈值"
+        }
+      },
+      "save": "保存设置"
+    },
+    "toolSearchSettings": {
+      "toasts": {
+        "updated": "设置已成功更新。更改会在 10 秒内应用到所有 Pod。"
+      },
+      "fields": {
+        "embeddingModel": {
+          "label": "嵌入模型",
+          "loadingPlaceholder": "正在加载模型...",
+          "empty": "没有可用的嵌入模型"
+        },
+        "topK": {
+          "label": "前 K 个结果"
+        },
+        "similarityThreshold": {
+          "label": "相似度阈值"
+        }
+      },
+      "save": "保存设置"
+    },
+    "useMcpOAuthFlow": {
+      "errors": {
+        "resumeFailed": "恢复 OAuth 流程失败，请重试。"
+      }
+    },
+    "useToolsOAuthFlow": {
+      "errors": {
+        "resumeFailed": "恢复 OAuth 流程失败，请重试。"
+      }
     }
   },
   "mcpTools": {
