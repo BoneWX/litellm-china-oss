@@ -1,0 +1,76 @@
+{
+  "workflows": {
+    "header": {
+      "title": "工作流运行",
+      "subtitle": "为智能体和自动化工作流提供持久化状态跟踪"
+    },
+    "table": {
+      "columns": {
+        "run": "运行",
+        "type": "类型",
+        "status": "状态",
+        "created": "创建时间"
+      },
+      "loading": "正在加载工作流运行…",
+      "empty": "暂无工作流运行",
+      "searchPlaceholder": "搜索运行…"
+    },
+    "filters": {
+      "title": "筛选条件",
+      "description": "缩小工作流运行范围",
+      "status": "状态",
+      "type": "类型",
+      "allStatuses": "所有状态",
+      "typePlaceholder": "按类型筛选…"
+    },
+    "status": {
+      "pending": "等待中",
+      "running": "运行中",
+      "paused": "已暂停",
+      "completed": "已完成",
+      "failed": "失败"
+    },
+    "drawer": {
+      "srTitle": "工作流运行详情",
+      "srDescription": "所选工作流运行的元数据、时间线和消息",
+      "close": "关闭",
+      "refresh": "刷新",
+      "timeline": "时间线",
+      "eventCount_one": "{{count}} 个事件",
+      "eventCount_other": "{{count}} 个事件",
+      "messages": "消息",
+      "noMessages": "暂无消息",
+      "noEvents": "尚未记录事件"
+    },
+    "metadata": {
+      "status": "状态",
+      "created": "创建时间",
+      "pr": "PR",
+      "state": "状态",
+      "worktree": "工作树",
+      "grillSession": "审查会话",
+      "session": "会话"
+    },
+    "truncate": {
+      "more": "展开",
+      "less": "收起"
+    },
+    "tooltip": {
+      "type": "类型：",
+      "step": "步骤：",
+      "seq": "序号：",
+      "time": "时间：",
+      "data": "数据："
+    },
+    "timeAgo": {
+      "seconds": "{{count}} 秒前",
+      "minutes": "{{count}} 分钟前",
+      "hours": "{{count}} 小时前",
+      "days": "{{count}} 天前"
+    },
+    "duration": {
+      "ms": "{{count}} 毫秒",
+      "seconds": "{{value}} 秒"
+    }
+  }
+}

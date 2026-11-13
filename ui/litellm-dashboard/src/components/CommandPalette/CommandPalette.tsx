@@ -255,7 +255,7 @@ function CommandPaletteContent({ setOpen }: { setOpen: (open: boolean) => void }
           <InputGroupAddon>
             <Badge variant="secondary">
               <KeyRound />
-              Virtual Keys
+              {t("navigation.items.apiKeys")}
             </Badge>
           </InputGroupAddon>
         )}

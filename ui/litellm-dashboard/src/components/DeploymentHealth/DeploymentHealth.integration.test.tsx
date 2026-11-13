@@ -5,6 +5,7 @@ import type { DeploymentWarning } from "@/app/(dashboard)/hooks/deploymentWarnin
 import { renderWithProviders, screen, testQueryClient, waitFor, within } from "../../../tests/test-utils";
 import { createDeploymentHealthHandle, DeploymentHealthBanner, DeploymentHealthIcon } from "./DeploymentHealth";
 import { DeploymentHealthPanel } from "./DeploymentHealthPanel";
+import i18n from "@/i18n/i18n";
 
 vi.unmock("@/app/(dashboard)/hooks/useAuthorized");
 
@@ -116,11 +117,12 @@ beforeEach(() => {
   );
 });
 
-afterEach(() => {
+afterEach(async () => {
   testQueryClient.clear();
   vi.unstubAllGlobals();
   vi.useRealTimers();
   document.cookie = "token=; Max-Age=0; Path=/";
+  await i18n.changeLanguage("en");
 });
 
 describe("deployment health icon", () => {
@@ -178,6 +180,21 @@ describe("deployment banner", () => {
     const banner = await screen.findByRole("status", { name: "Deployment alert" });
     expect(banner).toHaveTextContent("No Redis configured");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("should localize deployment warnings in Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    const user = userEvent.setup();
+    proxy.warnings = [NO_REDIS];
+    renderHealth();
+
+    const banner = await screen.findByRole("status", { name: "部署警告" });
+    expect(banner).toHaveTextContent("未配置 Redis");
+
+    await user.click(within(banner).getByRole("button", { name: "查看" }));
+    const panel = await screen.findByRole("dialog", { name: "部署健康状态" });
+    expect(within(panel).getByRole("article", { name: "未配置 Redis" })).toBeVisible();
+    expect(within(panel).getByRole("link", { name: "阅读文档" })).toBeVisible();
   });
 
   it("should open the panel from Review", async () => {

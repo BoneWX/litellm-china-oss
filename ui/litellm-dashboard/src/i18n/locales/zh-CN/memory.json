@@ -1,0 +1,92 @@
+{
+  "memory": {
+    "page": {
+      "title": "记忆"
+    },
+    "view": {
+      "title": "记忆",
+      "intro": "查看智能体存储在 <endpoint/> 下的内容。范围限定为你的用户或团队可见的记忆，管理员可查看全部。",
+      "newMemory": "新建记忆",
+      "toasts": {
+        "created": "已创建 {{name}}",
+        "updated": "已更新 {{name}}",
+        "deleted": "已删除 {{name}}",
+        "saveFailed": "保存失败：{{error}}",
+        "deleteFailed": "删除失败：{{error}}",
+        "invalidMetadata": "元数据必须是有效的 JSON，或留空。"
+      },
+      "deleteModal": {
+        "title": "删除记忆",
+        "message": "此操作无法撤销。",
+        "infoTitle": "记忆",
+        "fields": {
+          "key": "键",
+          "memoryId": "记忆 ID",
+          "userId": "用户 ID",
+          "teamId": "团队 ID"
+        }
+      }
+    },
+    "editModal": {
+      "createTitle": "创建记忆",
+      "editTitle": "编辑 {{name}}",
+      "labels": {
+        "key": "键",
+        "value": "值",
+        "metadata": "元数据 <muted>（可选 JSON）</muted>"
+      },
+      "hints": {
+        "key": "全局唯一，两个记忆不能共用同一个键。如需按用户隔离，请为自己的键添加命名空间，例如 user:123:notes。",
+        "value": "会注入 LLM 上下文的 Markdown 或文本，普通字符串即可。",
+        "metadata": "可选的结构化元数据，填写时必须是有效 JSON。"
+      },
+      "placeholders": {
+        "key": "例如 user_role",
+        "value": "智能体应记住的内容…"
+      },
+      "errors": {
+        "keyRequired": "键必填",
+        "valueRequired": "值必填"
+      },
+      "cancel": "取消",
+      "create": "创建",
+      "save": "保存"
+    },
+    "table": {
+      "empty": {
+        "titleSearch": "没有匹配的记忆",
+        "title": "尚未存储记忆",
+        "descriptionSearch": "没有记忆符合当前搜索条件。",
+        "description": "智能体存储在 /v1/memory 下的记忆会显示在这里。"
+      },
+      "loading": "正在加载记忆…",
+      "searchPlaceholder": "按键前缀或记忆 ID 搜索…",
+      "actions": {
+        "open": "打开记忆操作",
+        "view": "查看",
+        "edit": "编辑",
+        "delete": "删除"
+      },
+      "columns": {
+        "id": "ID",
+        "name": "名称",
+        "preview": "预览",
+        "userId": "用户 ID",
+        "teamId": "团队 ID",
+        "updated": "更新时间",
+        "actions": "操作"
+      }
+    },
+    "detailDrawer": {
+      "title": "记忆",
+      "memoryId": "记忆 ID",
+      "userId": "用户 ID",
+      "teamId": "团队 ID",
+      "value": "值",
+      "metadata": "元数据",
+      "created": "创建于 {{time}}",
+      "updated": "更新于 {{time}}",
+      "by": "，操作者 {{name}}"
+    }
+  }
+}

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import WorkflowRuns from "./WorkflowRuns";
+import i18n from "@/i18n/i18n";
 
 vi.mock("@/components/networking", () => ({
   proxyBaseUrl: "",
@@ -49,11 +50,22 @@ function mockFetch(runs: FakeRun[], events: FakeEvent[] = [], messages: FakeMess
   });
 }
 
-afterEach(() => {
+afterEach(async () => {
   vi.unstubAllGlobals();
+  await i18n.changeLanguage("en");
 });
 
 describe("WorkflowRuns (migrated onto shared DataTable)", () => {
+  it("renders the workflow page and status labels in Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    vi.stubGlobal("fetch", mockFetch(RUNS));
+    render(<WorkflowRuns accessToken="tok" />);
+
+    expect(screen.getByText("工作流运行")).toBeInTheDocument();
+    expect(await screen.findByText("First run")).toBeInTheDocument();
+    expect(screen.getAllByText("已完成").length).toBeGreaterThan(0);
+  });
+
   it("renders one DataTable row per fetched run", async () => {
     vi.stubGlobal("fetch", mockFetch(RUNS));
     const { container } = render(<WorkflowRuns accessToken="tok" />);
@@ -173,7 +185,7 @@ describe("WorkflowRuns detail drawer", () => {
     expect(within(drawer).getAllByText("First run")).toHaveLength(2);
     expect(within(drawer).getByText("run-aaaa")).toBeInTheDocument();
     expect(within(drawer).getByText("grill")).toBeInTheDocument();
-    expect(within(drawer).getByText("completed")).toBeInTheDocument();
+    expect(within(drawer).getByText("Completed")).toBeInTheDocument();
     expect(within(drawer).getByText("done")).toBeInTheDocument();
     expect(within(drawer).getByText("/tmp/wt")).toBeInTheDocument();
     expect(within(drawer).getByRole("link", { name: "https://example.com/pr/1" })).toHaveAttribute(

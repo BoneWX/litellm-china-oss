@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   TriangleAlert,
 } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   type DeploymentWarning,
   useDeploymentHealthAccess,
@@ -34,27 +35,32 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { SimpleTooltip } from "@/components/ui/tooltip";
 import { activeWarnings, type DeploymentHealthHandle } from "./DeploymentHealth";
 import { deploymentWarningContent } from "./DeploymentWarningContent";
+import i18n from "@/i18n/i18n";
 
 const DAY_SECONDS = 24 * 60 * 60;
 
 const SNOOZE_OPTIONS = [
-  { label: "Snooze for 1 day", seconds: DAY_SECONDS },
-  { label: "Snooze for 7 days", seconds: 7 * DAY_SECONDS },
-  { label: "Snooze for 30 days", seconds: 30 * DAY_SECONDS },
+  { days: 1, seconds: DAY_SECONDS },
+  { days: 7, seconds: 7 * DAY_SECONDS },
+  { days: 30, seconds: 30 * DAY_SECONDS },
 ] as const;
 
 const SEVERITY_GROUPS = [
-  { severity: "critical", label: "Critical" },
-  { severity: "warning", label: "Warnings" },
+  { severity: "critical", labelKey: "deploymentHealth.panel.severity.critical" },
+  { severity: "warning", labelKey: "deploymentHealth.panel.severity.warnings" },
 ] as const;
 
-const LOCAL_DAY_FORMAT = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
-const LOCAL_MINUTE_FORMAT = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" });
-const FULL_UTC_FORMAT = new Intl.DateTimeFormat("en-US", { dateStyle: "full", timeStyle: "long", timeZone: "UTC" });
-
-const formatLocalMinute = (iso: string): string => LOCAL_MINUTE_FORMAT.format(new Date(iso));
-const formatLocalDay = (iso: string): string => LOCAL_DAY_FORMAT.format(new Date(iso));
-const formatFullUtc = (iso: string): string => FULL_UTC_FORMAT.format(new Date(iso));
+const localDateFormat = (options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat =>
+  new Intl.DateTimeFormat(i18n.resolvedLanguage ?? undefined, options);
+const formatLocalMinute = (iso: string): string =>
+  localDateFormat({ dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+const formatLocalDay = (iso: string): string => localDateFormat({ dateStyle: "medium" }).format(new Date(iso));
+const formatFullUtc = (iso: string): string =>
+  new Intl.DateTimeFormat(i18n.resolvedLanguage ?? undefined, {
+    dateStyle: "full",
+    timeStyle: "long",
+    timeZone: "UTC",
+  }).format(new Date(iso));
 
 interface ItemPermissions {
   canManage: boolean;
@@ -64,6 +70,7 @@ interface ItemPermissions {
 type IgnoreState = NonNullable<DeploymentWarning["ignore"]>;
 
 const SnoozeMenu = ({ warningId, title }: { warningId: string; title: string }) => {
+  const { t } = useTranslation();
   const update = useUpdateDeploymentWarningIgnore();
   const ignore = (snoozeSeconds?: number) =>
     update.mutate({ warningId, update: { ignored: true, snooze_seconds: snoozeSeconds } });
@@ -76,24 +83,24 @@ const SnoozeMenu = ({ warningId, title }: { warningId: string; title: string }) 
             size="sm"
             className="h-7 text-[13px]"
             disabled={update.isPending}
-            aria-label={`Snooze ${title}`}
+            aria-label={t("deploymentHealth.panel.snoozeAria", { title })}
           />
         }
       >
-        Snooze
+        {t("deploymentHealth.panel.snooze")}
         <ChevronDown data-icon="inline-end" aria-hidden />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48 [&_[data-slot=dropdown-menu-item]]:whitespace-nowrap">
-        {SNOOZE_OPTIONS.map(({ label, seconds }) => (
+        {SNOOZE_OPTIONS.map(({ days, seconds }) => (
           <DropdownMenuItem key={seconds} onClick={() => ignore(seconds)}>
             <Clock aria-hidden />
-            {label}
+            {t("deploymentHealth.panel.snoozeDays", { count: days })}
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => ignore()}>
           <BellOff aria-hidden />
-          Ignore forever
+          {t("deploymentHealth.panel.ignoreForever")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -101,6 +108,7 @@ const SnoozeMenu = ({ warningId, title }: { warningId: string; title: string }) 
 };
 
 const RestoreButton = ({ warningId, title }: { warningId: string; title: string }) => {
+  const { t } = useTranslation();
   const update = useUpdateDeploymentWarningIgnore();
   return (
     <Button
@@ -108,10 +116,10 @@ const RestoreButton = ({ warningId, title }: { warningId: string; title: string 
       size="sm"
       className="h-7 text-[13px]"
       disabled={update.isPending}
-      aria-label={`Restore ${title}`}
+      aria-label={t("deploymentHealth.panel.restoreAria", { title })}
       onClick={() => update.mutate({ warningId, update: { ignored: false } })}
     >
-      Restore
+      {t("deploymentHealth.panel.restore")}
     </Button>
   );
 };
@@ -128,11 +136,14 @@ const ItemAction = ({
 };
 
 const IgnoreMeta = ({ ignore }: { ignore: IgnoreState }) => {
+  const { t } = useTranslation();
   if (ignore.source === "env_var") {
     return (
-      <span>
-        By env var <code className="font-mono wrap-anywhere">{ignore.env_var}</code>
-      </span>
+      <Trans
+        i18nKey="deploymentHealth.panel.ignoreMeta.byEnvVar"
+        values={{ name: ignore.env_var }}
+        components={{ code: <code className="font-mono wrap-anywhere" /> }}
+      />
     );
   }
   if (ignore.ignored_until) {
@@ -140,28 +151,32 @@ const IgnoreMeta = ({ ignore }: { ignore: IgnoreState }) => {
       <span>
         <SimpleTooltip content={formatFullUtc(ignore.ignored_until)}>
           <span className="underline decoration-dotted underline-offset-3">
-            Until {formatLocalMinute(ignore.ignored_until)}
+            {t("deploymentHealth.panel.ignoreMeta.until", { time: formatLocalMinute(ignore.ignored_until) })}
           </span>
         </SimpleTooltip>{" "}
-        · by {ignore.ignored_by}
+        · {t("deploymentHealth.panel.ignoreMeta.by", { name: ignore.ignored_by })}
       </span>
     );
   }
   return (
     <span>
-      Since {formatLocalDay(ignore.ignored_at)} · by {ignore.ignored_by}
+      {t("deploymentHealth.panel.ignoreMeta.since", {
+        time: formatLocalDay(ignore.ignored_at),
+        name: ignore.ignored_by,
+      })}
     </span>
   );
 };
 
 const IgnoreStatus = ({ ignore }: { ignore: IgnoreState }) => {
+  const { t } = useTranslation();
   const snoozed = ignore.source === "admin" && Boolean(ignore.ignored_until);
   const Icon = snoozed ? Clock : BellOff;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[12px] leading-4 text-muted-foreground">
       <Badge variant="outline" className="gap-1 bg-muted text-muted-foreground">
         <Icon aria-hidden />
-        {snoozed ? "Snoozed" : "Ignored"}
+        {snoozed ? t("deploymentHealth.panel.status.snoozed") : t("deploymentHealth.panel.status.ignored")}
       </Badge>
       <IgnoreMeta ignore={ignore} />
     </div>
@@ -169,6 +184,7 @@ const IgnoreStatus = ({ ignore }: { ignore: IgnoreState }) => {
 };
 
 const WarningItem = ({ warning, ...permissions }: ItemPermissions & { warning: DeploymentWarning }) => {
+  const { t } = useTranslation();
   const content = deploymentWarningContent(warning.id);
   const critical = warning.severity === "critical";
   const SeverityIcon = critical ? CircleAlert : TriangleAlert;
@@ -196,7 +212,7 @@ const WarningItem = ({ warning, ...permissions }: ItemPermissions & { warning: D
                 "h-auto gap-1 p-0 text-[13px] leading-5 font-medium text-foreground no-underline hover:underline",
               )}
             >
-              Read the docs
+              {t("deploymentHealth.panel.readDocs")}
               <ExternalLink className="size-3.5 text-muted-foreground" aria-hidden />
             </a>
           ) : null}
@@ -251,36 +267,40 @@ const PanelSkeleton = () => (
   </div>
 );
 
-const NoActiveWarnings = ({ hasIgnored }: { hasIgnored: boolean }) => (
-  <Empty className="gap-2 p-0 py-6">
-    <EmptyHeader>
-      <EmptyMedia
-        variant="icon"
-        className="border border-border bg-transparent text-muted-foreground [&_svg:not([class*='size-'])]:size-4"
-      >
-        <ShieldCheck aria-hidden />
-      </EmptyMedia>
-      <EmptyTitle className="text-[15px] leading-[22px] font-semibold tracking-normal">No active warnings</EmptyTitle>
-      <EmptyDescription className="text-[13px] leading-5">
-        {hasIgnored
-          ? "Snoozed and ignored warnings are listed below"
-          : "Deployment warnings show up here when this proxy\u2019s setup needs attention"}
-      </EmptyDescription>
-    </EmptyHeader>
-  </Empty>
-);
+const NoActiveWarnings = ({ hasIgnored }: { hasIgnored: boolean }) => {
+  const { t } = useTranslation();
+  return (
+    <Empty className="gap-2 p-0 py-6">
+      <EmptyHeader>
+        <EmptyMedia
+          variant="icon"
+          className="border border-border bg-transparent text-muted-foreground [&_svg:not([class*='size-'])]:size-4"
+        >
+          <ShieldCheck aria-hidden />
+        </EmptyMedia>
+        <EmptyTitle className="text-[15px] leading-[22px] font-semibold tracking-normal">
+          {t("deploymentHealth.panel.noActive")}
+        </EmptyTitle>
+        <EmptyDescription className="text-[13px] leading-5">
+          {hasIgnored ? t("deploymentHealth.panel.ignoredListed") : t("deploymentHealth.panel.emptyHint")}
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+};
 
 const PanelBody = () => {
+  const { t } = useTranslation();
   const { canManage } = useDeploymentHealthAccess();
   const { data, isError } = useDeploymentWarnings({ refetchOnOpen: true });
   if (!data) {
     return (
       <div className="flex flex-col gap-2 px-4 pb-4 text-[13px] leading-5">
         {isError ? (
-          <p className="text-destructive">Could not load deployment warnings</p>
+          <p className="text-destructive">{t("deploymentHealth.panel.loadFailed")}</p>
         ) : (
           <>
-            <span className="sr-only">Loading deployment warnings</span>
+            <span className="sr-only">{t("deploymentHealth.panel.loading")}</span>
             <PanelSkeleton />
           </>
         )}
@@ -295,27 +315,39 @@ const PanelBody = () => {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-4 text-[13px] leading-5">
       {active.length === 0 ? <NoActiveWarnings hasIgnored={ignored.length > 0} /> : null}
-      {SEVERITY_GROUPS.map(({ severity, label }) => {
+      {SEVERITY_GROUPS.map(({ severity, labelKey }) => {
         const group = active.filter((warning) => warning.severity === severity);
         return group.length === 0 ? null : (
-          <WarningGroup key={severity} label={label} warnings={group} defaultOpen permissions={permissions} />
+          <WarningGroup key={severity} label={t(labelKey)} warnings={group} defaultOpen permissions={permissions} />
         );
       })}
       {ignored.length > 0 ? (
-        <WarningGroup label="Ignored and snoozed" warnings={ignored} defaultOpen={false} permissions={permissions} />
+        <WarningGroup
+          label={t("deploymentHealth.panel.ignoredAndSnoozed")}
+          warnings={ignored}
+          defaultOpen={false}
+          permissions={permissions}
+        />
       ) : null}
     </div>
   );
 };
 
-export const DeploymentHealthPanel = ({ handle }: { handle: DeploymentHealthHandle }) => (
-  <Sheet handle={handle}>
-    <SheetContent side="right" className="gap-0 data-[side=right]:sm:max-w-md">
-      <SheetHeader className="gap-0.5 pr-12">
-        <SheetTitle className="text-[15px] leading-[22px] font-semibold">Deployment health</SheetTitle>
-        <SheetDescription className="text-[13px] leading-5">Warnings about how this proxy is deployed</SheetDescription>
-      </SheetHeader>
-      <PanelBody />
-    </SheetContent>
-  </Sheet>
-);
+export const DeploymentHealthPanel = ({ handle }: { handle: DeploymentHealthHandle }) => {
+  const { t } = useTranslation();
+  return (
+    <Sheet handle={handle}>
+      <SheetContent side="right" className="gap-0 data-[side=right]:sm:max-w-md">
+        <SheetHeader className="gap-0.5 pr-12">
+          <SheetTitle className="text-[15px] leading-[22px] font-semibold">
+            {t("deploymentHealth.panel.title")}
+          </SheetTitle>
+          <SheetDescription className="text-[13px] leading-5">
+            {t("deploymentHealth.panel.description")}
+          </SheetDescription>
+        </SheetHeader>
+        <PanelBody />
+      </SheetContent>
+    </Sheet>
+  );
+};

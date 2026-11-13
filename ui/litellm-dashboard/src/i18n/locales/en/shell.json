@@ -30,7 +30,22 @@
         "searchVirtualKeysHint": "Find a key by alias or ID",
         "filterKeys": "Filter the keys table for “{{query}}”",
         "filterKeysHint": "Open Virtual Keys with this search applied"
+      },
+      "hint": {
+        "press": "Press",
+        "searchKeys": "to search keys",
+        "searchPages": "to search or jump to a page",
+        "dismiss": "Dismiss search hint"
       }
+    },
+    "deprecation": {
+      "title": "{{feature}} is deprecated",
+      "descriptionPrefix": "{{feature}} will be removed in the near future. See the ",
+      "discussion": "deprecation discussion",
+      "descriptionSuffix": " for details."
+    },
+    "adminOnly": {
+      "description": "{{page}} is only available to admin users."
     },
     "account": {
       "tier": "Tier",

@@ -3,9 +3,10 @@ import type { PaginationState } from "@tanstack/react-table";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { MemoryRow } from "@/components/networking";
+import i18n from "@/i18n/i18n";
 
 import { MemoryView } from "./MemoryView";
 
@@ -51,6 +52,19 @@ describe("MemoryView", () => {
   beforeEach(() => {
     fetchMemoryListMock.mockReset();
     fetchMemoryListMock.mockResolvedValue({ memories: [], total: 0 });
+  });
+
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
+  it("renders the memory page in Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    renderView(null);
+
+    expect(screen.getByRole("heading", { name: "记忆" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "新建记忆" })).toBeInTheDocument();
+    expect(screen.getByText(/范围限定为你的用户或团队/)).toBeInTheDocument();
   });
 
   it("queries the server with the search box value as `search` and resets to page 1", async () => {

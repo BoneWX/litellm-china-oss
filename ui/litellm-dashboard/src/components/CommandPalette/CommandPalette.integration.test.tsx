@@ -13,6 +13,7 @@ import { renderWithProviders, testQueryClient } from "../../../tests/test-utils"
 import { COMMAND_PALETTE_HINT_KEY } from "./CommandPaletteHint";
 import { CommandPaletteProvider } from "./CommandPaletteProvider";
 import { CommandPaletteTrigger } from "./CommandPaletteTrigger";
+import i18n from "@/i18n/i18n";
 
 const mocks = vi.hoisted(() => ({
   pathname: "/api-keys",
@@ -93,7 +94,8 @@ function renderPalette() {
   );
 }
 
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   testQueryClient.clear();
   window.localStorage.clear();
   cachedKeyResults.clear();
@@ -130,15 +132,28 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => {
+afterEach(async () => {
   vi.useRealTimers();
   vi.restoreAllMocks();
   testQueryClient.clear();
   vi.unstubAllGlobals();
   document.cookie = "token=; Max-Age=0; Path=/";
+  await i18n.changeLanguage("en");
 });
 
 describe("CommandPalette integration", () => {
+  it("shows Chinese discovery copy and dialog labels", async () => {
+    await i18n.changeLanguage("zh-CN");
+    const user = userEvent.setup();
+    renderPalette();
+
+    await user.click(await screen.findByRole("button", { name: "搜索密钥..." }));
+
+    expect(await screen.findByRole("dialog", { name: "命令面板" })).toBeVisible();
+    expect(screen.getByRole("combobox", { name: "搜索" })).toBeVisible();
+    expect(screen.getByText("虚拟密钥")).toBeVisible();
+  });
+
   it("shows the discovery hint on the keys route", async () => {
     renderPalette();
 

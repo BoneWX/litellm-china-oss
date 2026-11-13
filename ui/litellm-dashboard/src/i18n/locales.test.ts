@@ -86,6 +86,8 @@ describe("zh-CN locale", () => {
     expect(zhCN.agents.info.settings.mcpServers.title).toBe(zhCN.navigation.items.mcpServers);
     expect(zhCN.agents.addForm.governance.guardrails.title).toBe(zhCN.navigation.items.guardrails);
     expect(zhCN.agents.identityDetails.viewLogs).toContain(zhCN.navigation.items.logs);
+    expect(zhCN.workflows.header.title).toBe(zhCN.navigation.items.workflows);
+    expect(zhCN.memory.page.title).toBe(zhCN.navigation.items.memory);
   });
 });
 

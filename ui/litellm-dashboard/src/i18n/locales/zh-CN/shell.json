@@ -30,7 +30,22 @@
         "searchVirtualKeysHint": "按别名或 ID 查找密钥",
         "filterKeys": "在密钥表中筛选“{{query}}”",
         "filterKeysHint": "打开虚拟密钥页面并应用此搜索"
+      },
+      "hint": {
+        "press": "按",
+        "searchKeys": "搜索密钥",
+        "searchPages": "搜索或跳转到页面",
+        "dismiss": "关闭搜索提示"
       }
+    },
+    "deprecation": {
+      "title": "{{feature}}已弃用",
+      "descriptionPrefix": "{{feature}}将在近期移除。详情请查看",
+      "discussion": "弃用讨论",
+      "descriptionSuffix": "。"
+    },
+    "adminOnly": {
+      "description": "{{page}}仅管理员可用。"
     },
     "account": {
       "tier": "版本",

@@ -53,6 +53,6 @@ describe("Workflows page access by role", () => {
   it("shows an admin the deprecation notice", () => {
     renderAs("Admin");
 
-    expect(screen.getByRole("alert")).toHaveTextContent("Workflows");
+    expect(screen.getByRole("alert")).toHaveTextContent("Workflow Runs");
   });
 });

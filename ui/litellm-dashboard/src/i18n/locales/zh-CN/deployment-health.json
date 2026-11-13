@@ -1,0 +1,68 @@
+{
+  "deploymentHealth": {
+    "icon": {
+      "label": "部署健康状态",
+      "activeCount_one": "部署健康状态，{{count}} 个活动警告",
+      "activeCount_other": "部署健康状态，{{count}} 个活动警告"
+    },
+    "banner": {
+      "alertLabel": "部署警告",
+      "review": "查看"
+    },
+    "panel": {
+      "title": "部署健康状态",
+      "description": "此代理部署方式相关的警告",
+      "loadFailed": "无法加载部署警告",
+      "loading": "正在加载部署警告",
+      "noActive": "没有活动警告",
+      "ignoredListed": "已暂停和已忽略的警告列在下方",
+      "emptyHint": "此代理的部署配置需要关注时，警告会显示在这里",
+      "severity": {
+        "critical": "严重",
+        "warnings": "警告"
+      },
+      "ignoredAndSnoozed": "已忽略和已暂停提醒",
+      "readDocs": "阅读文档",
+      "snooze": "暂停提醒",
+      "snoozeDays_one": "暂停提醒 {{count}} 天",
+      "snoozeDays_other": "暂停提醒 {{count}} 天",
+      "ignoreForever": "永久忽略",
+      "restore": "恢复显示",
+      "snoozeAria": "暂停提醒：{{title}}",
+      "restoreAria": "恢复显示：{{title}}",
+      "ignoreMeta": {
+        "byEnvVar": "通过环境变量 <code>{{name}}</code> 忽略",
+        "until": "暂停至 {{time}}",
+        "by": "操作者 {{name}}",
+        "since": "自 {{time}} 起，操作者 {{name}}"
+      },
+      "status": {
+        "snoozed": "已暂停提醒",
+        "ignored": "已忽略"
+      }
+    },
+    "warnings": {
+      "envCredentialLogin": {
+        "title": "已启用环境凭据登录",
+        "fix": "任何持有 <code>UI_USERNAME</code>/<code>UI_PASSWORD</code> 的人，或在未设置 <code>UI_PASSWORD</code> 时持有主密钥的人，都可以使用共享静态密钥以代理管理员身份登录。请创建一个拥有独立密码的常规管理员账户，然后设置 <code>general_settings.disable_env_credential_login: true</code>"
+      },
+      "noRedis": {
+        "title": "未配置 Redis",
+        "fix": "此代理运行多个工作进程，或无法确认工作进程数量。未配置 Redis 时，速率限制、预算、路由状态和缓存失效均按工作进程分别处理，因此限额会在每个工作进程各执行一次，花费可能超出预算"
+      },
+      "detailedDebug": {
+        "title": "已启用详细调试日志",
+        "fix": "<code>LITELLM_LOG=DEBUG</code> 会记录大量诊断信息，并显著降低代理性能。仅在排查问题时使用，生产环境请关闭"
+      },
+      "license": {
+        "expiredTitle": "你的 LiteLLM 企业版许可证已于 {{date}} 过期",
+        "expiringTitle": "你的 LiteLLM 企业版许可证{{countdown}}（{{date}}）",
+        "expiresToday": "今天到期",
+        "expiresIn_one": "将在 {{count}} 天后到期",
+        "expiresIn_other": "将在 {{count}} 天后到期",
+        "expiredFix": "企业版功能现已禁用。请联系 <sales/> 恢复访问权限",
+        "renewFix": "请在许可证失效前续期，以继续使用企业版功能。请联系 <sales/>"
+      }
+    }
+  }
+}

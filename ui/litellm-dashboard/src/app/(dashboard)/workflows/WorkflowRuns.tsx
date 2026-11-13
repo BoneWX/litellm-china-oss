@@ -180,7 +180,7 @@ const MetadataCard: React.FC<{ run: WorkflowRun }> = ({ run }) => {
       {/* key fields grid */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-x-6 gap-y-2 px-5 py-3 font-mono text-xs">
         <FieldPair label={t("workflows.metadata.status")}>
-          <span className="capitalize text-foreground">{run.status}</span>
+          <span className="text-foreground">{t(STATUS_LABEL_KEYS[run.status])}</span>
         </FieldPair>
         <FieldPair label={t("workflows.metadata.created")}>
           <span className="text-foreground">{timeAgo(run.created_at, t)}</span>
@@ -496,10 +496,17 @@ const WorkflowRuns: React.FC<WorkflowRunsProps> = ({ accessToken }) => {
         filterFn: "equalsString",
         cell: ({ row }) => {
           const run = row.original;
+          const metadataState = run.metadata?.state;
+          const knownMetadataStatus =
+            metadataState && RUN_STATUS_OPTIONS.includes(metadataState as RunStatus)
+              ? (metadataState as RunStatus)
+              : null;
           return (
             <div className="flex items-center gap-1.5">
               <StatusDot status={run.status} className="size-[7px]" />
-              <span className="text-xs capitalize text-muted-foreground">{run.metadata?.state ?? run.status}</span>
+              <span className="text-xs text-muted-foreground">
+                {knownMetadataStatus ? t(STATUS_LABEL_KEYS[knownMetadataStatus]) : t(STATUS_LABEL_KEYS[run.status])}
+              </span>
             </div>
           );
         },

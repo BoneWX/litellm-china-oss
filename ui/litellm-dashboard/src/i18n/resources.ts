@@ -11,12 +11,15 @@ import agentsZhCN from "./locales/zh-CN/agents.json";
 import apiKeysZhCN from "./locales/zh-CN/api-keys.json";
 import authZhCN from "./locales/zh-CN/auth.json";
 import commonZhCN from "./locales/zh-CN/common.json";
+import deploymentHealthZhCN from "./locales/zh-CN/deployment-health.json";
 import homeZhCN from "./locales/zh-CN/home.json";
+import memoryZhCN from "./locales/zh-CN/memory.json";
 import modelsZhCN from "./locales/zh-CN/models.json";
 import navigationZhCN from "./locales/zh-CN/navigation.json";
 import policiesZhCN from "./locales/zh-CN/policies.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
 import usageLogZhCN from "./locales/zh-CN/usage-log.json";
+import workflowsZhCN from "./locales/zh-CN/workflows.json";
 
 export const supportedLanguages = ["en", "zh-CN"] as const;
 
@@ -39,12 +42,15 @@ export const zhCNResources = {
   ...apiKeysZhCN,
   ...authZhCN,
   ...commonZhCN,
+  ...deploymentHealthZhCN,
   ...homeZhCN,
+  ...memoryZhCN,
   ...modelsZhCN,
   ...navigationZhCN,
   ...policiesZhCN,
   ...shellZhCN,
   ...usageLogZhCN,
+  ...workflowsZhCN,
 };
 
 export const languageDisplayNames: Record<SupportedLanguage, string> = {
