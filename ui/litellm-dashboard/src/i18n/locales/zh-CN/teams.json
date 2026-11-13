@@ -1,0 +1,895 @@
+{
+  "teams": {
+    "page": {
+      "header": {
+        "title": "团队",
+        "description": "管理团队、成员及其对模型和预算的访问权限",
+        "createTeam": "创建团队"
+      },
+      "tabs": {
+        "yourTeams": "你的团队",
+        "availableTeams": "可加入的团队",
+        "defaultSettings": "默认团队设置"
+      },
+      "toasts": {
+        "deleted": "团队已成功删除",
+        "deleteFailed": "删除团队失败：{{error}}",
+        "creating": "正在创建团队",
+        "created": "团队已创建",
+        "createFailed": "创建团队失败：{{error}}"
+      },
+      "deleteModal": {
+        "title": "删除团队？",
+        "keysWarning_one": "警告：此团队关联 {{count}} 个密钥。删除团队会同时删除所有关联密钥以及为此团队创建的模型，此操作无法撤销。",
+        "keysWarning_other": "警告：此团队关联 {{count}} 个密钥。删除团队会同时删除所有关联密钥以及为此团队创建的模型，此操作无法撤销。",
+        "message": "确定要删除此团队、其所有密钥以及为它创建的模型吗？此操作无法撤销。",
+        "informationTitle": "团队信息",
+        "teamId": "团队 ID",
+        "teamName": "团队名称",
+        "keys": "密钥",
+        "members": "成员"
+      },
+      "create": {
+        "title": "创建团队",
+        "submit": "创建团队",
+        "errors": {
+          "teamNameRequired": "请输入团队名称",
+          "organizationNotPickable": "你已无法在此组织中创建团队"
+        },
+        "sections": {
+          "additional": "其他设置",
+          "mcp": "MCP 设置",
+          "agent": "智能体设置",
+          "searchTool": "搜索工具设置",
+          "skill": "技能设置",
+          "logging": "日志设置",
+          "router": "路由设置",
+          "modelAliases": "模型别名"
+        },
+        "fields": {
+          "teamName": "团队名称",
+          "organization": {
+            "label": "组织",
+            "hint": "一个组织可以包含多个团队。进一步了解用户管理层级",
+            "singleOrgDescription": "你只能在此组织中创建团队",
+            "requiredDescription": "必填",
+            "noOrganizations": "没有可用组织",
+            "placeholder": "搜索或选择组织",
+            "selectPrompt": "请选择要创建团队的组织。你只能在自己担任管理员的组织中创建团队。"
+          },
+          "models": {
+            "label": "模型",
+            "hint": "所选团队可以访问这些模型。留空表示不直接授予模型，例如团队通过访问组获取模型时。"
+          },
+          "maxBudget": "最大预算（CNY）",
+          "budgetDuration": {
+            "label": "预算重置周期",
+            "defaultPlaceholder": "默认：{{label}}（{{duration}}）"
+          },
+          "modelMaxBudgetHint": "限制此团队在各模型上的花费，每个模型可设置独立重置周期。团队中所有密钥共享该上限，除非某个密钥为对应模型单独设置了预算。",
+          "tpmLimit": "每分钟 Token 限制（TPM）",
+          "rpmLimit": "每分钟请求限制（RPM）",
+          "tpdLimit": {
+            "label": "每日 Token 限制（TPD）",
+            "hint": "用于批量提交（/v1/batches）的每日 Token 预算。设置后，批量输入文件按此 24 小时窗口计费，而不再使用团队的 TPM/RPM 限制。在线请求仍使用 TPM/RPM。"
+          },
+          "metadata": {
+            "label": "元数据",
+            "description": "值以文本保存。如需类型化值，请输入 JSON，例如 3、true 或 {{example}}。"
+          },
+          "teamId": {
+            "label": "团队 ID",
+            "description": "要创建的团队 ID。未提供时将自动生成。"
+          },
+          "teamMemberBudget": {
+            "label": "团队成员预算（CNY）",
+            "hint": "团队内单个用户的独立预算。"
+          },
+          "teamMemberModelMaxBudget": {
+            "label": "默认单模型预算",
+            "hint": "为每个团队成员设置默认的单模型花费上限，并使用独立重置周期。"
+          },
+          "teamMemberKeyDuration": {
+            "label": "团队成员密钥有效期（例如 1d、1mo）",
+            "hint": "限制团队成员密钥的有效期。格式：30s（秒）、30m（分钟）、30h（小时）、30d（天）、1mo（月）",
+            "placeholder": "例如 30d"
+          },
+          "teamMemberRpmLimit": {
+            "label": "团队成员 RPM 限制",
+            "hint": "单个团队成员的 RPM（每分钟请求数）限制"
+          },
+          "teamMemberTpmLimit": {
+            "label": "团队成员 TPM 限制",
+            "hint": "单个团队成员的 TPM（每分钟 Token 数）限制"
+          },
+          "secretManagerSettings": {
+            "label": "密钥管理器设置",
+            "premiumDescription": "以 JSON 对象输入密钥管理器配置。",
+            "upgradeDescription": "高级功能，升级后可管理密钥管理器设置。"
+          },
+          "guardrails": {
+            "label": "护栏",
+            "hint": "配置第一个护栏",
+            "description": "选择现有护栏或输入新护栏",
+            "placeholder": "选择或输入护栏"
+          },
+          "disableGlobalGuardrails": {
+            "label": "禁用全局护栏",
+            "hint": "启用后，此团队将绕过所有配置为对每个请求运行的全局护栏",
+            "premiumDescription": "为此团队绕过全局护栏",
+            "upgradeDescription": "高级功能，升级后可按团队禁用全局护栏"
+          },
+          "requireTraceId": {
+            "label": "要求 Trace ID",
+            "hint": "拒绝此团队未发送 Trace ID 的 LLM、MCP 和智能体请求（使用 x-litellm-trace-id 请求头，LLM 请求也可使用 traceparent 或 metadata.trace_id）"
+          },
+          "policies": {
+            "label": "策略",
+            "hint": "为此团队应用策略以控制护栏和其他设置",
+            "description": "选择现有策略或输入新策略",
+            "placeholder": "选择或输入策略"
+          },
+          "accessGroups": {
+            "label": "访问组",
+            "hint": "为此团队分配访问组。访问组控制此团队可使用的模型、MCP 服务器和智能体",
+            "description": "选择要分配给此团队的访问组",
+            "placeholder": "选择访问组（可选）"
+          },
+          "vectorStores": {
+            "label": "允许的向量存储",
+            "hint": "选择此团队默认可访问的向量存储。留空表示可访问所有向量存储",
+            "description": "选择此团队可访问的向量存储。留空表示可访问所有向量存储",
+            "placeholder": "选择向量存储（可选）"
+          },
+          "passThroughRoutes": {
+            "label": "允许的透传路由",
+            "upgradeHint": "高级功能，升级后可设置允许的透传路由",
+            "proxyAdminOnlyHint": "只有代理管理员可以设置允许的透传路由",
+            "placeholder": "选择透传路由（可选）"
+          },
+          "mcpServers": {
+            "label": "允许的 MCP 服务器",
+            "hint": "选择此团队可访问的 MCP 服务器或访问组",
+            "description": "选择此团队可访问的 MCP 服务器或访问组",
+            "placeholder": "选择 MCP 服务器或访问组（可选）"
+          },
+          "agents": {
+            "label": "允许的智能体",
+            "hint": "选择此团队可访问的智能体或访问组",
+            "description": "选择此团队可访问的智能体或访问组",
+            "placeholder": "选择智能体或访问组（可选）"
+          },
+          "searchTools": {
+            "label": "允许的搜索工具",
+            "hint": "选择此团队可访问的搜索工具。留空表示允许所有搜索工具。",
+            "description": "限制此团队中的密钥可以调用哪些已配置搜索工具。",
+            "placeholder": "选择搜索工具（可选，留空表示全部允许）"
+          },
+          "skills": {
+            "label": "允许的技能",
+            "hint": "已启用的技能对所有团队可见。可在此为团队授予已禁用的私有 Claude Code 插件。",
+            "description": "此团队中的密钥可在 Claude Code 市场中看到的私有技能。",
+            "placeholder": "选择技能（可选）"
+          },
+          "modelAliasesDescription": "为模型创建团队成员可在 API 调用中使用的自定义别名，相当于为特定模型设置快捷方式。"
+        }
+      }
+    },
+    "table": {
+      "loading": "正在加载团队...",
+      "empty": "未找到团队",
+      "searchPlaceholder": "按名称或 ID 搜索团队…",
+      "exporting": "正在导出...",
+      "exportCsv": "导出 CSV",
+      "filters": {
+        "title": "筛选条件",
+        "description": "缩小团队范围",
+        "organization": "组织",
+        "organizationPlaceholder": "选择组织…",
+        "organizationEmpty": "未找到组织",
+        "teamAlias": "团队别名",
+        "teamAliasPlaceholder": "输入团队别名…",
+        "teamId": "团队 ID",
+        "teamIdPlaceholder": "输入团队 ID…"
+      },
+      "columns": {
+        "team": "团队",
+        "organization": "组织",
+        "resources": "资源",
+        "members": "成员",
+        "models": "模型",
+        "keys": "密钥",
+        "spendBudget": "花费 / 预算",
+        "spend": "花费",
+        "budget": "预算",
+        "created": "创建时间",
+        "rateLimits": "速率限制",
+        "tpm": "TPM",
+        "rpm": "RPM",
+        "updated": "更新时间",
+        "actions": "操作"
+      },
+      "resourceCounts": {
+        "members_one": "{{count}} 个成员",
+        "members_other": "{{count}} 个成员",
+        "models_one": "{{count}} 个模型",
+        "models_other": "{{count}} 个模型",
+        "keys_one": "{{count}} 个密钥",
+        "keys_other": "{{count}} 个密钥"
+      },
+      "unlimited": "无限制",
+      "never": "永不",
+      "actions": {
+        "open": "打开团队操作",
+        "edit": "编辑团队",
+        "copyId": "复制团队 ID",
+        "copied": "团队 ID 已复制",
+        "delete": "删除团队"
+      }
+    },
+    "virtualKeysTable": {
+      "columns": {
+        "keyId": "密钥 ID",
+        "keyAlias": "密钥别名",
+        "secretKey": "密钥值",
+        "organizationId": "组织 ID",
+        "userEmail": "用户邮箱",
+        "userId": "用户 ID",
+        "createdAt": "创建时间",
+        "createdBy": "创建者",
+        "updatedAt": "更新时间",
+        "lastActive": "最后活动",
+        "expires": "到期时间",
+        "spend": "花费（CNY）",
+        "lifetimeSpend": "累计花费",
+        "budget": "预算（CNY）",
+        "budgetReset": "预算重置",
+        "models": "模型",
+        "rateLimits": "速率限制"
+      },
+      "dates": {
+        "never": "永不",
+        "unknown": "未知"
+      },
+      "budget": {
+        "teamMember": "（团队成员）",
+        "unlimited": "无限制"
+      },
+      "models": {
+        "noModelAccessTooltip": "受 {{scope}} 路由限制，此密钥无法调用任何模型",
+        "noModelAccess": "无模型访问权限",
+        "allProxyModels": "所有代理模型",
+        "collapse": "收起模型",
+        "expand": "展开模型",
+        "more_one": "+{{count}} 个模型",
+        "more_other": "+{{count}} 个模型"
+      },
+      "rateLimits": {
+        "unlimited": "无限制",
+        "tpm": "TPM：",
+        "rpm": "RPM："
+      },
+      "loading": "正在加载密钥...",
+      "searchPlaceholder": "按密钥别名或 ID 搜索…",
+      "filters": {
+        "userId": "用户 ID",
+        "keyId": "密钥 ID",
+        "title": "筛选条件",
+        "thisTeam": "此团队",
+        "description": "缩小 {{team}} 的密钥范围",
+        "userIdPlaceholder": "按用户 ID 筛选…",
+        "keyIdPlaceholder": "输入密钥 ID…"
+      }
+    },
+    "memberTab": {
+      "budgetSource": {
+        "teamDefault": "团队默认",
+        "custom": "自定义"
+      },
+      "unlimited": "无限制",
+      "rateLimits": {
+        "none": "无限制",
+        "rpm": "{{value}} RPM",
+        "tpm": "{{value}} TPM"
+      },
+      "columns": {
+        "modelScope": {
+          "title": "模型范围",
+          "tooltip": "此成员可访问的模型。留空表示继承团队所有模型。",
+          "ariaLabel": "模型范围信息",
+          "allTeamModels": "（所有团队模型）",
+          "moreModels_one": "+{{count}} 个",
+          "moreModels_other": "+{{count}} 个"
+        },
+        "currentPeriodSpend": {
+          "title": "当前周期花费（CNY）",
+          "tooltip": "此成员当前预算周期内的花费，即用于校验预算的金额。预算周期列显示该周期覆盖的日期，或“永不重置”。重置时超过结转上限的花费会带入下一周期。",
+          "ariaLabel": "当前周期花费信息"
+        },
+        "totalSpend": {
+          "title": "累计花费（CNY）",
+          "tooltip": "此成员在此团队内跨预算周期的累计花费。这是下限：生命周期跟踪从 2026-04-21 开始，此前已重置的周期不在统计内。该值不会低于当前周期花费。",
+          "ariaLabel": "累计花费信息"
+        },
+        "memberBudget": {
+          "title": "团队成员预算（CNY）",
+          "tooltip": "团队默认表示跟随团队的成员预算，在团队设置中修改时会同步更新此成员。自定义仅作用于该成员，不受后续团队变更影响。",
+          "ariaLabel": "团队成员预算信息",
+          "useTeamDefault": "使用团队默认"
+        },
+        "budgetPeriod": {
+          "title": "预算周期"
+        },
+        "rateLimits": {
+          "title": "团队成员速率限制",
+          "tooltip": "此成员在此团队内使用时的速率限制。",
+          "ariaLabel": "团队成员速率限制信息"
+        }
+      },
+      "toasts": {
+        "spendReset": "团队成员花费已重置为 $0",
+        "budgetReset": "团队成员预算已重置为团队默认值"
+      },
+      "resetSpendDisabled": {
+        "ownSpend": "请联系代理管理员重置你自己的花费",
+        "noSpend": "当前周期没有可重置的花费"
+      },
+      "roleColumn": {
+        "title": "团队角色",
+        "tooltip": "此角色仅作用于当前团队，与用户的代理级角色无关。"
+      },
+      "resetSpendDialog": {
+        "title": "重置团队成员花费",
+        "prompt": "将 <member /> 在此团队中的当前周期花费重置为 <strong>$0</strong>？",
+        "summary": "当前周期花费：<strong>￥{{amount}}</strong>。这是用于校验成员预算的金额。累计花费和日志会保留。",
+        "summaryWithPeriod": "当前周期花费（{{period}}）：<strong>￥{{amount}}</strong>。这是用于校验成员预算的金额。累计花费和日志会保留。",
+        "cancel": "取消",
+        "confirm": "重置"
+      },
+      "resetBudgetDialog": {
+        "title": "重置团队成员预算",
+        "prompt": "移除此成员的自定义预算，并恢复为团队默认值 <strong>{{budget}}</strong>？",
+        "summary": "自定义预算：<strong>{{budget}}</strong>。成员花费会保留，后续团队默认成员预算变更将重新应用于此成员。",
+        "cancel": "取消",
+        "confirm": "使用团队默认"
+      }
+    },
+    "availableTeams": {
+      "panel": {
+        "toasts": {
+          "joined": "已成功加入团队",
+          "joinFailed": "加入团队失败"
+        }
+      },
+      "table": {
+        "loading": "正在加载可加入的团队…",
+        "emptyTitle": "没有可加入的团队",
+        "emptyDocs": "查看如何设置可加入团队，详情见<docs>此处</docs>"
+      },
+      "columns": {
+        "teamName": "团队名称",
+        "description": "描述",
+        "noDescription": "暂无描述",
+        "members": "成员",
+        "membersCount_one": "{{count}} 个成员",
+        "membersCount_other": "{{count}} 个成员",
+        "models": "模型",
+        "actions": "操作",
+        "openActions": "打开团队操作",
+        "join": "加入团队"
+      }
+    },
+    "editMembership": {
+      "addTitle": "添加成员",
+      "editTitle": "编辑成员",
+      "errors": {
+        "invalidEmail": "请输入有效邮箱！",
+        "roleRequired": "请选择角色！"
+      },
+      "numericalPlaceholder": "输入数值",
+      "multiSelectPlaceholder": "选择选项",
+      "fields": {
+        "email": "邮箱",
+        "or": "或",
+        "userId": "用户 ID",
+        "role": "角色",
+        "currentRole": "（当前：{{role}}）"
+      },
+      "cancel": "取消",
+      "submit": {
+        "add": "添加成员",
+        "adding": "正在添加...",
+        "save": "保存更改",
+        "saving": "正在保存..."
+      }
+    },
+    "modelAccess": {
+      "groups_one": "访问组 {{names}}",
+      "groups_other": "访问组 {{names}}",
+      "anAccessGroup": "一个访问组",
+      "allProxy": {
+        "label": "所有代理模型",
+        "sentinelTooltip": "通过团队模型列表中的“所有代理模型”项授予",
+        "emptyListTooltip": "团队模型列表为空，因此可以访问代理上的所有模型"
+      },
+      "noDefault": {
+        "label": "无默认模型",
+        "tooltip": "没有直接授予模型，访问权限仅来自访问组"
+      },
+      "direct": {
+        "tooltip": "通过团队模型列表直接授予",
+        "alsoViaGroupsTooltip": "通过团队模型列表直接授予，同时也通过 {{groups}} 授予"
+      },
+      "viaGroupsTooltip": "通过 {{groups}} 授予"
+    },
+    "adminEditAccess": {
+      "fieldLabels": {
+        "tpmLimit": "每分钟 Token 限制（TPM）",
+        "rpmLimit": "每分钟请求限制（RPM）",
+        "maxBudget": "最大预算（CNY）",
+        "metadata": "团队元数据",
+        "softBudget": "软预算（CNY）",
+        "teamMemberBudget": "成员默认预算（CNY）",
+        "teamMemberBudgetDuration": "成员默认预算周期",
+        "teamMemberTpmLimit": "成员默认 TPM 限制",
+        "teamMemberRpmLimit": "成员默认 RPM 限制",
+        "raiseMaxBudget": "提高团队最大预算",
+        "projects": "创建和更新项目",
+        "memberKeyBudgets": "更新团队成员密钥预算",
+        "createMemberKeys": "为团队成员创建密钥"
+      },
+      "metadataIssues": {
+        "proxyControlledKey": "只有代理管理员可以设置此键",
+        "cannotBeEmpty": "此字段不能为空"
+      }
+    },
+    "memberPermissions": {
+      "toasts": {
+        "loadFailed": "加载权限失败",
+        "updated": "权限已成功更新",
+        "updateFailed": "更新权限失败"
+      },
+      "loading": "正在加载权限...",
+      "title": "成员权限",
+      "reset": "重置",
+      "save": "保存更改",
+      "description": "控制团队成员在非团队管理员身份下可执行的操作。",
+      "columns": {
+        "method": "方法",
+        "endpoint": "端点",
+        "description": "描述",
+        "allowAccess": "允许访问"
+      },
+      "empty": "没有可用权限"
+    },
+    "memberSpendBudgetCell": {
+      "team": "团队",
+      "mySpend": "我的花费",
+      "unlimited": "无限制",
+      "meterValueText": "{{label}}：{{spend}} / {{budget}}",
+      "resets": "重置时间 {{date}} UTC"
+    },
+    "guardrailsSelect": {
+      "placeholder": "选择护栏",
+      "empty": "未找到护栏",
+      "groups": {
+        "global": "全局",
+        "other": "其他"
+      },
+      "globalChip": "全局护栏"
+    },
+    "ssoSettings": {
+      "notSet": "未设置",
+      "toasts": {
+        "fetchFailed": "获取团队设置失败",
+        "updated": "默认团队设置已成功更新",
+        "updateFailed": "更新团队设置失败"
+      },
+      "loading": "正在加载默认团队设置",
+      "noAccess": "没有可用的团队设置，或你无权查看。",
+      "title": "默认团队设置",
+      "description": "创建新团队时默认应用这些设置。",
+      "actions": {
+        "cancel": "取消",
+        "save": "保存更改",
+        "edit": "编辑设置"
+      },
+      "sections": {
+        "budget": "预算与速率限制",
+        "access": "访问与权限"
+      },
+      "fields": {
+        "maxBudget": {
+          "label": "最大预算",
+          "description": "自动创建的新团队的最大预算（CNY）。"
+        },
+        "budgetDuration": {
+          "label": "预算周期",
+          "description": "团队预算重置频率。"
+        },
+        "tpmLimit": {
+          "label": "TPM 限制",
+          "description": "所有模型合计允许的每分钟最大 Token 数。"
+        },
+        "rpmLimit": {
+          "label": "RPM 限制",
+          "description": "所有模型合计允许的每分钟最大请求数。"
+        },
+        "organization": {
+          "label": "默认组织",
+          "description": "未显式指定组织的新团队会归入此组织。",
+          "placeholder": "选择组织"
+        },
+        "models": {
+          "label": "模型",
+          "description": "新团队默认可访问的模型列表。"
+        },
+        "permissions": {
+          "label": "团队成员权限",
+          "description": "新团队成员默认获得的权限。始终包含 /key/info 和 /key/health。",
+          "placeholder": "选择权限"
+        }
+      }
+    },
+    "loggingSettings": {
+      "callbackTypes": {
+        "success": "仅成功",
+        "failure": "仅失败",
+        "successAndFailure": "成功和失败"
+      },
+      "password": {
+        "hide": "隐藏密码",
+        "show": "显示密码"
+      },
+      "selectParam": "选择{{label}}",
+      "integrationParameters": "集成参数",
+      "badges": {
+        "sensitive": "敏感",
+        "number": "数字"
+      },
+      "numberHint": "值必须介于 0 和 1 之间",
+      "disabledCallbacks": {
+        "title": "已禁用的回调",
+        "tooltip": "选择要为此密钥禁用的回调。已禁用的回调不会收到任何日志数据。",
+        "label": "已禁用的回调",
+        "placeholder": "选择要禁用的回调",
+        "help": "选择应为此密钥禁用的回调。这些回调不会收到任何日志数据。"
+      },
+      "integrations": {
+        "title": "日志集成",
+        "tooltip": "为此团队配置回调日志集成。",
+        "add": "添加集成"
+      },
+      "card": {
+        "title": "{{name}} 配置",
+        "newIntegration": "新集成",
+        "remove": "移除",
+        "integrationType": "集成类型",
+        "integrationTypePlaceholder": "选择集成",
+        "eventType": "事件类型"
+      },
+      "empty": {
+        "title": "尚未配置日志集成",
+        "description": "点击“添加集成”为此团队配置日志"
+      }
+    },
+    "myUserTab": {
+      "infoAriaLabel": "{{label}} 信息",
+      "unlimited": "无限制",
+      "periodWithReset": "{{period}}（重置时间 {{reset}}）",
+      "resetsOn": "重置时间 {{reset}}",
+      "loading": "正在加载你的成员信息…",
+      "loadFailed": "加载你在该团队中的成员信息失败。",
+      "empty": "当前用户在此团队中没有成员信息。",
+      "user": "用户",
+      "teamRole": "团队角色",
+      "currentPeriodSpend": {
+        "title": "当前周期花费（CNY）",
+        "ofBudget": "预算 {{budget}}"
+      },
+      "rateLimits": {
+        "title": "速率限制",
+        "tooltip": "你在该团队内的成员级速率限制。",
+        "tpm": "TPM：{{value}}",
+        "rpm": "RPM：{{value}}"
+      },
+      "totalSpend": {
+        "title": "累计花费（CNY）",
+        "tooltip": "你在该团队内跨预算周期的累计花费。这是下限：生命周期跟踪从 2026-04-21 开始，此前已重置的周期不在统计内。该值不会低于当前周期花费。"
+      },
+      "modelScope": {
+        "title": "模型范围",
+        "tooltip": "你在该团队内可访问的模型。",
+        "allTeamModels": "所有团队模型"
+      }
+    },
+    "resetMemberBudgets": {
+      "title": "重置成员预算？",
+      "description_one": "{{count}} 个成员设置了自定义预算，因此新的团队默认值 ￥{{budget}} 不会应用于该成员。要重置为默认值，还是保留自定义预算？",
+      "description_other": "{{count}} 个成员设置了自定义预算，因此新的团队默认值 ￥{{budget}} 不会应用于这些成员。要重置为默认值，还是保留自定义预算？",
+      "cancel": "取消",
+      "retry": "重试重置",
+      "keepCustom_one": "保留自定义预算",
+      "keepCustom_other": "保留自定义预算",
+      "resetTo_one": "重置为 ￥{{budget}}",
+      "resetTo_other": "全部重置为 ￥{{budget}}",
+      "toasts": {
+        "partiallyReset_one": "已重置 {{count}} 个成员中的 {{attempted}} 个预算，其余未能重置",
+        "partiallyReset_other": "已重置 {{count}} 个成员中的 {{attempted}} 个预算，其余未能重置",
+        "resetFailed": "团队已更新，但成员预算重置失败",
+        "someFailed_one": "团队已更新，但有 {{count}} 个成员预算未能重置",
+        "someFailed_other": "团队已更新，但有 {{count}} 个成员预算未能重置",
+        "reset_one": "已将 {{count}} 个成员预算重置为团队默认值",
+        "reset_other": "已将 {{count}} 个成员预算重置为团队默认值",
+        "teamUpdated": "团队设置已成功更新"
+      }
+    },
+    "adminSettingsForm": {
+      "intro": "代理管理员已指定团队管理员可以修改的设置。其他设置请联系代理管理员。",
+      "maxBudgetKeepOrLowerHint": "你可以保持或降低此预算。如需提高，请联系代理管理员。",
+      "maxBudgetRaiseHint": "你可以提高此预算。团队属于组织时，提高金额受组织预算限制。",
+      "inheritDurationPlaceholder": "继承团队重置周期",
+      "metadataDescription": "有效 JSON 值（例如 3、true 或 {\"region\": \"us\"}）会按对应类型保存，其他值按文本保存。由代理作为设置读取的键仍由代理管理员管理并保持原样。",
+      "cancel": "取消",
+      "save": "保存更改"
+    },
+    "teamInfo": {
+      "toasts": {
+        "mcpUnresolvable": "无法保存 MCP 工具权限，因为{{reason}}。请在页面加载完成后重试",
+        "loadFailed": "加载团队信息失败",
+        "memberAdded": "团队成员已成功添加",
+        "memberAddFailed": "添加团队成员失败",
+        "adminsEnterpriseOnly": "分配管理员是企业版功能。请升级 LiteLLM 套餐以启用。",
+        "memberUpdated": "团队成员已成功更新",
+        "memberUpdateFailed": "更新团队成员失败",
+        "memberRemoved": "团队成员已成功移除",
+        "memberRemoveFailed": "移除团队成员失败",
+        "settingsUpdated": "团队设置已成功更新",
+        "invalidSecretManagerJson": "密钥管理器设置中的 JSON 无效",
+        "invalidPerModelEstimatesJson": "各模型预计输出 Token 的 JSON 无效",
+        "adminEditingDisabledTitle": "团队管理员无法在此代理上编辑团队设置",
+        "adminEditingDisabledDescription": "请联系代理管理员在“设置 > 界面 > 团队管理员可编辑字段”中启用。"
+      },
+      "validation": {
+        "teamNameRequired": "请输入团队名称",
+        "thresholdRange": "请输入 1 到 100 的整数",
+        "duplicateThreshold": "阈值重复",
+        "missingModel": "缺少模型",
+        "duplicateModel": "模型重复",
+        "tpmOrRpmRequired": "至少设置 TPM 或 RPM 中的一项"
+      },
+      "mcpLookup": {
+        "serversFailed": "无法加载 MCP 服务器列表",
+        "toolsetsFailed": "无法加载 MCP 工具集列表",
+        "accessGroupsFailed": "无法加载访问组列表",
+        "inventoryLoading": "MCP 服务器清单仍在加载"
+      },
+      "loading": "加载中...",
+      "notFound": "未找到团队",
+      "rateLimits": {
+        "unlimited": "无限制",
+        "tpm": "TPM：",
+        "rpm": "RPM：",
+        "tpd": "TPD（批处理）：",
+        "perModelTitle": "单模型限制：",
+        "default": "默认",
+        "estimatedOutputTokens": "预计输出 Token：",
+        "estimatedOutputTokensPerModel": "各模型预计输出 Token：",
+        "perModelLine": "{{model}}：TPM {{tpm}}，RPM {{rpm}}"
+      },
+      "overview": {
+        "budgetStatus": "预算状态",
+        "budgetOf": "共 {{budget}}",
+        "unlimitedBudget": "无限制",
+        "reset": "重置：",
+        "teamMemberBudget": "团队成员预算：￥{{amount}}",
+        "rateLimitsTitle": "速率限制",
+        "maxParallelRequests": "最大并行请求：",
+        "requestSettingsTitle": "请求设置",
+        "requireTraceId": "要求 Trace ID：",
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "modelsTitle": "模型",
+        "virtualKeysTitle": "虚拟密钥",
+        "userKeys": "用户密钥：",
+        "serviceAccountKeys": "服务账户密钥：",
+        "totalKeys": "总计：",
+        "policiesTitle": "策略",
+        "loadingGuardrails": "正在加载护栏...",
+        "resolvedGuardrails": "已解析护栏：",
+        "noPolicies": "尚未配置策略"
+      },
+      "settings": {
+        "title": "团队设置",
+        "edit": "编辑设置"
+      },
+      "editForm": {
+        "teamName": "团队名称",
+        "models": "模型",
+        "modelsDescription": "留空表示不直接授予模型。团队仍可保留通过其访问组获得的模型",
+        "modelAliases": "模型别名",
+        "modelAliasesHint": "将自定义别名映射到实际模型。团队成员可在 API 请求中使用别名代替真实模型名称。",
+        "maxBudget": "最大预算（CNY）",
+        "softBudget": "软预算（CNY）",
+        "softBudgetAlertingEmails": "软预算告警邮箱",
+        "softBudgetAlertingEmailsHint": "达到软预算时接收告警的邮箱地址，以逗号分隔",
+        "teamMemberSettings": {
+          "title": "团队成员设置",
+          "description": "成员加入团队时应用的可选默认值。所有字段均可按成员覆盖。",
+          "defaultModelAccess": "默认模型访问权限",
+          "defaultModelAccessHint": "可选。设置后，新成员默认只能访问这些模型。必须是上方团队模型的子集。留空表示所有成员均可访问全部团队模型。",
+          "defaultModelAccessPlaceholder": "留空，所有成员可访问全部团队模型",
+          "defaultBudget": "默认预算（CNY）",
+          "defaultBudgetHint": "此团队中每位成员的默认花费预算。",
+          "defaultBudgetDuration": "默认预算周期",
+          "inheritResetPeriod": "继承团队重置周期",
+          "defaultPerModelBudget": "默认单模型预算",
+          "defaultPerModelBudgetHint": "为每位团队成员设置默认的单模型花费上限，并使用独立重置周期。",
+          "defaultKeyDuration": "默认密钥有效期（例如 1d、1mo）",
+          "defaultKeyDurationHint": "限制团队成员密钥有效期。格式：30s（秒）、30m（分钟）、30h（小时）、30d（天）、1mo（月）",
+          "defaultKeyDurationPlaceholder": "例如 30d",
+          "defaultTpmLimit": "默认 TPM 限制",
+          "defaultTpmLimitHint": "每位成员默认的每分钟 Token 限制，可按成员覆盖。",
+          "defaultTpmLimitPlaceholder": "例如 1000",
+          "defaultRpmLimit": "默认 RPM 限制",
+          "defaultRpmLimitHint": "每位成员默认的每分钟请求限制，可按成员覆盖。",
+          "defaultRpmLimitPlaceholder": "例如 100",
+          "budgetAlertThresholds": "预算告警阈值",
+          "budgetAlertThresholdsHint": "当成员花费达到其团队成员预算的指定百分比时发送邮件。成员始终会收到通知，也可添加逗号分隔的地址通知其他人。需在代理上配置邮件告警。",
+          "thresholdPlaceholder": "预算百分比",
+          "recipientsPlaceholder": "其他收件人，例如 finance@example.com",
+          "removeThreshold": "移除预算告警阈值",
+          "addThreshold": "添加预算告警阈值"
+        },
+        "resetBudget": "预算重置周期",
+        "resetBudgetPlaceholder": "永不重置",
+        "perModelBudgetHint": "限制此团队在各模型上的花费，每个模型可使用不同的重置周期。团队内所有密钥共享该上限，除非某个密钥为对应模型设置了独立预算。",
+        "tpmLimit": "每分钟 Token 限制（TPM）",
+        "rpmLimit": "每分钟请求限制（RPM）",
+        "tpdLimit": "每日 Token 限制（TPD）",
+        "tpdLimitHint": "批量提交（/v1/batches）的每日 Token 预算。设置后，批量输入文件按此 24 小时窗口计费，而不再使用团队 TPM/RPM 限制。在线请求仍使用 TPM/RPM。",
+        "metadata": "元数据",
+        "metadataDescription": "值以文本保存。如需类型化值，请输入 JSON，例如 3、true 或 {{example}}。",
+        "modelLimits": "模型专用速率限制",
+        "modelLimitsHint": "设置适用于整个团队的单模型 TPM/RPM 限制。",
+        "modelLimitsModelPlaceholder": "选择模型",
+        "modelLimitsTpmPlaceholder": "TPM 限制",
+        "modelLimitsRpmPlaceholder": "RPM 限制",
+        "removeModelLimit": "移除模型限制",
+        "addModelLimit": "添加模型限制",
+        "estimatedOutputTokens": "预计输出 Token",
+        "estimatedOutputTokensPerModel": "各模型预计输出 Token",
+        "routerSettings": "路由设置",
+        "guardrails": "护栏",
+        "guardrailsHint": "选择应用于此团队的护栏。全局护栏默认启用，取消勾选可退出。其他护栏需主动启用。",
+        "disableGlobalGuardrails": "禁用所有全局护栏",
+        "disableGlobalGuardrailsHint": "终止开关：为此团队绕过所有全局护栏，包括未来新增的护栏。如需按护栏退出，请使用上方“护栏”下拉框。",
+        "requireTraceId": "要求 Trace ID",
+        "requireTraceIdHint": "拒绝此团队未发送 Trace ID 的 LLM、MCP 和智能体请求（x-litellm-trace-id 请求头，LLM 请求也可使用 traceparent 或 metadata.trace_id）",
+        "policies": "策略",
+        "policiesHint": "为此团队应用策略，以控制护栏和其他设置",
+        "policiesPlaceholder": "选择或输入策略",
+        "accessGroups": "访问组",
+        "accessGroupsHint": "为此团队分配访问组。访问组控制此团队可使用的模型、MCP 服务器和智能体",
+        "accessGroupsPlaceholder": "选择访问组（可选）",
+        "vectorStores": "向量存储",
+        "vectorStoresPlaceholder": "选择向量存储",
+        "passThroughRoutes": "允许的透传路由",
+        "passThroughRoutesPremiumHint": "高级功能，升级后可设置允许的透传路由",
+        "passThroughRoutesAdminOnlyHint": "只有代理管理员可以设置允许的透传路由",
+        "passThroughRoutesPlaceholder": "选择透传路由",
+        "mcpServers": "MCP 服务器 / 访问组",
+        "mcpServersPlaceholder": "选择 MCP 服务器或访问组（可选）",
+        "agents": "智能体 / 访问组",
+        "agentsPlaceholder": "选择智能体或访问组（可选）",
+        "searchToolSettings": {
+          "title": "搜索工具设置",
+          "allowedSearchTools": "允许的搜索工具",
+          "allowedSearchToolsHint": "选择此团队可访问的搜索工具。留空表示允许所有搜索工具。",
+          "allowedSearchToolsPlaceholder": "选择搜索工具（可选，留空表示全部允许）"
+        },
+        "skills": "技能",
+        "skillsHint": "已启用的技能对所有团队可见。可在此为团队授予已禁用的私有 Claude Code 插件。",
+        "skillsPlaceholder": "选择技能（可选）",
+        "organization": "组织",
+        "organizationPlaceholder": "选择组织",
+        "organizationEmpty": "没有匹配的组织",
+        "loggingSettings": "日志设置",
+        "secretManagerSettings": "密钥管理器设置",
+        "secretManagerSettingsDescription": "以 JSON 对象输入密钥管理器配置。",
+        "secretManagerSettingsPremiumHint": "高级功能，升级后可管理密钥管理器设置。",
+        "cancel": "取消",
+        "save": "保存更改"
+      },
+      "settingsView": {
+        "teamName": "团队名称",
+        "teamId": "团队 ID",
+        "createdAt": "创建时间",
+        "models": "模型",
+        "defaultMemberModels": "默认成员模型",
+        "modelAliases": "模型别名",
+        "noModelAliases": "尚未配置模型别名",
+        "rateLimits": "速率限制",
+        "teamBudget": "团队预算",
+        "noLimit": "无限制",
+        "maxBudget": "最大预算：",
+        "softBudget": "软预算：",
+        "budgetReset": "预算重置：",
+        "never": "永不",
+        "perModelBudget": {
+          "line": "单模型预算（{{model}}）：每{{period}} ￥{{limit}}",
+          "lineWithSpent": "单模型预算（{{model}}）：每{{period}} ￥{{limit}}，已花费 ￥{{spent}}"
+        },
+        "softBudgetAlertingEmails": "软预算告警邮箱：",
+        "teamMemberSettings": {
+          "title": "团队成员设置",
+          "tooltip": "这些限制作用于单个团队成员",
+          "budgetDuration": "预算周期：",
+          "keyDuration": "密钥有效期：",
+          "tpmLimit": "TPM 限制：",
+          "rpmLimit": "RPM 限制：",
+          "budgetAlertThresholds": "预算告警阈值：",
+          "none": "无",
+          "defaultPerModelBudget": "默认单模型预算（{{model}}）：每{{period}} {{limit}}"
+        },
+        "routerSettings": "路由设置",
+        "router": {
+          "routingStrategy": "路由策略：",
+          "numRetries": "重试次数：",
+          "allowedFails": "允许失败次数：",
+          "cooldownTime": "冷却时间：{{value}} 秒",
+          "timeout": "超时：{{value}} 秒",
+          "retryAfter": "重试等待：{{value}} 秒",
+          "tagFilteringEnabled": "标签筛选：已启用",
+          "none": "尚未配置路由设置",
+          "fallbacks_one": "回退项：已配置 {{count}} 个",
+          "fallbacks_other": "回退项：已配置 {{count}} 个"
+        },
+        "organizationId": "组织 ID",
+        "status": "状态",
+        "blocked": "已阻止",
+        "active": "活动",
+        "secretManagerSettings": "密钥管理器设置"
+      },
+      "backToTeams": "返回团队列表",
+      "editMember": {
+        "title": "编辑成员",
+        "roleAdmin": "管理员",
+        "roleUser": "用户",
+        "maxBudgetInTeam": "团队成员预算（CNY）",
+        "maxBudgetInTeamTooltip": "此成员在该团队内可花费的最大 CNY 金额，与全局用户预算限制相互独立",
+        "maxBudgetInTeamPlaceholder": "此成员在该团队内的预算上限",
+        "budgetDuration": "预算重置周期",
+        "budgetDurationTooltip": "此成员在团队内的预算重置频率。留空表示永不重置。",
+        "tempBudgetIncrease": "临时预算增加（CNY）",
+        "tempBudgetIncreaseTooltip": "在团队成员预算之上额外增加的 CNY 金额，直到下方到期时间。永久预算不变，到期后额外预算不再生效。",
+        "tempBudgetIncreasePlaceholder": "此成员在到期前的额外预算",
+        "tempBudgetExpiry": "临时预算到期时间（UTC）",
+        "tempBudgetExpiryTooltip": "临时预算增加停止生效的时间。设置临时预算增加时必须填写。",
+        "modelMaxBudget": "单模型预算",
+        "modelMaxBudgetTooltip": "此成员各模型的花费上限，每个模型有独立重置周期。初始值来自团队默认单模型预算，保存修改后仅为该成员存储单模型预算。",
+        "tpmLimit": "团队成员 TPM 限制",
+        "tpmLimitTooltip": "此成员在该团队内每分钟可使用的最大 Token 数，与全局用户 TPM 限制相互独立",
+        "tpmLimitPlaceholder": "此成员在该团队内的每分钟 Token 限制",
+        "rpmLimit": "团队成员 RPM 限制",
+        "rpmLimitTooltip": "此成员在该团队内每分钟可发起的最大请求数，与全局用户 RPM 限制相互独立",
+        "rpmLimitPlaceholder": "此成员在该团队内的每分钟请求限制",
+        "allowedModels": "允许的模型",
+        "allowedModelsTooltip": "此成员在该团队内可访问的模型。留空表示继承团队所有模型。",
+        "allowedModelsPlaceholder": "留空以继承所有团队模型"
+      },
+      "deleteMember": {
+        "title": "删除团队成员",
+        "alert": "移除团队成员时也会删除该成员创建或为其创建的所有密钥。",
+        "message": "确定要将此成员从团队中移除吗？此操作无法撤销。",
+        "informationTitle": "团队成员信息",
+        "userId": "用户 ID",
+        "email": "邮箱",
+        "role": "角色"
+      }
+    },
+    "memberFormValues": {
+      "tempBudgetPairRequired": "临时预算增加和到期时间必须同时设置，或同时留空"
+    }
+  }
+}

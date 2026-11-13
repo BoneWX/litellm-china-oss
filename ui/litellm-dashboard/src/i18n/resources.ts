@@ -8,6 +8,7 @@ import shellEn from "./locales/en/shell.json";
 import usageLogEn from "./locales/en/usage-log.json";
 import baseEn from "./locales/en.json";
 import agentsZhCN from "./locales/zh-CN/agents.json";
+import accessGroupsZhCN from "./locales/zh-CN/access-groups.json";
 import apiKeysZhCN from "./locales/zh-CN/api-keys.json";
 import authZhCN from "./locales/zh-CN/auth.json";
 import budgetScheduleZhCN from "./locales/zh-CN/budget-schedule.json";
@@ -18,9 +19,12 @@ import homeZhCN from "./locales/zh-CN/home.json";
 import memoryZhCN from "./locales/zh-CN/memory.json";
 import modelsZhCN from "./locales/zh-CN/models.json";
 import navigationZhCN from "./locales/zh-CN/navigation.json";
+import organizationsZhCN from "./locales/zh-CN/organizations.json";
 import policiesZhCN from "./locales/zh-CN/policies.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
+import teamsZhCN from "./locales/zh-CN/teams.json";
 import usageLogZhCN from "./locales/zh-CN/usage-log.json";
+import usersZhCN from "./locales/zh-CN/users.json";
 import workflowsZhCN from "./locales/zh-CN/workflows.json";
 
 export const supportedLanguages = ["en", "zh-CN"] as const;
@@ -41,6 +45,7 @@ export const enResources = {
 
 export const zhCNResources = {
   ...agentsZhCN,
+  ...accessGroupsZhCN,
   ...apiKeysZhCN,
   ...authZhCN,
   ...budgetScheduleZhCN,
@@ -51,9 +56,12 @@ export const zhCNResources = {
   ...memoryZhCN,
   ...modelsZhCN,
   ...navigationZhCN,
+  ...organizationsZhCN,
   ...policiesZhCN,
   ...shellZhCN,
+  ...teamsZhCN,
   ...usageLogZhCN,
+  ...usersZhCN,
   ...workflowsZhCN,
 };
 

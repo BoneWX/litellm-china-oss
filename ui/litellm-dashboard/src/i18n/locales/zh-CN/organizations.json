@@ -1,0 +1,191 @@
+{
+  "organizations": {
+    "view": {
+      "loading": "正在加载...",
+      "notFound": "未找到组织",
+      "backToList": "返回组织列表",
+      "copyId": "复制组织 ID",
+      "tabs": {
+        "overview": "概览",
+        "members": "成员",
+        "settings": "设置"
+      },
+      "toasts": {
+        "memberAdded": "组织成员已成功添加",
+        "memberAddFailed": "添加组织成员失败",
+        "memberUpdated": "组织成员已成功更新",
+        "memberUpdateFailed": "更新组织成员失败",
+        "memberDeleted": "组织成员已成功删除",
+        "memberDeleteFailed": "删除组织成员失败"
+      },
+      "overview": {
+        "detailsTitle": "组织详情",
+        "createdLabel": "创建时间：",
+        "updatedLabel": "更新时间：",
+        "createdByLabel": "创建者：",
+        "budgetTitle": "预算状态",
+        "budgetOf": "共 {{budget}}",
+        "unlimited": "无限制",
+        "resetLabel": "重置：",
+        "rateLimitsTitle": "速率限制",
+        "tpmLabel": "TPM：",
+        "rpmLabel": "RPM：",
+        "maxParallelLabel": "最大并行请求数：",
+        "modelsTitle": "模型",
+        "allProxyModels": "所有代理模型",
+        "teamsTitle": "团队"
+      },
+      "members": {
+        "spendColumn": "花费（CNY）",
+        "createdAtColumn": "创建时间",
+        "roleColumn": "组织角色",
+        "empty": "未找到成员"
+      },
+      "settings": {
+        "title": "组织设置",
+        "editButton": "编辑设置",
+        "nameLabel": "组织名称",
+        "idLabel": "组织 ID",
+        "createdAtLabel": "创建时间",
+        "modelsLabel": "模型",
+        "rateLimitsLabel": "速率限制",
+        "tpmLabel": "TPM：",
+        "rpmLabel": "RPM：",
+        "unlimited": "无限制",
+        "budgetLabel": "预算",
+        "maxBudget": "上限：{{budget}}",
+        "noLimit": "无限制",
+        "resetLabel": "重置：",
+        "never": "从不"
+      },
+      "addMember": {
+        "title": "添加组织成员",
+        "roles": {
+          "orgAdmin": "可以添加和移除成员，并更改成员角色。",
+          "internalUser": "可以在组织内查看和创建自己的密钥。",
+          "internalUserViewer": "只能在组织内查看自己的密钥。"
+        }
+      },
+      "editMember": {
+        "title": "编辑成员",
+        "roles": {
+          "orgAdmin": "组织管理员",
+          "internalUser": "内部用户",
+          "internalUserViewer": "内部用户只读"
+        }
+      }
+    },
+    "panel": {
+      "toasts": {
+        "deleted": "组织已成功删除"
+      },
+      "enterpriseNotice": "这是 LiteLLM 企业版功能，需要有效许可证才能使用。可<pricing>在此获取</pricing>试用许可证。",
+      "createButton": "+ 新建组织",
+      "listHint": "点击组织 ID 可查看详细信息。",
+      "deleteModal": {
+        "title": "删除组织？",
+        "message": "确定要删除此组织吗？此操作无法撤销。",
+        "infoTitle": "组织信息",
+        "idLabel": "组织 ID"
+      }
+    },
+    "table": {
+      "loading": "正在加载组织…",
+      "empty": {
+        "noMatchesTitle": "没有匹配的组织",
+        "noneTitle": "暂无组织",
+        "noMatchesDescription": "没有组织符合当前搜索条件，请尝试其他名称或 ID。",
+        "noneDescription": "创建组织以对团队、模型和预算进行分组管理。"
+      },
+      "columns": {
+        "id": "组织 ID",
+        "name": "组织名称",
+        "created": "创建时间",
+        "spend": "花费（CNY）",
+        "budget": "预算（CNY）",
+        "models": "模型",
+        "limits": "TPM / RPM 限制",
+        "tpmSort": "TPM",
+        "rpmSort": "RPM",
+        "members": "成员",
+        "actions": "操作"
+      },
+      "limits": {
+        "tpmLabel": "TPM：",
+        "rpmLabel": "RPM：",
+        "unlimited": "无限制"
+      },
+      "budgetUnlimited": "无限制",
+      "memberCount_one": "{{count}} 名成员",
+      "memberCount_other": "{{count}} 名成员",
+      "actions": {
+        "open": "打开组织操作",
+        "edit": "编辑",
+        "delete": "删除"
+      }
+    },
+    "filters": {
+      "searchByName": "按组织名称搜索",
+      "searchById": "按组织 ID 搜索"
+    },
+    "createDialog": {
+      "title": "创建组织",
+      "toasts": {
+        "created": "组织已成功创建",
+        "createFailed": "创建组织失败"
+      },
+      "fields": {
+        "name": "组织名称",
+        "models": "模型",
+        "maxBudget": "最大预算（CNY）",
+        "budgetDuration": "预算重置周期",
+        "tpmLimit": "每分钟 Token 限制（TPM）",
+        "rpmLimit": "每分钟请求限制（RPM）",
+        "vectorStores": "允许的向量存储",
+        "vectorStoresDescription": "选择此组织可以访问的向量存储。留空表示允许访问所有向量存储",
+        "vectorStoresPlaceholder": "选择向量存储（可选）",
+        "mcp": "允许的 MCP 服务器",
+        "mcpDescription": "选择此组织可以访问的 MCP 服务器、访问组和工具集。留空表示全部允许",
+        "mcpPlaceholder": "选择 MCP 服务器和访问组（可选）",
+        "metadata": "元数据"
+      },
+      "cancel": "取消",
+      "creating": "正在创建...",
+      "submit": "创建组织"
+    },
+    "settingsForm": {
+      "budgetDuration": {
+        "noReset": "不重置",
+        "daily": "每天",
+        "weekly": "每周",
+        "monthly": "每月"
+      },
+      "errors": {
+        "wholeNumber": "必须是非负整数",
+        "nonNegativeNumber": "必须是非负数",
+        "nameRequired": "请输入组织名称",
+        "invalidMetadata": "元数据必须是有效的 JSON 对象"
+      },
+      "toasts": {
+        "updated": "组织设置已成功更新",
+        "updateFailed": "更新组织设置失败"
+      },
+      "fields": {
+        "name": "组织名称",
+        "models": "模型",
+        "maxBudget": "最大预算（CNY）",
+        "budgetDuration": "预算重置周期",
+        "tpmLimit": "每分钟 Token 限制（TPM）",
+        "rpmLimit": "每分钟请求限制（RPM）",
+        "vectorStores": "向量存储",
+        "vectorStoresPlaceholder": "选择向量存储",
+        "mcp": "MCP 服务器和访问组",
+        "mcpPlaceholder": "选择 MCP 服务器和访问组",
+        "metadata": "元数据"
+      },
+      "cancel": "取消",
+      "saving": "正在保存...",
+      "save": "保存更改"
+    }
+  }
+}

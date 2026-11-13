@@ -399,7 +399,7 @@ describe("UserInfoView auto-router usage", () => {
       expect(mockFetch).not.toHaveBeenCalled();
       await user.click(tab);
 
-      expect(await screen.findByText("$42.00")).toBeInTheDocument();
+      expect(await screen.findByText("￥42.00")).toBeInTheDocument();
       const request = mockFetch.mock.calls[0][0] as Request;
       const params = new URL(request.url).searchParams;
       expect(params.get("user_id")).toBe("user-123");
@@ -414,13 +414,13 @@ describe("UserInfoView auto-router usage", () => {
     const user = userEvent.setup();
     const { rerender } = render(<UserInfoView {...props} />);
     await user.click(await screen.findByRole("tab", { name: "Auto-router usage" }));
-    expect(await screen.findByText("$42.00")).toBeInTheDocument();
+    expect(await screen.findByText("￥42.00")).toBeInTheDocument();
 
     rerender(<UserInfoView {...props} userId="user-456" />);
     expect(screen.getByText("Loading auto-router usage...")).toBeInTheDocument();
-    expect(screen.queryByText("$42.00")).not.toBeInTheDocument();
+    expect(screen.queryByText("￥42.00")).not.toBeInTheDocument();
     await act(async () => nextUser.resolve(Response.json(routerUsageResponse(-7))));
-    expect(await screen.findByText("-$7.00")).toBeInTheDocument();
+    expect(await screen.findByText("-￥7.00")).toBeInTheDocument();
     expect(
       mockFetch.mock.calls.map(([request]) => new URL((request as Request).url).searchParams.get("user_id")),
     ).toEqual(["user-123", "user-456"]);
@@ -508,11 +508,11 @@ describe("UserInfoView savings", () => {
 
     await user.click(savingsTab);
 
-    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-$0.6000");
-    expect(screen.getByTestId("summary-card-compression-savings")).toHaveTextContent("$2.00");
-    expect(screen.getByTestId("summary-card-prompt-caching-savings")).toHaveTextContent("$0.4000");
-    expect(screen.getByTestId("summary-card-prompt-caching-savings")).toHaveTextContent("$1.00Total");
-    expect(screen.getByTestId("summary-card-auto-router-savings")).toHaveTextContent("-$3.00");
+    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-￥0.6000");
+    expect(screen.getByTestId("summary-card-compression-savings")).toHaveTextContent("￥2.00");
+    expect(screen.getByTestId("summary-card-prompt-caching-savings")).toHaveTextContent("￥0.4000");
+    expect(screen.getByTestId("summary-card-prompt-caching-savings")).toHaveTextContent("￥1.00Total");
+    expect(screen.getByTestId("summary-card-auto-router-savings")).toHaveTextContent("-￥3.00");
     expect(mockUserDailyActivityAggregatedCall).toHaveBeenCalledExactlyOnceWith(
       "user",
       expect.objectContaining({
@@ -524,7 +524,7 @@ describe("UserInfoView savings", () => {
     expect(screen.getByTestId("user-savings-scope-note")).toHaveTextContent("JWT-authenticated requests");
     await user.click(screen.getByRole("tab", { name: "Per day" }));
     expect(screen.getByRole("tab", { name: "Per day" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-$0.6000");
+    expect(screen.getByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-￥0.6000");
   });
 
   it("removes the prior user's savings while the newly selected user's results are loading", async () => {
@@ -535,7 +535,7 @@ describe("UserInfoView savings", () => {
     const user = userEvent.setup();
     const { rerender } = render(<UserInfoView {...props} />);
     await user.click(await screen.findByRole("tab", { name: "Savings" }));
-    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("$42.00");
+    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("￥42.00");
 
     rerender(<UserInfoView {...props} userId="user-456" />);
 
@@ -552,8 +552,8 @@ describe("UserInfoView savings", () => {
     await act(async () => {
       nextUser.resolve(savingsResponse([savingsDay("2026-09-19", { autorouter_savings_spend: -7 })]));
     });
-    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-$7.00");
-    expect(screen.queryByText("$42.00")).not.toBeInTheDocument();
+    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-￥7.00");
+    expect(screen.queryByText("￥42.00")).not.toBeInTheDocument();
   });
 
   it("never commits the previous range's savings under the newly selected dates", async () => {
@@ -577,7 +577,7 @@ describe("UserInfoView savings", () => {
       </Profiler>,
     );
     await user.click(await screen.findByRole("tab", { name: "Savings" }));
-    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("$42.00");
+    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("￥42.00");
 
     await user.click(screen.getByRole("button", { name: / - / }));
     const [startDateInput, endDateInput] = screen.getAllByDisplayValue(/^\d{4}-\d{2}-\d{2}$/);
@@ -591,7 +591,7 @@ describe("UserInfoView savings", () => {
     await act(async () => {
       nextRange.resolve(savingsResponse([savingsDay("2026-09-02", { autorouter_savings_spend: -7 })]));
     });
-    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-$7.00");
+    expect(await screen.findByTestId("summary-card-total-recorded-savings")).toHaveTextContent("-￥7.00");
   });
 
   it("reports a failed read as unavailable instead of displaying a partial savings total", async () => {
@@ -615,7 +615,7 @@ describe("UserInfoView savings", () => {
     await user.click(await screen.findByRole("tab", { name: "Savings" }));
 
     expect(await screen.findByTestId("user-savings-empty")).toHaveTextContent("No usage recorded for this user");
-    expect(screen.getByTestId("summary-card-total-recorded-savings")).toHaveTextContent("$0.00");
+    expect(screen.getByTestId("summary-card-total-recorded-savings")).toHaveTextContent("￥0.00");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 

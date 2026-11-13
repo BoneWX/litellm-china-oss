@@ -1,0 +1,129 @@
+{
+  "accessGroups": {
+    "page": {
+      "title": "访问组",
+      "description": "管理组织的资源权限",
+      "create": "创建访问组",
+      "searchPlaceholder": "按名称、ID 或描述搜索访问组...",
+      "clearSearch": "清除搜索",
+      "deleteModal": {
+        "title": "删除访问组",
+        "message": "确定要删除此访问组吗？此操作无法撤销。",
+        "informationTitle": "访问组信息",
+        "id": "ID",
+        "name": "名称",
+        "description": "描述"
+      }
+    },
+    "table": {
+      "loading": "正在加载访问组…",
+      "empty": {
+        "title": "暂无访问组",
+        "description": "创建访问组以管理组织的资源权限。",
+        "filteredTitle": "没有匹配的访问组",
+        "filteredDescription": "请尝试其他搜索词。"
+      },
+      "columns": {
+        "id": "ID",
+        "name": "名称",
+        "resources": "资源",
+        "created": "创建时间",
+        "updated": "更新时间",
+        "actions": "操作"
+      },
+      "resources": {
+        "models": "{{count}} 个模型",
+        "mcpServers": "{{count}} 个 MCP 服务器",
+        "agents": "{{count}} 个智能体",
+        "skills": "{{count}} 个技能"
+      },
+      "rowActions": {
+        "open": "打开访问组操作",
+        "delete": "删除访问组"
+      }
+    },
+    "detail": {
+      "back": "返回",
+      "notFound": "未找到访问组",
+      "idLabel": "ID：",
+      "copyId": "复制访问组 ID",
+      "edit": "编辑访问组",
+      "groupDetails": "访问组详情",
+      "description": "描述",
+      "created": "创建时间",
+      "lastUpdated": "最后更新时间",
+      "by": "操作者",
+      "attachedKeys": "关联密钥",
+      "attachedTeams": "关联团队",
+      "showLess": "收起",
+      "viewAll": "查看全部（{{count}}）",
+      "noKeys": "未关联密钥",
+      "noTeams": "未关联团队",
+      "tabs": {
+        "models": "模型",
+        "mcpServers": "MCP 服务器",
+        "agents": "智能体",
+        "skills": "技能"
+      },
+      "empty": {
+        "models": "此访问组未分配模型",
+        "mcpServers": "此访问组未分配 MCP 服务器",
+        "agents": "此访问组未分配智能体",
+        "skills": "此访问组未分配技能"
+      },
+      "toolPermissions": {
+        "label": "MCP 工具权限",
+        "allTools": "所有工具",
+        "noTools": "无工具"
+      }
+    },
+    "form": {
+      "tabs": {
+        "general": "基本信息",
+        "models": "模型",
+        "mcpServers": "MCP 服务器",
+        "agents": "智能体",
+        "skills": "技能"
+      },
+      "name": {
+        "label": "访问组名称",
+        "placeholder": "例如 工程团队",
+        "required": "请输入访问组名称"
+      },
+      "description": {
+        "label": "描述",
+        "placeholder": "说明此访问组的用途..."
+      },
+      "models": {
+        "label": "允许的模型"
+      },
+      "mcpServers": {
+        "label": "允许的 MCP 服务器",
+        "placeholder": "选择 MCP 服务器"
+      },
+      "agents": {
+        "label": "允许的智能体",
+        "placeholder": "选择智能体"
+      },
+      "skills": {
+        "label": "允许的技能",
+        "description": "已启用的技能对所有用户可见。可在此处为访问组中的团队和密钥授予已禁用的私有 Claude Code 插件。",
+        "placeholder": "选择技能（可选）"
+      }
+    },
+    "create": {
+      "title": "创建访问组",
+      "cancel": "取消",
+      "submit": "创建访问组",
+      "submitting": "正在创建...",
+      "success": "访问组已成功创建",
+      "failed": "创建访问组失败"
+    },
+    "edit": {
+      "title": "编辑访问组",
+      "cancel": "取消",
+      "save": "保存更改",
+      "success": "访问组已成功更新"
+    }
+  }
+}

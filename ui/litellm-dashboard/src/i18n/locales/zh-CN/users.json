@@ -1,0 +1,482 @@
+{
+  "users": {
+    "bulkCreate": {
+      "openButton": "+ 批量邀请用户",
+      "title": "批量邀请用户",
+      "steps": {
+        "download": "下载并填写模板",
+        "upload": "上传填写完成的 CSV",
+        "results": "用户创建结果",
+        "review": "检查并创建用户"
+      },
+      "instructions": {
+        "intro": "按照以下步骤一次添加多个用户：",
+        "downloadTemplate": "下载 CSV 模板",
+        "addUsers": "在表格中添加用户信息",
+        "saveAndUpload": "保存文件并在此处上传",
+        "downloadResults": "创建完成后，下载包含每个用户虚拟密钥的结果文件"
+      },
+      "templateColumns": {
+        "title": "模板列名",
+        "email": "用户邮箱地址（必填）",
+        "role": "用户角色，可选值：\"proxy_admin\"、\"proxy_admin_viewer\"、\"internal_user\"、\"internal_user_viewer\"",
+        "teams": "以逗号分隔的团队 ID，例如 \"team-1,team-2\"",
+        "maxBudget": "最大预算，填写数字，例如 \"100\"",
+        "budgetDuration": "预算重置周期，例如 \"30d\"、\"1mo\"",
+        "models": "以逗号分隔的允许模型，例如 \"gpt-3.5-turbo,gpt-4\""
+      },
+      "downloadTemplate": "下载 CSV 模板",
+      "upload": {
+        "fileMeta": "{{size}} KB • {{date}}",
+        "remove": "移除",
+        "processing": "正在处理...",
+        "dropHere": "将 CSV 文件拖放到此处",
+        "or": "或",
+        "browse": "浏览文件",
+        "csvOnly": "仅支持 CSV 文件（.csv）",
+        "structureErrorTitle": "CSV 结构错误",
+        "structureErrorHint": "请下载我们的模板，并确保 CSV 符合要求的格式。"
+      },
+      "errors": {
+        "invalidFileType": "文件类型无效：{{name}}。请上传 CSV 文件（.csv 扩展名）。",
+        "invalidFileTypeToast": "文件类型无效。请上传 CSV 文件。",
+        "fileTooLarge": "文件过大（{{size}} MB）。请上传小于 5MB 的 CSV 文件。",
+        "emptyFile": "CSV 文件为空。请上传包含数据的文件。",
+        "headersOnly": "CSV 文件只包含表头，没有用户数据。请向 CSV 中添加用户数据。",
+        "noHeaders": "CSV 文件不包含列标题。请确保 CSV 包含标题行。",
+        "missingColumns": "CSV 缺少以下必填列：{{columns}}。请将这些列添加到 CSV 文件中。",
+        "fewerColumns": "第 {{row}} 行的列数少于标题行。请确保所有数据格式正确。",
+        "noDataRows": "CSV 文件中没有有效的数据行。请检查文件格式。",
+        "noValidUsers": "CSV 中没有找到有效用户。请检查下方错误并修正 CSV 文件。",
+        "rowsWithErrors_one": "共 {{total}} 行，发现 {{count}} 行有错误。请修正后再继续。",
+        "rowsWithErrors_other": "共 {{total}} 行，发现 {{count}} 行有错误。请修正后再继续。",
+        "unknown": "未知错误",
+        "parseFailed": "解析 CSV 出错：{{message}}",
+        "readFailed": "解析 CSV 文件失败：{{message}}",
+        "inviteLinkFailed": "用户已创建，但生成邀请链接失败",
+        "createFailed": "创建用户失败"
+      },
+      "validation": {
+        "emailRequired": "邮箱必填",
+        "emailInvalid": "邮箱格式无效，必须包含 @ 和域名",
+        "roleRequired": "角色必填",
+        "roleInvalid": "角色“{{role}}”无效。必须是以下之一：{{roles}}",
+        "budgetNotNumber": "最大预算“{{budget}}”必须是数字",
+        "budgetNotPositive": "最大预算必须大于 0",
+        "durationInvalid": "预算周期“{{duration}}”格式无效。请使用 \"30d\"、\"1mo\"、\"2w\"、\"6h\" 等格式",
+        "unknownTeams": "未知团队：{{teams}}"
+      },
+      "toasts": {
+        "parsed_one": "已成功解析 {{count}} 个用户",
+        "parsed_other": "已成功解析 {{count}} 个用户",
+        "linkCopied": "邀请链接已复制！"
+      },
+      "status": {
+        "invalid": "无效",
+        "pending": "等待中",
+        "success": "成功",
+        "failed": "失败",
+        "copy": "复制"
+      },
+      "preview": {
+        "errorTips": {
+          "checkTable": "请查看下方表格，确认每一行的具体错误",
+          "commonIssues": "常见问题包括邮箱格式无效、缺少必填字段或角色值不正确",
+          "fixAndReupload": "请在 CSV 文件中修正这些问题，然后重新上传"
+        },
+        "creationSummary": "创建摘要",
+        "successful_one": "{{count}} 个成功",
+        "successful_other": "{{count}} 个成功",
+        "failed_one": "{{count}} 个失败",
+        "failed_other": "{{count}} 个失败",
+        "userPreview": "用户预览",
+        "validCount_one": "{{count}} 个用户中有 {{valid}} 个有效",
+        "validCount_other": "{{count}} 个用户中有 {{valid}} 个有效",
+        "back": "返回",
+        "creating": "正在创建...",
+        "create_one": "创建 {{count}} 个用户",
+        "create_other": "创建 {{count}} 个用户",
+        "completeTitle": "用户创建完成",
+        "nextStep": "<emphasis>下一步：</emphasis> 下载包含虚拟密钥和邀请链接的凭据文件。用户需要这些虚拟密钥才能通过 LiteLLM 发起 LLM 请求。",
+        "table": {
+          "row": "行",
+          "email": "邮箱",
+          "role": "角色",
+          "teams": "团队",
+          "budget": "预算",
+          "status": "状态"
+        },
+        "page": "第 {{page}} 页，共 {{pageCount}} 页",
+        "previous": "上一页",
+        "next": "下一页",
+        "startNew": "开始新的批量导入",
+        "downloadCredentials": "下载用户凭据"
+      }
+    },
+    "createUser": {
+      "openButton": "+ 邀请用户",
+      "title": "邀请用户",
+      "subtitle": "创建可拥有密钥的用户",
+      "emailNotice": {
+        "title": "邮件邀请",
+        "body": "只有在配置了邮件集成（SMTP、Resend 或 SendGrid）时，新用户才会收到邮件邀请。",
+        "docsLink": "了解如何配置邮件通知"
+      },
+      "fields": {
+        "userEmail": "用户邮箱",
+        "userRole": "用户角色",
+        "globalRole": "全局代理角色",
+        "globalRoleHint": "此角色独立于任何团队或组织特定角色。请在设置中配置团队管理员或组织管理员",
+        "team": "团队",
+        "teamDescription": "选择后，用户将以“user”角色加入该团队。",
+        "organization": "组织",
+        "organizationDescription": "用户将被添加到所选组织。",
+        "organizationPlaceholder": "选择组织",
+        "metadata": "元数据",
+        "metadataPlaceholder": "以 JSON 格式输入元数据",
+        "sendInviteEmail": "发送邀请邮件",
+        "personalKeyCreation": "个人密钥创建",
+        "models": "模型",
+        "modelsHint": "用户可在团队范围之外访问的模型。",
+        "modelsDescription": "用户可在团队范围之外访问的模型。",
+        "modelsPlaceholder": "选择模型",
+        "allProxyModels": "所有代理模型",
+        "noDefaultModels": "无默认模型"
+      },
+      "createButton": "创建用户",
+      "submitButton": "邀请用户",
+      "toasts": {
+        "makingApiCall": "正在调用 API",
+        "created": "API 用户已创建",
+        "createFailed": "创建用户失败"
+      }
+    },
+    "bulkEdit": {
+      "title_one": "批量编辑 {{count}} 个用户",
+      "title_other": "批量编辑 {{count}} 个用户",
+      "titleAll": "批量编辑所有用户",
+      "updateAll": "更新系统中的所有用户",
+      "updateAllWarning": "⚠️ 这会将更改应用到系统中的所有用户，而不只是所选用户。",
+      "selectedUsers": "已选用户（{{count}}）：",
+      "table": {
+        "userId": "用户 ID",
+        "email": "邮箱",
+        "currentRole": "当前角色",
+        "budget": "预算",
+        "noEmail": "无邮箱",
+        "unlimited": "无限制"
+      },
+      "instructions": "<strong>说明：</strong> 在下方填写要应用到所有所选用户的值。可以批量编辑角色、预算、模型和元数据，也可以将用户添加到团队。",
+      "teamManagement": {
+        "title": "团队管理",
+        "addToTeams": "将所选用户添加到团队",
+        "selectTeams": "选择团队：",
+        "selectTeamsPlaceholder": "选择要添加用户的团队",
+        "teamBudget": "团队预算（可选）：",
+        "teamBudgetPlaceholder": "团队中每个用户的最大预算",
+        "teamBudgetHint": "留空表示在团队限额内不限制预算",
+        "defaultRoleNote": "用户默认以“user”角色添加。所有用户都会加入每个所选团队。"
+      },
+      "updating_one": "正在更新 {{count}} 个用户...",
+      "updating_other": "正在更新 {{count}} 个用户...",
+      "updatingAll": "正在更新所有用户...",
+      "toasts": {
+        "noAccessToken": "未找到访问令牌",
+        "nothingToUpdate": "请至少修改一个字段，或选择要添加用户的团队",
+        "updatedAll": "已更新所有用户（共 {{total}} 个）",
+        "updated_one": "已更新 {{count}} 个用户",
+        "updated_other": "已更新 {{count}} 个用户",
+        "addedToTeams_one": "已将用户添加到 {{count}} 个团队（共 {{additions}} 次添加）",
+        "addedToTeams_other": "已将用户添加到 {{count}} 个团队（共 {{additions}} 次添加）",
+        "teamAddFailed_one": "无法将用户添加到 {{count}} 个团队",
+        "teamAddFailed_other": "无法将用户添加到 {{count}} 个团队",
+        "bulkFailed": "批量操作失败"
+      }
+    },
+    "defaultSettings": {
+      "card": {
+        "title": "默认用户设置",
+        "description": "应用于通过 SSO 或用户管理 API 创建的每个新内部用户。"
+      },
+      "loadError": "无法加载默认用户设置。",
+      "editSettings": "编辑设置",
+      "budgetDurations": {
+        "noReset": "不重置",
+        "hourly": "每小时",
+        "daily": "每天",
+        "weekly": "每周",
+        "monthly": "每月"
+      },
+      "teamRoles": {
+        "user": "用户",
+        "admin": "管理员"
+      },
+      "fields": {
+        "role": "默认角色",
+        "roleDescription": "分配给新用户的角色",
+        "rolePlaceholder": "未设置",
+        "maxBudget": "最大预算（CNY）",
+        "maxBudgetDescription": "新用户的默认最大预算",
+        "resetBudget": "重置预算",
+        "resetBudgetDescription": "默认预算的重置频率",
+        "models": "默认模型",
+        "modelsDescription": "新用户可以访问的模型",
+        "teams": "默认团队"
+      },
+      "teams": {
+        "description": "新用户会加入这些团队。只能选择已经存在的团队。",
+        "rowTitle": "团队 {{number}}",
+        "remove": "移除",
+        "team": "团队",
+        "teamPlaceholder": "搜索团队",
+        "teamEmpty": "未找到团队",
+        "maxBudget": "团队内最大预算（CNY）",
+        "maxBudgetPlaceholder": "可选",
+        "role": "团队角色",
+        "add": "添加团队"
+      },
+      "view": {
+        "notSet": "未设置",
+        "none": "无",
+        "teamMaxBudget": "最大预算 ￥{{budget}}"
+      },
+      "cancel": "取消",
+      "saving": "正在保存...",
+      "save": "保存更改",
+      "toasts": {
+        "updated": "默认用户设置已成功更新",
+        "updateFailed": "更新默认用户设置失败"
+      },
+      "errors": {
+        "nonNegative": "必须是非负数",
+        "selectTeam": "请选择团队",
+        "duplicateTeam": "此团队已存在"
+      }
+    },
+    "page": {
+      "toasts": {
+        "accessTokenMissing": "未找到访问令牌",
+        "generatingResetLink": "正在生成密码重置链接...",
+        "resetLinkFailed": "生成密码重置链接失败",
+        "deleted": "用户已成功删除",
+        "deleteFailed": "删除用户失败"
+      },
+      "selection": {
+        "cancel": "取消选择",
+        "start": "选择用户",
+        "bulkEdit_one": "批量编辑（已选 {{count}} 个）",
+        "bulkEdit_other": "批量编辑（已选 {{count}} 个）"
+      },
+      "tabs": {
+        "users": "用户",
+        "defaultSettings": "默认用户设置"
+      },
+      "defaultSettingsLoading": "正在加载默认用户设置",
+      "deleteModal": {
+        "title": "删除用户？",
+        "message": "确定要删除此用户吗？此操作无法撤销。",
+        "informationTitle": "用户信息",
+        "email": "邮箱",
+        "userId": "用户 ID",
+        "globalProxyRole": "全局代理角色",
+        "totalSpend": "总花费（CNY）"
+      }
+    },
+    "table": {
+      "emptyState": {
+        "title": "未找到用户",
+        "description": "请尝试调整搜索或筛选条件。"
+      },
+      "loading": "正在加载用户…",
+      "searchPlaceholder": "按邮箱或 ID 搜索…",
+      "filters": {
+        "title": "筛选条件",
+        "description": "缩小用户范围",
+        "userId": "用户 ID",
+        "ssoId": "SSO ID",
+        "role": "角色",
+        "team": "团队",
+        "userIdPlaceholder": "输入用户 ID…",
+        "ssoIdPlaceholder": "输入 SSO ID…",
+        "rolePlaceholder": "选择角色…",
+        "roleEmpty": "未找到角色",
+        "teamPlaceholder": "选择团队…",
+        "teamEmpty": "未找到团队"
+      },
+      "columns": {
+        "userId": "用户 ID",
+        "email": "邮箱",
+        "status": "状态",
+        "globalProxyRole": "全局代理角色",
+        "userAlias": "用户别名",
+        "spend": "花费（CNY）",
+        "budget": "预算（CNY）",
+        "ssoId": "SSO ID",
+        "virtualKeys": "虚拟密钥",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "actions": "操作"
+      },
+      "status": {
+        "active": "已启用",
+        "inactive": "已停用",
+        "scimInactiveHint": "已通过 SCIM（外部身份提供商）停用。该用户的虚拟密钥已被阻止。"
+      },
+      "ssoIdHint": "SSO ID 是用户在 SSO 提供商中的 ID。如果用户未使用 SSO，此值为空。",
+      "ssoIdHintLabel": "关于 SSO ID",
+      "unlimitedBudget": "无限制",
+      "keyCount_one": "个密钥",
+      "keyCount_other": "个密钥",
+      "noKeys": "无密钥",
+      "selectRow": "选择 {{user}}",
+      "rowActions": {
+        "open": "打开用户操作",
+        "edit": "编辑用户",
+        "resetPassword": "重置密码",
+        "copyId": "复制用户 ID",
+        "copied": "用户 ID 已复制",
+        "viewUsage": "查看用量",
+        "delete": "删除用户"
+      }
+    },
+    "userInfo": {
+      "memberRoles": {
+        "userHint": "可以查看团队信息，但不能管理团队",
+        "adminHint": "可以创建团队密钥、添加成员并管理设置"
+      },
+      "toasts": {
+        "fetchFailed": "获取用户数据失败",
+        "addedToTeam": "用户已成功添加到团队",
+        "addToTeamFailed": "无法将用户添加到团队",
+        "removedFromTeam": "用户已成功从团队移除",
+        "removeFromTeamFailed": "无法从团队移除用户",
+        "accessTokenMissing": "未找到访问令牌",
+        "generatingResetLink": "正在生成密码重置链接...",
+        "resetLinkFailed": "生成密码重置链接失败",
+        "deleted": "用户已成功删除",
+        "deleteFailed": "删除用户失败",
+        "updated": "用户已成功更新",
+        "updateFailed": "更新用户失败"
+      },
+      "backToUsers": "返回内部用户",
+      "loading": "正在加载用户数据...",
+      "notFound": "未找到用户",
+      "fallbackTitle": "用户",
+      "personalModels": "个人模型",
+      "allProxyModels": "所有代理模型",
+      "unlimited": "无限制",
+      "actions": {
+        "resetPassword": "重置密码",
+        "deleteUser": "删除用户"
+      },
+      "deleteModal": {
+        "title": "删除用户？",
+        "message": "确定要删除此用户吗？此操作无法撤销。",
+        "informationTitle": "用户信息",
+        "email": "邮箱",
+        "userId": "用户 ID",
+        "globalProxyRole": "全局代理角色",
+        "totalSpend": "总花费（CNY）"
+      },
+      "tabs": {
+        "overview": "概览",
+        "details": "详情",
+        "savings": "节省",
+        "autoRouterUsage": "自动路由用量"
+      },
+      "overview": {
+        "spend": "花费",
+        "budgetOf": "预算 {{budget}}",
+        "teams": "团队",
+        "addTeam": "添加团队",
+        "teamName": "团队名称",
+        "actions": "操作",
+        "removeFromTeam": "从 {{team}} 移除",
+        "noTeams": "无团队",
+        "moreTeams_one": "另有 {{count}} 个",
+        "moreTeams_other": "另有 {{count}} 个",
+        "showLess": "收起"
+      },
+      "details": {
+        "title": "用户设置",
+        "editSettings": "编辑设置",
+        "userId": "用户 ID",
+        "email": "邮箱",
+        "userAlias": "用户别名",
+        "globalProxyRole": "全局代理角色",
+        "created": "创建时间",
+        "lastUpdated": "最后更新时间",
+        "maxBudget": "最大预算",
+        "budgetReset": "预算重置",
+        "metadata": "元数据",
+        "mcpPermissions": "MCP 权限",
+        "notSet": "未设置",
+        "unknown": "未知"
+      },
+      "savings": {
+        "scopeNote": "此用户通过 API 密钥和 JWT 身份验证请求产生的节省。",
+        "unavailable": "由于此用户没有 ID，无法查看节省数据。"
+      },
+      "autoRouter": {
+        "unavailable": "由于此用户没有 ID，无法查看自动路由用量。"
+      },
+      "removeTeamModal": {
+        "title": "从团队移除",
+        "alert": "从此团队移除此用户时，也会删除该用户为此团队创建的所有密钥。",
+        "message": "确定要从此团队移除此用户吗？此操作无法撤销。",
+        "informationTitle": "团队成员关系",
+        "team": "团队",
+        "userId": "用户 ID",
+        "email": "邮箱"
+      },
+      "addTeamDialog": {
+        "title": "将用户添加到团队",
+        "team": "团队",
+        "teamPlaceholder": "选择团队",
+        "noTeams": "未找到团队",
+        "memberRole": "成员角色",
+        "submit": "添加到团队",
+        "submitting": "正在添加..."
+      }
+    },
+    "editView": {
+      "errors": {
+        "rateLimit": "请输入非负整数，或留空表示无限制",
+        "budgetRequired": "请输入预算或选择无限制预算"
+      },
+      "modelOptions": {
+        "allProxyModels": "所有代理模型",
+        "noDefaultModels": "无默认模型"
+      },
+      "fields": {
+        "userId": "用户 ID",
+        "email": "邮箱",
+        "userAlias": "用户别名",
+        "globalProxyRole": "全局代理角色",
+        "globalProxyRoleHint": "这是用户在代理上的全局角色。此角色独立于任何团队或组织特定角色。",
+        "personalModels": "个人模型",
+        "personalModelsHint": "选择此用户可在团队范围之外访问的模型。选择“所有代理模型”可授予代理上所有模型的访问权限。",
+        "modelsPlaceholder": "选择模型",
+        "maxBudget": "最大预算（CNY）",
+        "unlimitedBudget": "无限制预算",
+        "maxBudgetPlaceholder": "输入数值",
+        "resetBudget": "重置预算",
+        "noChange": "不更改",
+        "tpmLimit": "TPM 限制",
+        "rpmLimit": "RPM 限制",
+        "rateLimitHint": "应用于此用户拥有的所有密钥。团队和密钥限制仍作为上限生效。",
+        "rateLimitPlaceholder": "无限制",
+        "modelMaxBudgetHint": "限制此用户在单个模型上的花费，每个模型都有自己的重置周期。应用于用户持有的每个密钥。",
+        "metadata": "元数据",
+        "metadataPlaceholder": "以 JSON 格式输入元数据",
+        "mcpServers": "MCP 服务器 / 访问组",
+        "mcpServersHint": "限制此用户可以访问的 MCP 服务器、访问组和工具。用户持有的每个密钥都受此范围限制。",
+        "mcpServersPlaceholder": "选择 MCP 服务器或访问组（可选）"
+      },
+      "actions": {
+        "cancel": "取消",
+        "save": "保存更改"
+      }
+    }
+  }
+}
