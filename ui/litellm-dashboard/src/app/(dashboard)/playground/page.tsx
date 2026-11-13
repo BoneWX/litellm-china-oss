@@ -13,12 +13,14 @@ import { fetchProxySettings } from "@/utils/proxyUtils";
 import { useUrlTab } from "@/hooks/useUrlTab";
 import { Page, PageTabs, PageTabsContent, PageTabsList, PageTabsTrigger } from "@/components/shared/Page";
 import { PageHeader, PageHeaderDescription, PageHeaderTitle } from "@/components/shared/PageHeader";
+import { useTranslation } from "react-i18next";
 
 const PLAYGROUND_TABS = ["chat", "compare", "compliance", "system-one", "agent-builder"] as const;
 
 const TAB_TRIGGER = "h-full group-data-horizontal/tabs:after:-bottom-0.5";
 
 export default function PlaygroundPage() {
+  const { t } = useTranslation();
   const { accessToken, userRole, userId, disabledPersonalKeyCreation, token, isViewOnly } = useAuthorized();
   const [proxySettings, setProxySettings] = useState<ProxySettings | undefined>(undefined);
   const [activeTab, setActiveTab] = useUrlTab(PLAYGROUND_TABS, "chat");
@@ -42,10 +44,8 @@ export default function PlaygroundPage() {
   if (isViewOnly) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-8 text-center">
-        <h1 className="text-2xl font-semibold">Access Denied</h1>
-        <p className="text-muted-foreground">
-          Your role does not have access to the Playground. Ask your proxy admin for access to test models.
-        </p>
+        <h1 className="text-2xl font-semibold">{t("playground.accessDenied.title")}</h1>
+        <p className="text-muted-foreground">{t("playground.accessDenied.description")}</p>
       </div>
     );
   }
@@ -55,28 +55,26 @@ export default function PlaygroundPage() {
       <PageHeader>
         <PageHeaderTitle>
           <PlayCircle />
-          Playground
+          {t("playground.title")}
         </PageHeaderTitle>
-        <PageHeaderDescription>
-          Send test requests through the gateway with any model, key, guardrail or tool
-        </PageHeaderDescription>
+        <PageHeaderDescription>{t("playground.description")}</PageHeaderDescription>
       </PageHeader>
       <PageTabs value={activeTab} onValueChange={setActiveTab} className="gap-0">
         <PageTabsList>
           <PageTabsTrigger value="chat" className={TAB_TRIGGER}>
-            Chat
+            {t("playground.tabs.chat")}
           </PageTabsTrigger>
           <PageTabsTrigger value="compare" className={TAB_TRIGGER}>
-            Compare
+            {t("playground.tabs.compare")}
           </PageTabsTrigger>
           <PageTabsTrigger value="compliance" className={TAB_TRIGGER}>
-            Compliance
+            {t("playground.tabs.compliance")}
           </PageTabsTrigger>
           <PageTabsTrigger value="system-one" className={TAB_TRIGGER}>
-            <BetaBadge>Decisions</BetaBadge>
+            <BetaBadge>{t("playground.tabs.decisions")}</BetaBadge>
           </PageTabsTrigger>
           <PageTabsTrigger value="agent-builder" className={TAB_TRIGGER}>
-            Agent builder
+            {t("playground.tabs.agentBuilder")}
           </PageTabsTrigger>
         </PageTabsList>
         <PageTabsContent value="chat" className="overflow-hidden data-hidden:hidden" keepMounted>

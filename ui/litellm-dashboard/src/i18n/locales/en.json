@@ -1,4 +1,19 @@
 {
+  "playground": {
+    "title": "Playground",
+    "description": "Send test requests through the gateway with any model, key, guardrail or tool",
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "Your role does not have access to the Playground. Ask your proxy admin for access to test models."
+    },
+    "tabs": {
+      "chat": "Chat",
+      "compare": "Compare",
+      "compliance": "Compliance",
+      "decisions": "Decisions",
+      "agentBuilder": "Agent builder"
+    }
+  },
   "budgets": {
     "panel": {
       "title": "Budgets",
