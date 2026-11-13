@@ -19,6 +19,7 @@ import { uiHref } from "@/utils/uiHref";
 import { useMutation } from "@tanstack/react-query";
 import { BookOpen, ChevronDown, Eraser, FileText, LoaderCircle, Send } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { makePlaygroundDecisionRequest, type PlaygroundDecisionRequest } from "../../llm_calls/system_one";
 import { DECISION_PRESETS, emptyPayload, presetPayload } from "./lib/example";
 import { payloadModel, withPayloadModel } from "./lib/payloadModel";
@@ -55,11 +56,12 @@ function SetupField({ label, htmlFor, children }: { label: string; htmlFor: stri
 }
 
 function ExamplesMenu({ onPick }: { onPick: (id: string) => void }) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
         <FileText className="text-muted-foreground" />
-        Load example
+        {t("playgroundDeep.decisions.loadExample")}
         <ChevronDown className="text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
@@ -78,6 +80,7 @@ function getCustomProxyBaseUrl(): string | undefined {
 }
 
 export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation = false }: SystemOneUIProps) {
+  const { t } = useTranslation();
   const [apiKeySource, setApiKeySource] = useState<ApiKeySource>(disabledPersonalKeyCreation ? "custom" : "session");
   const [customApiKey, setCustomApiKey] = useState("");
   const effectiveApiKey = apiKeySource === "session" ? accessToken || "" : customApiKey.trim();
@@ -167,9 +170,12 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
   return (
     <div className="flex h-full min-h-0 flex-col overflow-auto p-4 xl:overflow-hidden">
       <div className="mx-auto grid w-full max-w-[1400px] gap-4 xl:min-h-0 xl:flex-1 xl:grid-cols-[minmax(0,11fr)_minmax(0,9fr)]">
-        <section className="flex min-h-96 flex-col gap-4 xl:min-h-0" aria-label="Decisions request editor">
+        <section
+          className="flex min-h-96 flex-col gap-4 xl:min-h-0"
+          aria-label={t("playgroundDeep.decisions.requestEditor")}
+        >
           <div className="grid gap-3 rounded-lg border bg-card p-3 sm:grid-cols-3">
-            <SetupField label="Endpoint" htmlFor="decision-endpoint">
+            <SetupField label={t("playgroundDeep.decisions.endpoint")} htmlFor="decision-endpoint">
               <Select
                 value={endpoint}
                 onValueChange={(value) => {
@@ -179,7 +185,11 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
                   }
                 }}
               >
-                <SelectTrigger id="decision-endpoint" className="w-full" aria-label="Decision endpoint">
+                <SelectTrigger
+                  id="decision-endpoint"
+                  className="w-full"
+                  aria-label={t("playgroundDeep.decisions.decisionEndpoint")}
+                >
                   <SelectValue>{endpoint}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -188,24 +198,28 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
                 </SelectContent>
               </Select>
             </SetupField>
-            <SetupField label="Model" htmlFor="decision-model">
+            <SetupField label={t("playgroundDeep.decisions.model")} htmlFor="decision-model">
               <SearchSelect
                 id="decision-model"
-                aria-label="Decision model"
+                aria-label={t("playgroundDeep.decisions.decisionModel")}
                 options={decisionModels.map((model) => ({ label: model, value: model }))}
                 value={payloadModel(rawPayload) ?? null}
                 onValueChange={handleModelPick}
-                placeholder={decisionModels.length > 0 ? "Pick a decision model" : "No decision models yet"}
-                emptyText="No decision models found"
+                placeholder={
+                  decisionModels.length > 0
+                    ? t("playgroundDeep.decisions.pickDecisionModel")
+                    : t("playgroundDeep.decisions.noDecisionModels")
+                }
+                emptyText={t("playgroundDeep.decisions.noDecisionModelsFound")}
                 allowClear={false}
               />
               {decisionModelsLoaded && decisionModels.length === 0 && (
                 <a href={uiHref("models-and-endpoints")} className="text-xs text-primary underline">
-                  Add a decision model
+                  {t("playgroundDeep.decisions.addDecisionModel")}
                 </a>
               )}
             </SetupField>
-            <SetupField label="API key" htmlFor="decision-key-source">
+            <SetupField label={t("playgroundDeep.decisions.apiKey")} htmlFor="decision-key-source">
               <Select
                 value={apiKeySource}
                 onValueChange={(value) => {
@@ -215,23 +229,31 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
                 }}
                 disabled={disabledPersonalKeyCreation}
               >
-                <SelectTrigger id="decision-key-source" className="w-full" aria-label="Virtual Key Source">
-                  <SelectValue>{apiKeySource === "custom" ? "Virtual Key" : "Current UI Session"}</SelectValue>
+                <SelectTrigger
+                  id="decision-key-source"
+                  className="w-full"
+                  aria-label={t("playgroundDeep.decisions.virtualKeySource")}
+                >
+                  <SelectValue>
+                    {apiKeySource === "custom"
+                      ? t("playgroundDeep.decisions.virtualKey")
+                      : t("playgroundDeep.decisions.currentSession")}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="session" disabled={!accessToken}>
-                    Current UI Session
+                    {t("playgroundDeep.decisions.currentSession")}
                   </SelectItem>
-                  <SelectItem value="custom">Virtual Key</SelectItem>
+                  <SelectItem value="custom">{t("playgroundDeep.decisions.virtualKey")}</SelectItem>
                 </SelectContent>
               </Select>
               {apiKeySource === "custom" && (
                 <Input
                   type="password"
-                  aria-label="Virtual Key"
+                  aria-label={t("playgroundDeep.decisions.virtualKey")}
                   value={customApiKey}
                   onChange={(event) => setCustomApiKey(event.target.value)}
-                  placeholder="Enter Virtual Key"
+                  placeholder={t("playgroundDeep.decisions.enterVirtualKey")}
                 />
               )}
             </SetupField>
@@ -239,7 +261,7 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
 
           <Tabs
             role="group"
-            aria-label="Request editor"
+            aria-label={t("playgroundDeep.decisions.requestEditorCard")}
             value={view}
             onValueChange={(value) => (value === "form" || value === "curl") && setView(value)}
             className={cn(
@@ -248,17 +270,17 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
             )}
           >
             <div className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
-              <TabsList aria-label="Request editor view">
-                <TabsTrigger value="form">Form</TabsTrigger>
+              <TabsList aria-label={t("playgroundDeep.decisions.requestEditorView")}>
+                <TabsTrigger value="form">{t("playgroundDeep.decisions.form")}</TabsTrigger>
                 <TabsTrigger value="curl">cURL</TabsTrigger>
               </TabsList>
               <div className="flex items-center gap-2">
                 <ExamplesMenu onPick={handlePresetPick} />
-                <SimpleTooltip content="Clear form">
+                <SimpleTooltip content={t("playgroundDeep.decisions.clearForm")}>
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="Clear form"
+                    aria-label={t("playgroundDeep.decisions.clearForm")}
                     className="hover:text-destructive"
                     onClick={() => handlePayloadChange(clearedPayload)}
                     disabled={rawPayload === clearedPayload || isLoading}
@@ -266,12 +288,12 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
                     <Eraser />
                   </Button>
                 </SimpleTooltip>
-                <SimpleTooltip content="How to call /v1/decisions and /v1/systemone">
+                <SimpleTooltip content={t("playgroundDeep.decisions.howToCall")}>
                   <a
                     href={DECISIONS_DOCS_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="How to call /v1/decisions and /v1/systemone"
+                    aria-label={t("playgroundDeep.decisions.howToCall")}
                     className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "shrink-0")}
                   >
                     <BookOpen />
@@ -307,26 +329,29 @@ export default function SystemOneUI({ accessToken, disabledPersonalKeyCreation =
             </TabsContent>
             <div
               role="toolbar"
-              aria-label="Request actions"
+              aria-label={t("playgroundDeep.decisions.requestActions")}
               className="flex flex-wrap items-center justify-between gap-3 border-t bg-muted/50 px-4 py-3"
             >
               <ValidationSummary validation={validation} />
               <div className="flex items-center gap-2">
                 {isLoading && (
                   <Button variant="outline" onClick={clearRequestState}>
-                    Cancel request
+                    {t("playgroundDeep.decisions.cancelRequest")}
                   </Button>
                 )}
                 <Button size="sm" onClick={handleSend} disabled={!validation.isValid || isLoading || !effectiveApiKey}>
                   {isLoading ? <LoaderCircle className="animate-spin" /> : <Send />}
-                  Send
+                  {t("playgroundDeep.decisions.send")}
                 </Button>
               </div>
             </div>
           </Tabs>
         </section>
 
-        <section className="grid content-start gap-4 xl:min-h-0 xl:overflow-auto" aria-label="Decisions results">
+        <section
+          className="grid content-start gap-4 xl:min-h-0 xl:overflow-auto"
+          aria-label={t("playgroundDeep.decisions.results")}
+        >
           <ResponseView
             response={systemOne.data?.response}
             view={view}

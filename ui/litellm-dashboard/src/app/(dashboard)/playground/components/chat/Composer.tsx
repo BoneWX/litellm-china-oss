@@ -2,6 +2,7 @@
 
 import { useRef, type DragEvent, type KeyboardEvent, type MouseEvent, type ReactNode, type RefObject } from "react";
 import { ArrowUp, Code2, Database, Paperclip, Shield, Square } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { EndpointType } from "@/components/chat_ui/mode_endpoint_mapping";
 import MCPToolArgumentsForm, { type MCPToolArgumentsFormRef } from "@/components/mcp_tools/MCPToolArgumentsForm";
 import type { MCPTool } from "@/components/mcp_tools/types";
@@ -10,7 +11,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { DraftAttachments } from "./ComposerControls";
 import type { DraftFile } from "./composerFiles";
-import { ACCEPT_FOR, ATTACH_LABEL, type Capabilities } from "./endpointCapabilities";
+import { ACCEPT_FOR, type Capabilities } from "./endpointCapabilities";
 import { ChecklistMenu, type OptionGroup } from "./Pickers";
 
 export type ChecklistProps = Readonly<{
@@ -38,9 +39,18 @@ function AttachButton({
   capabilities: Capabilities;
   attach: (files: readonly File[]) => void;
 }) {
+  const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
   if (!capabilities.attach) return null;
-  const label = ATTACH_LABEL[capabilities.attach];
+  const label = t(
+    (
+      {
+        chat: "playgroundDeep.composer.attachChat",
+        images: "playgroundDeep.composer.attachImages",
+        audio: "playgroundDeep.composer.attachAudio",
+      } as const
+    )[capabilities.attach],
+  );
   return (
     <>
       <Tooltip>
@@ -69,9 +79,15 @@ function AttachButton({
 }
 
 function SendButton({ draft, disabled }: { draft: DraftState; disabled: boolean }) {
+  const { t } = useTranslation();
   if (draft.isLoading)
     return (
-      <InputGroupButton size="icon-xs" variant="default" aria-label="Stop" onClick={draft.cancel}>
+      <InputGroupButton
+        size="icon-xs"
+        variant="default"
+        aria-label={t("playgroundDeep.composer.stop")}
+        onClick={draft.cancel}
+      >
         <Square className="fill-current" />
       </InputGroupButton>
     );
@@ -79,7 +95,7 @@ function SendButton({ draft, disabled }: { draft: DraftState; disabled: boolean 
     <InputGroupButton
       size="icon-xs"
       variant="default"
-      aria-label="Send message"
+      aria-label={t("playgroundDeep.composer.send")}
       disabled={disabled}
       onClick={() => void draft.send()}
     >
@@ -115,6 +131,7 @@ export function Composer({
   settingsControl: ReactNode;
   sendDisabled: boolean;
 }) {
+  const { t } = useTranslation();
   const isDirectCall = endpoint === EndpointType.MCP;
   const isRealtime = endpoint === EndpointType.REALTIME;
   const message = useRef<HTMLTextAreaElement>(null);
@@ -138,7 +155,7 @@ export function Composer({
       {directTool ? (
         <MCPToolArgumentsForm ref={toolArgsForm} tool={directTool} className="flex flex-col gap-3" />
       ) : (
-        <p className="text-sm text-muted-foreground">Pick a server and a tool above to fill in its arguments</p>
+        <p className="text-sm text-muted-foreground">{t("playgroundDeep.composer.directCallHint")}</p>
       )}
     </div>
   );
@@ -148,9 +165,27 @@ export function Composer({
       value={draft.text}
       onChange={(event) => draft.setText(event.target.value)}
       onKeyDown={handleKeyDown}
-      placeholder={capabilities.placeholder}
+      placeholder={t(
+        (
+          {
+            [EndpointType.CHAT]: "playgroundDeep.composer.placeholderTest",
+            [EndpointType.RESPONSES]: "playgroundDeep.composer.placeholderTest",
+            [EndpointType.ANTHROPIC_MESSAGES]: "playgroundDeep.composer.placeholderTest",
+            [EndpointType.IMAGE]: "playgroundDeep.composer.placeholderImage",
+            [EndpointType.VIDEO]: "playgroundDeep.composer.placeholderVideo",
+            [EndpointType.IMAGE_EDITS]: "playgroundDeep.composer.placeholderImageEdit",
+            [EndpointType.EMBEDDINGS]: "playgroundDeep.composer.placeholderEmbed",
+            [EndpointType.SPEECH]: "playgroundDeep.composer.placeholderSpeech",
+            [EndpointType.TRANSCRIPTION]: "playgroundDeep.composer.placeholderTranscription",
+            [EndpointType.A2A_AGENTS]: "playgroundDeep.composer.placeholderAgent",
+            [EndpointType.MCP]: "playgroundDeep.composer.placeholderTest",
+            [EndpointType.REALTIME]: "playgroundDeep.composer.placeholderTest",
+            [EndpointType.INTERACTIONS]: "playgroundDeep.composer.placeholderTest",
+          } as const
+        )[endpoint],
+      )}
       rows={2}
-      aria-label="Message"
+      aria-label={t("playgroundDeep.composer.message")}
       className="max-h-60"
     />
   );
@@ -168,21 +203,31 @@ export function Composer({
       <InputGroupAddon align="block-end" className="gap-1" onClick={focusMessage}>
         {capabilities.mcp && mcpControl}
         {capabilities.vectorStores && (
-          <ChecklistMenu label="Vector stores" icon={<Database />} emptyText="No vector stores yet" {...vectorStores} />
+          <ChecklistMenu
+            label={t("playgroundDeep.composer.vectorStores")}
+            icon={<Database />}
+            emptyText={t("playgroundDeep.composer.noVectorStores")}
+            {...vectorStores}
+          />
         )}
         {capabilities.guardrails && (
-          <ChecklistMenu label="Guardrails" icon={<Shield />} emptyText="No guardrails yet" {...guardrails} />
+          <ChecklistMenu
+            label={t("playgroundDeep.composer.guardrails")}
+            icon={<Shield />}
+            emptyText={t("playgroundDeep.composer.noGuardrails")}
+            {...guardrails}
+          />
         )}
         {capabilities.codeInterpreter && (
           <Toggle
             size="sm"
             pressed={codeInterpreter.enabled}
             onPressedChange={codeInterpreter.onToggle}
-            aria-label="Code interpreter"
+            aria-label={t("playgroundDeep.composer.codeInterpreter")}
             className="h-6 gap-1 px-1.5 text-xs"
           >
             <Code2 />
-            Code interpreter
+            {t("playgroundDeep.composer.codeInterpreter")}
           </Toggle>
         )}
         <span className="ml-auto flex items-center gap-1">

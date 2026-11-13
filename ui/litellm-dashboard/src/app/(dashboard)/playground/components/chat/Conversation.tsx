@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import {
   ArrowDownToLine,
   ArrowUpFromLine,
@@ -69,11 +71,17 @@ const fellBack = (message: MessageType): boolean => (message.trace?.attemptedFal
 export const servedModel = (message: MessageType): string | undefined =>
   message.trace?.modelGroup ?? (message.isError ? undefined : message.model ?? message.trace?.requestedModel);
 
-const replyModel = (message: MessageType): Readonly<{ value: string; detail: string }> | null => {
+const replyModel = (t: TFunction, message: MessageType): Readonly<{ value: string; detail: string }> | null => {
   const served = servedModel(message);
-  if (served) return { value: served, detail: fellBack(message) ? "Served by, after a fallback" : "Served by" };
+  if (served)
+    return {
+      value: served,
+      detail: fellBack(message)
+        ? t("playgroundDeep.conversation.servedByAfterFallback")
+        : t("playgroundDeep.conversation.servedBy"),
+    };
   const requested = message.trace?.requestedModel ?? message.model;
-  return requested ? { value: requested, detail: "Requested model" } : null;
+  return requested ? { value: requested, detail: t("playgroundDeep.conversation.requestedModel") } : null;
 };
 
 function Metric({ icon, value, label }: { icon: ReactNode; value: string; label?: string }) {
@@ -87,35 +95,60 @@ function Metric({ icon, value, label }: { icon: ReactNode; value: string; label?
 }
 
 function ReplyMetrics({ message }: { message: MessageType }) {
+  const { t } = useTranslation();
   const usage = message.usage;
   const cost = usage?.cost ?? message.trace?.cost;
   const cached = usage?.servedFromResponseCache || message.trace?.cacheHit;
   return (
     <div
-      aria-label="Request metrics"
+      aria-label={t("playgroundDeep.conversation.requestMetrics")}
       className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground tabular-nums"
     >
       {message.timeToFirstToken !== undefined && (
-        <Metric icon={<Timer />} value={formatSeconds(message.timeToFirstToken)} label="to first token" />
+        <Metric
+          icon={<Timer />}
+          value={formatSeconds(message.timeToFirstToken)}
+          label={t("playgroundDeep.conversation.timeToFirstToken")}
+        />
       )}
       {message.totalLatency !== undefined && (
-        <Metric icon={<Clock />} value={formatSeconds(message.totalLatency)} label="total" />
+        <Metric
+          icon={<Clock />}
+          value={formatSeconds(message.totalLatency)}
+          label={t("playgroundDeep.conversation.total")}
+        />
       )}
       {usage?.promptTokens !== undefined && (
-        <Metric icon={<ArrowDownToLine />} value={String(usage.promptTokens)} label="in" />
+        <Metric
+          icon={<ArrowDownToLine />}
+          value={String(usage.promptTokens)}
+          label={t("playgroundDeep.conversation.tokensIn")}
+        />
       )}
       {usage?.completionTokens !== undefined && (
-        <Metric icon={<ArrowUpFromLine />} value={String(usage.completionTokens)} label="out" />
+        <Metric
+          icon={<ArrowUpFromLine />}
+          value={String(usage.completionTokens)}
+          label={t("playgroundDeep.conversation.tokensOut")}
+        />
       )}
       {usage?.reasoningTokens ? (
-        <Metric icon={<Brain />} value={String(usage.reasoningTokens)} label="reasoning" />
+        <Metric
+          icon={<Brain />}
+          value={String(usage.reasoningTokens)}
+          label={t("playgroundDeep.conversation.reasoning")}
+        />
       ) : null}
       {usage?.cacheReadTokens ? (
-        <Metric icon={<DatabaseZap />} value={String(usage.cacheReadTokens)} label="cached" />
+        <Metric
+          icon={<DatabaseZap />}
+          value={String(usage.cacheReadTokens)}
+          label={t("playgroundDeep.conversation.cached")}
+        />
       ) : null}
       {cost !== undefined && <Metric icon={<Coins />} value={formatCost(cost)} />}
       {message.toolName && <Metric icon={<Wrench />} value={message.toolName} />}
-      {cached && <Badge variant="secondary">Cached response</Badge>}
+      {cached && <Badge variant="secondary">{t("playgroundDeep.conversation.cachedResponse")}</Badge>}
     </div>
   );
 }
@@ -131,6 +164,7 @@ function AttachmentMediaFor({ attachment }: { attachment: MessageAttachment }) {
 }
 
 function UserTurn({ message }: { message: MessageType }) {
+  const { t } = useTranslation();
   const text = textOf(message);
   return (
     <Message align="end">
@@ -153,7 +187,8 @@ function UserTurn({ message }: { message: MessageType }) {
             <BubbleContent className="flex flex-col gap-1">
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Wrench className="size-3.5" />
-                Called <span className="font-mono text-foreground">{message.mcpToolCall.tool}</span>
+                {t("playgroundDeep.conversation.calledTool")}{" "}
+                <span className="font-mono text-foreground">{message.mcpToolCall.tool}</span>
               </span>
               <pre className="font-mono text-xs whitespace-pre-wrap">
                 {JSON.stringify(message.mcpToolCall.arguments, null, 2)}
@@ -191,7 +226,8 @@ function AssistantReply({
   inspected: boolean;
   onInspect: () => void;
 }) {
-  const model = replyModel(message);
+  const { t } = useTranslation();
+  const model = replyModel(t, message);
   const showMcpEvents = isLast && extras.mcpEvents.length > 0 && MCP_EVENT_ENDPOINTS.includes(extras.endpoint);
   const showCode = isLast && extras.codeInterpreter && extras.endpoint === EndpointType.RESPONSES;
   return (
@@ -202,7 +238,7 @@ function AssistantReply({
             <LongValue
               value={model.value}
               detail={model.detail}
-              copyLabel="model name"
+              copyLabel={t("playgroundDeep.conversation.copyModelName")}
               className="max-w-96 text-xs text-muted-foreground"
             />
             {fellBack(message) && <FallbackBadge />}
@@ -221,7 +257,7 @@ function AssistantReply({
         )}
         {message.isError ? (
           <Alert variant="destructive">
-            <AlertTitle>The request failed</AlertTitle>
+            <AlertTitle>{t("playgroundDeep.conversation.responseFailed")}</AlertTitle>
             <AlertDescription className="font-mono text-xs wrap-anywhere">{textOf(message)}</AlertDescription>
           </Alert>
         ) : (
@@ -240,17 +276,19 @@ function AssistantReply({
             )}
           </div>
           <span className="flex shrink-0 items-center gap-0.5">
-            {!message.isImage && !message.isAudio && <CopyIconButton value={textOf(message)} label="reply" />}
+            {!message.isImage && !message.isAudio && (
+              <CopyIconButton value={textOf(message)} label={t("playgroundDeep.conversation.copyReply")} />
+            )}
             {message.trace && (
               <Toggle
                 size="sm"
                 pressed={inspected}
                 onPressedChange={onInspect}
-                aria-label="Inspect this request"
+                aria-label={t("playgroundDeep.conversation.inspectRequest")}
                 className="h-6 gap-1 px-1.5 text-xs"
               >
                 <ScanSearch />
-                Inspect
+                {t("playgroundDeep.conversation.inspect")}
               </Toggle>
             )}
           </span>
@@ -261,12 +299,17 @@ function AssistantReply({
 }
 
 function WaitingTurn({ target }: { target: string | undefined }) {
+  const { t } = useTranslation();
   return (
     <Message>
       <MessageContent className="text-sm">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Spinner className="size-3.5" />
-          <span className="shimmer">{target ? `Waiting for ${target}` : "Waiting for a reply"}</span>
+          <span className="shimmer">
+            {target
+              ? t("playgroundDeep.conversation.waitingFor", { target })
+              : t("playgroundDeep.conversation.waitingForReply")}
+          </span>
         </div>
       </MessageContent>
     </Message>
@@ -274,12 +317,13 @@ function WaitingTurn({ target }: { target: string | undefined }) {
 }
 
 function SwitchMarker({ model }: { model: string }) {
+  const { t } = useTranslation();
   return (
     <Marker variant="separator">
       <MarkerIcon>
         <Repeat />
       </MarkerIcon>
-      <MarkerContent>Switched to {model}</MarkerContent>
+      <MarkerContent>{t("playgroundDeep.conversation.switchedTo", { model })}</MarkerContent>
     </Marker>
   );
 }
@@ -291,16 +335,15 @@ function EmptyConversation({
   suggestions: readonly string[];
   onPick: (text: string) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Empty className="flex-1">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <PlayCircle />
         </EmptyMedia>
-        <EmptyTitle>Send a test request</EmptyTitle>
-        <EmptyDescription>
-          Pick a model and anything the request should go through, then inspect what the gateway did with it
-        </EmptyDescription>
+        <EmptyTitle>{t("playgroundDeep.conversation.emptyTitle")}</EmptyTitle>
+        <EmptyDescription>{t("playgroundDeep.conversation.emptyDescription")}</EmptyDescription>
       </EmptyHeader>
       {suggestions.length > 0 && (
         <EmptyContent className="max-w-xl flex-row flex-wrap justify-center gap-2">
@@ -341,13 +384,14 @@ export function Conversation({
   suggestions: readonly string[];
   onPickSuggestion: (text: string) => void;
 }) {
+  const { t } = useTranslation();
   if (messages.length === 0) return <EmptyConversation suggestions={suggestions} onPick={onPickSuggestion} />;
   const lastIndex = messages.length - 1;
   const waiting = isLoading && messages[lastIndex]?.role === "user";
   return (
     <MessageScrollerProvider autoScroll defaultScrollPosition="end">
       <MessageScroller className="min-h-0 flex-1">
-        <MessageScrollerViewport aria-label="Conversation" className="scroll-fade-b">
+        <MessageScrollerViewport aria-label={t("playgroundDeep.conversation.ariaLabel")} className="scroll-fade-b">
           <MessageScrollerContent className="mx-auto w-full max-w-3xl gap-6 px-6 py-6">
             {messages.flatMap((message, index) => {
               const switched = switchedModel(messages, index);

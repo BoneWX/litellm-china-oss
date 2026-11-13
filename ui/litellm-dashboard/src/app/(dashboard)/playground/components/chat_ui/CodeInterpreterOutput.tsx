@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Code, Download, FileImage, FileText, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -35,6 +36,7 @@ function isImageFilename(filename: string | undefined): boolean {
 }
 
 const CodeInterpreterOutput: React.FC<CodeInterpreterOutputProps> = ({ code, annotations = [], accessToken }) => {
+  const { t } = useTranslation();
   const syntaxTheme = useSyntaxTheme(coy);
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>({});
@@ -144,7 +146,7 @@ const CodeInterpreterOutput: React.FC<CodeInterpreterOutputProps> = ({ code, ann
             }
           >
             <Code className="size-4" />
-            Python Code Executed
+            {t("playgroundDeep.code.pythonExecuted")}
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div className="border-t border-border p-2">
@@ -171,13 +173,13 @@ const CodeInterpreterOutput: React.FC<CodeInterpreterOutputProps> = ({ code, ann
           {loadingImages[annotation.file_id] ? (
             <div className="flex items-center justify-center bg-muted p-8">
               <Loader2 className="size-4 animate-spin text-muted-foreground" aria-hidden="true" />
-              <span className="ml-2 text-sm text-muted-foreground">Loading image...</span>
+              <span className="ml-2 text-sm text-muted-foreground">{t("playgroundDeep.code.loadingImage")}</span>
             </div>
           ) : imageUrls[annotation.file_id] ? (
             <div>
               <img
                 src={imageUrls[annotation.file_id]}
-                alt={annotation.filename || "Generated chart"}
+                alt={annotation.filename || t("playgroundDeep.code.generatedChart")}
                 className="max-h-[400px] max-w-full"
               />
               <div className="flex items-center justify-between border-t border-border bg-muted px-3 py-2">
@@ -193,13 +195,13 @@ const CodeInterpreterOutput: React.FC<CodeInterpreterOutputProps> = ({ code, ann
                   onClick={() => void handleDownload(annotation)}
                 >
                   <Download className="size-3" />
-                  Download
+                  {t("playgroundDeep.code.download")}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-center bg-muted p-4">
-              <span className="text-sm text-muted-foreground">Image not available</span>
+              <span className="text-sm text-muted-foreground">{t("playgroundDeep.code.imageUnavailable")}</span>
             </div>
           )}
         </div>

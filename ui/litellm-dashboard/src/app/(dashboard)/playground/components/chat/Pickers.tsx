@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import {
   Combobox,
@@ -64,11 +65,12 @@ function GroupedOptions({ index, mono = false }: { index: ReadonlyMap<string, Pi
 }
 
 function CustomItem({ value }: { value: string }) {
+  const { t } = useTranslation();
   return (
     <ComboboxItem value={value} className="font-mono text-xs">
       <Plus />
       <span className="min-w-0 truncate">
-        <span className="font-sans">Use</span> {value}
+        <span className="font-sans">{t("playgroundDeep.chat.pickerUse")}</span> {value}
       </span>
     </ComboboxItem>
   );
@@ -102,6 +104,7 @@ export function ChecklistMenu({
   emptyText: string;
   defaultOpen?: boolean;
 }) {
+  const { t } = useTranslation();
   const index = optionIndex(groups);
   const items = toItems(groups);
   return (
@@ -120,10 +123,13 @@ export function ChecklistMenu({
         <CountBadge count={value.length} />
       </ComboboxTrigger>
       <ComboboxContent side="top" className="w-72">
-        <ComboboxInput showTrigger={false} placeholder={`Search ${label.toLowerCase()}`} />
+        <ComboboxInput
+          showTrigger={false}
+          placeholder={t("playgroundDeep.chat.pickerSearch", { label: label.toLowerCase() })}
+        />
         <ComboboxEmpty>
           {isLoading ? <Spinner className="size-3.5" /> : items.length === 0 && emptyText}
-          {!isLoading && items.length > 0 && "Nothing matches"}
+          {!isLoading && items.length > 0 && t("playgroundDeep.common.noMatches")}
         </ComboboxEmpty>
         <GroupedOptions index={index} />
       </ComboboxContent>
@@ -152,12 +158,18 @@ export function TargetPicker({
   allowCustom?: boolean;
   defaultOpen?: boolean;
 }) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const index = optionIndex(groups);
   const custom = query.trim();
   const offerCustom = allowCustom && custom !== "" && !isListed(index, custom);
-  const items = [...toItems(groups), ...(offerCustom ? [{ value: "Custom name", items: [custom] }] : [])];
-  const unsetText = isLoading ? `Loading ${label.toLowerCase()}s` : placeholder;
+  const items = [
+    ...toItems(groups),
+    ...(offerCustom ? [{ value: t("playgroundDeep.chat.pickerCustomGroup"), items: [custom] }] : []),
+  ];
+  const unsetText = isLoading
+    ? t("playgroundDeep.chat.pickerLoadingPlural", { label: label.toLowerCase() })
+    : placeholder;
   return (
     <Combobox
       items={items}
@@ -182,9 +194,14 @@ export function TargetPicker({
         </span>
       </ComboboxTrigger>
       <ComboboxContent side="top" className="w-80">
-        <ComboboxInput showTrigger={false} placeholder={`Search ${label.toLowerCase()}s`} />
+        <ComboboxInput
+          showTrigger={false}
+          placeholder={t("playgroundDeep.chat.pickerSearchPlural", { label: label.toLowerCase() })}
+        />
         <ComboboxEmpty>
-          {items.length === 0 && !custom ? emptyText : `No matching ${label.toLowerCase()}`}
+          {items.length === 0 && !custom
+            ? emptyText
+            : t("playgroundDeep.chat.pickerNoMatchPlural", { label: label.toLowerCase() })}
         </ComboboxEmpty>
         <GroupedOptions index={index} mono />
       </ComboboxContent>

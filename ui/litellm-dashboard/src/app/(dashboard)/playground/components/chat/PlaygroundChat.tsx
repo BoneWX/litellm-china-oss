@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { ChevronDown, PanelRight, RotateCcw, SquarePen } from "lucide-react";
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import useCan from "@/app/(dashboard)/hooks/useCan";
 import { generateCodeSnippet } from "@/components/chat_ui/CodeSnippets";
 import { EndpointType, getEndpointType } from "@/components/chat_ui/mode_endpoint_mapping";
@@ -54,6 +56,31 @@ export type ProxySettings = Readonly<{ PROXY_BASE_URL?: string; LITELLM_UI_API_D
 
 const POLICY_PREFIX = "policy:";
 
+const suggestionKey = (value: string) => {
+  switch (value) {
+    case "Write me a poem":
+      return "playgroundDeep.chat.suggestionPoem" as const;
+    case "Explain quantum computing":
+      return "playgroundDeep.chat.suggestionQuantum" as const;
+    case "Draft a polite email requesting a meeting":
+      return "playgroundDeep.chat.suggestionEmail" as const;
+    case "What can you help me with?":
+      return "playgroundDeep.chat.suggestionAgentHelp" as const;
+    case "Tell me about yourself":
+      return "playgroundDeep.chat.suggestionAgentAbout" as const;
+    case "What tasks can you perform?":
+      return "playgroundDeep.chat.suggestionAgentTasks" as const;
+    case "Generate sample sales data CSV and create a chart":
+      return "playgroundDeep.chat.suggestionCodeSales" as const;
+    case "Create a PNG bar chart comparing AI gateway providers including LiteLLM":
+      return "playgroundDeep.chat.suggestionCodeProviders" as const;
+    case "Generate a CSV of LLM pricing data and visualize it as a line chart":
+      return "playgroundDeep.chat.suggestionCodePricing" as const;
+    default:
+      return null;
+  }
+};
+
 const providerOf = (model: ModelGroup): string => model.providers?.[0] ?? "other";
 
 const modelGroups = (models: readonly ModelGroup[]): readonly OptionGroup[] =>
@@ -64,10 +91,10 @@ const modelGroups = (models: readonly ModelGroup[]): readonly OptionGroup[] =>
       .map((model) => ({ value: model.model_group, label: model.model_group })),
   }));
 
-const modelEmptyText = (failed: boolean, hasKey: boolean): string => {
-  if (failed) return "Unable to load models for this key";
-  if (!hasKey) return "Enter a virtual key to load models";
-  return "No models available for this endpoint";
+const modelEmptyText = (t: TFunction, failed: boolean, hasKey: boolean): string => {
+  if (failed) return t("playgroundDeep.chat.modelsLoadFailed");
+  if (!hasKey) return t("playgroundDeep.chat.enterKeyForModels");
+  return t("playgroundDeep.chat.noModelsForEndpoint");
 };
 
 const reachableMcp = (servers: readonly MCPServer[], toolsets: readonly MCPToolset[]): ReadonlySet<string> =>
@@ -112,12 +139,17 @@ const lastTracedReply = (messages: readonly MessageType[]): number =>
 const totalCost = (messages: readonly MessageType[]): number =>
   messages.reduce((sum, message) => sum + (message.usage?.cost ?? message.trace?.cost ?? 0), 0);
 
-const conversationSummary = (messages: readonly MessageType[]): string => {
+const conversationSummary = (t: TFunction, messages: readonly MessageType[]): string => {
   const requests = messages.filter((message) => message.role === "user").length;
-  if (requests === 0) return "New chat";
-  const label = requests === 1 ? "1 request" : `${requests} requests`;
+  if (requests === 0) return t("playgroundDeep.chat.newConversation");
+  const label =
+    requests === 1
+      ? t("playgroundDeep.chat.requestSummaryOne", { count: requests })
+      : t("playgroundDeep.chat.requestSummary", { count: requests });
   const cost = totalCost(messages);
-  return cost > 0 ? `${label}, ${formatCost(cost)}` : label;
+  return cost > 0
+    ? t("playgroundDeep.chat.requestSummaryWithCost", { count: requests, cost: formatCost(cost) })
+    : label;
 };
 
 export function PlaygroundChat({
@@ -129,6 +161,7 @@ export function PlaygroundChat({
   disabledPersonalKeyCreation: boolean;
   proxySettings: ProxySettings | undefined;
 }) {
+  const { t } = useTranslation();
   const { settings: stored, update, reset } = usePlaygroundSettings(disabledPersonalKeyCreation);
   const canViewPolicies = useCan("viewPolicies");
   const apiKey = (stored.keySource === "session" ? accessToken : stored.virtualKey.trim()) || null;
@@ -211,13 +244,13 @@ export function PlaygroundChat({
 
   const newChat = () => {
     clearChat();
-    toast.success("Chat history cleared.");
+    toast.success(t("playgroundDeep.chat.cleared"));
   };
 
   const resetAll = () => {
     clearChat();
     reset();
-    toast.success("Chat and settings reset");
+    toast.success(t("playgroundDeep.chat.reset"));
   };
 
   const code = (sdk: CodeSdk): string => {
@@ -250,23 +283,23 @@ export function PlaygroundChat({
     <>
       {capabilities.target === "model" && (
         <TargetPicker
-          label="Model"
-          placeholder="Select a model"
+          label={t("playgroundDeep.chat.model")}
+          placeholder={t("playgroundDeep.chat.selectModel")}
           groups={modelGroups(filterModelsForEndpoint([...modelList], settings.endpoint))}
           value={settings.model}
           onValueChange={selectModel}
           isLoading={models.isLoading}
-          emptyText={modelEmptyText(models.isError, Boolean(apiKey))}
+          emptyText={modelEmptyText(t, models.isError, Boolean(apiKey))}
           allowCustom
         />
       )}
       {capabilities.target === "agent" && (
         <TargetPicker
-          label="Agent"
-          placeholder="Select an agent"
+          label={t("playgroundDeep.chat.agent")}
+          placeholder={t("playgroundDeep.chat.selectAgent")}
           groups={[
             {
-              label: "Agents",
+              label: t("playgroundDeep.chat.agents"),
               options: (agents.data ?? []).map((agent) => ({
                 value: agent.agent_name,
                 label: agent.agent_name || agent.agent_id,
@@ -277,21 +310,21 @@ export function PlaygroundChat({
           value={settings.agent}
           onValueChange={(agent) => update({ agent })}
           isLoading={agents.isLoading}
-          emptyText="No agents available for this key"
+          emptyText={t("playgroundDeep.chat.noAgentsForKey")}
         />
       )}
       {capabilities.target === "mcpTool" && (
         <>
           <TargetPicker
-            label="Server"
-            placeholder="Select an MCP server"
+            label={t("playgroundDeep.chat.server")}
+            placeholder={t("playgroundDeep.chat.selectMcpServer")}
             groups={[
               {
-                label: "MCP servers",
+                label: t("playgroundDeep.chat.mcpServers"),
                 options: mcp.servers.map((server) => ({ value: server.server_id, label: serverName(server) })),
               },
               {
-                label: "Toolsets",
+                label: t("playgroundDeep.chat.toolsets"),
                 options: mcp.toolsets.map((toolset) => ({
                   value: `${TOOLSET_PREFIX}${toolset.toolset_id}`,
                   label: toolset.toolset_name,
@@ -302,18 +335,18 @@ export function PlaygroundChat({
             value={directSelection}
             onValueChange={(server) => update({ mcpSelection: [server], directTool: null })}
             isLoading={mcp.isLoading}
-            emptyText="No MCP servers available for this key"
+            emptyText={t("playgroundDeep.chat.noMcpServersForKey")}
           />
           {directByok?.is_byok && (
             <ByokKeyButton server={directByok} name={serverName(directByok)} onConnected={mcp.refreshCredentials} />
           )}
           {directSelection && (
             <TargetPicker
-              label="Tool"
-              placeholder="Select a tool"
+              label={t("playgroundDeep.chat.tool")}
+              placeholder={t("playgroundDeep.chat.selectTool")}
               groups={[
                 {
-                  label: "Tools",
+                  label: t("playgroundDeep.chat.tools"),
                   options: targets.map(({ tool }) => ({
                     value: tool.name,
                     label: tool.name,
@@ -324,7 +357,9 @@ export function PlaygroundChat({
               value={settings.directTool}
               onValueChange={(tool) => update({ directTool: tool })}
               isLoading={directServers.some((server) => directServerTools[server]?.isLoading)}
-              emptyText={toolsFailed ? "Unable to load tools for this server" : "This server has no tools"}
+              emptyText={
+                toolsFailed ? t("playgroundDeep.chat.toolsLoadFailed") : t("playgroundDeep.chat.serverHasNoTools")
+              }
             />
           )}
         </>
@@ -338,8 +373,8 @@ export function PlaygroundChat({
   );
 
   const guardrailGroups: readonly OptionGroup[] = [
-    { label: "Guardrails", options: guardrails.data ?? [] },
-    ...(canViewPolicies ? [{ label: "Policies", options: prefixed(policies.data ?? []) }] : []),
+    { label: t("playgroundDeep.chat.guardrails"), options: guardrails.data ?? [] },
+    ...(canViewPolicies ? [{ label: t("playgroundDeep.chat.policies"), options: prefixed(policies.data ?? []) }] : []),
   ];
 
   const composer = (
@@ -363,7 +398,7 @@ export function PlaygroundChat({
         />
       }
       vectorStores={{
-        groups: [{ label: "Vector stores", options: vectorStores.data ?? [] }],
+        groups: [{ label: t("playgroundDeep.chat.vectorStores"), options: vectorStores.data ?? [] }],
         value: settings.vectorStores,
         onValueChange: (value) => update({ vectorStores: value }),
         isLoading: vectorStores.isLoading,
@@ -400,10 +435,14 @@ export function PlaygroundChat({
     />
   );
 
-  const suggestions =
+  const suggestions = (
     settings.endpoint === EndpointType.RESPONSES && codeInterpreter.enabled
       ? CODE_INTERPRETER_SUGGESTIONS
-      : SUGGESTIONS[settings.endpoint] ?? [];
+      : SUGGESTIONS[settings.endpoint] ?? []
+  ).map((suggestion) => {
+    const key = suggestionKey(suggestion);
+    return key ? t(key) : suggestion;
+  });
 
   const inspector = <InspectorPanel message={inspectedMessage} code={code} />;
 
@@ -411,33 +450,33 @@ export function PlaygroundChat({
     <div className="flex min-h-0 flex-1">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-4">
-          <span className="text-xs text-muted-foreground tabular-nums">{conversationSummary(messages)}</span>
+          <span className="text-xs text-muted-foreground tabular-nums">{conversationSummary(t, messages)}</span>
           <span className="ml-auto flex items-center gap-2">
             {!isWide && (
               <Button variant="outline" size="sm" onClick={() => setSheetOpen(true)}>
                 <PanelRight />
-                Inspector
+                {t("playgroundDeep.chat.inspector")}
               </Button>
             )}
             <ButtonGroup>
               <Button variant="outline" size="sm" onClick={newChat}>
                 <SquarePen />
-                New chat
+                {t("playgroundDeep.chat.newChat")}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger
-                  render={<Button variant="outline" size="icon-sm" aria-label="More chat actions" />}
+                  render={<Button variant="outline" size="icon-sm" aria-label={t("playgroundDeep.chat.moreActions")} />}
                 >
                   <ChevronDown />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64">
                   <DropdownMenuItem onClick={newChat}>
                     <SquarePen />
-                    New chat, keep settings
+                    {t("playgroundDeep.chat.newChatKeepSettings")}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={resetAll}>
                     <RotateCcw />
-                    Reset chat and settings
+                    {t("playgroundDeep.chat.resetAll")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -473,13 +512,16 @@ export function PlaygroundChat({
         <div className="mx-auto w-full max-w-3xl px-6 pb-6">{composer}</div>
       </div>
       {isWide ? (
-        <aside aria-label="Inspector" className="flex w-96 shrink-0 flex-col border-l border-border">
+        <aside
+          aria-label={t("playgroundDeep.chat.inspector")}
+          className="flex w-96 shrink-0 flex-col border-l border-border"
+        >
           {inspector}
         </aside>
       ) : (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetContent side="right" className="w-96 gap-0 p-0" showCloseButton={false}>
-            <SheetTitle className="sr-only">Inspector</SheetTitle>
+            <SheetTitle className="sr-only">{t("playgroundDeep.chat.inspector")}</SheetTitle>
             {inspector}
           </SheetContent>
         </Sheet>

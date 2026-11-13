@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
+import { useTranslation } from "react-i18next";
 import type { MessageType } from "@/components/chat_ui/types";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -67,7 +68,14 @@ export function Markdown({ children }: { children: string }) {
 }
 
 function GeneratedImage({ src }: { src: string }) {
-  return <img src={src} alt="Generated image" className="max-h-[500px] max-w-full rounded-lg border border-border" />;
+  const { t } = useTranslation();
+  return (
+    <img
+      src={src}
+      alt={t("playgroundDeep.agentChat.generatedImage")}
+      className="max-h-[500px] max-w-full rounded-lg border border-border"
+    />
+  );
 }
 
 function Embeddings({ value }: { value: string }) {

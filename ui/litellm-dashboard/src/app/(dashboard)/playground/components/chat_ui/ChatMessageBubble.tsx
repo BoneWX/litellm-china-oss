@@ -1,5 +1,6 @@
 import { Bot, User } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -40,6 +41,7 @@ function ChatMessageBubble({
   codeInterpreterResult,
   accessToken,
 }: ChatMessageBubbleProps) {
+  const { t } = useTranslation();
   const syntaxTheme = useSyntaxTheme(coy);
   const isUser = message.role === "user";
 
@@ -65,7 +67,9 @@ function ChatMessageBubble({
               <Bot className="size-3 text-muted-foreground" aria-hidden="true" />
             )}
           </div>
-          <strong className="text-sm capitalize">{message.role}</strong>
+          <strong className="text-sm capitalize">
+            {message.role === "user" ? t("playgroundDeep.agentChat.user") : t("playgroundDeep.agentChat.assistant")}
+          </strong>
           {message.role === "assistant" && message.model && (
             <span className="max-w-48 truncate rounded-sm bg-muted px-2 py-0.5 text-xs font-normal text-muted-foreground sm:max-w-80">
               {message.model}
@@ -117,7 +121,7 @@ function ChatMessageBubble({
           {message.isImage ? (
             <img
               src={typeof message.content === "string" ? message.content : ""}
-              alt="Generated image"
+              alt={t("playgroundDeep.agentChat.generatedImage")}
               className="max-w-full rounded-md border border-border shadow-xs"
               style={{ maxHeight: "500px" }}
             />
@@ -175,7 +179,7 @@ function ChatMessageBubble({
                 <div className="mt-3">
                   <img
                     src={message.image.url}
-                    alt="Generated image"
+                    alt={t("playgroundDeep.agentChat.generatedImage")}
                     className="max-w-full rounded-md border border-border shadow-xs"
                     style={{ maxHeight: "500px" }}
                   />

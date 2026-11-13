@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy, Split } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -8,24 +9,37 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/cva.config";
 import { toast } from "@/lib/toast";
 
-export function copyText(value: string, label: string): void {
+export function copyText(value: string, label: string, copiedMessage: string, failedMessage: string): void {
   void navigator.clipboard.writeText(value).then(
-    () => toast.success(`${label} copied`),
-    () => toast.error("Unable to copy to clipboard"),
+    () => toast.success(copiedMessage),
+    () => toast.error(failedMessage),
   );
 }
 
 export function CopyIconButton({ value, label }: { value: string; label: string }) {
+  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger
         render={
-          <Button variant="ghost" size="icon-xs" aria-label={`Copy ${label}`} onClick={() => copyText(value, label)} />
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            aria-label={t("playgroundDeep.common.copyLabel", { label })}
+            onClick={() =>
+              copyText(
+                value,
+                label,
+                t("playgroundDeep.common.copiedLabel", { label }),
+                t("playgroundDeep.common.copyFailed"),
+              )
+            }
+          />
         }
       >
         <Copy />
       </TooltipTrigger>
-      <TooltipContent>Copy {label}</TooltipContent>
+      <TooltipContent>{t("playgroundDeep.common.copyLabel", { label })}</TooltipContent>
     </Tooltip>
   );
 }
@@ -65,10 +79,11 @@ export function LongValue({
 }
 
 export function FallbackBadge() {
+  const { t } = useTranslation();
   return (
     <Badge variant="outline" className="border-warning/20 bg-warning/10 text-warning">
       <Split data-icon="inline-start" />
-      Fallback
+      {t("playgroundDeep.common.fallback")}
     </Badge>
   );
 }

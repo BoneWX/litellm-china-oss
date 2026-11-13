@@ -2,6 +2,7 @@
 
 import { Bot, FlaskConical, Link as LinkIcon, MessageSquare, Plus, Save, Trash2 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -85,6 +86,7 @@ function ConnectTabContent({
   createdKeyValue,
   onCreateKey,
 }: ConnectTabContentProps) {
+  const { t } = useTranslation();
   const baseUrl = proxyBaseUrl ?? getConnectTabBaseUrl(proxySettings, customProxyBaseUrl);
   const apiKeyForCurl = createdKeyValue
     ? createdKeyValue.startsWith("Bearer ")
@@ -109,32 +111,29 @@ function ConnectTabContent({
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-foreground mb-1">Proxy base URL</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-1">{t("playgroundDeep.agentBuilder.proxyBaseUrl")}</h3>
         <p className="text-sm text-muted-foreground font-mono bg-muted px-2 py-1.5 rounded-sm border border-border break-all">
           {baseUrl}
         </p>
       </div>
       <div>
-        <h3 className="text-sm font-semibold text-foreground mb-2">Call your agent (cURL)</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-2">{t("playgroundDeep.agentBuilder.callAgent")}</h3>
         <CodeBlock code={curlExample} language="bash" />
       </div>
       <div className="rounded-lg border border-border bg-muted p-4">
-        <h3 className="text-sm font-semibold text-foreground mb-2">Create a key for this agent</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-2">
+          {t("playgroundDeep.agentBuilder.createKeyTitle")}
+        </h3>
         <p className="text-sm text-muted-foreground mb-3">
-          Create a virtual key that can only call this agent. The key will be scoped to you (user_id) and restricted to
-          the model <span className="font-mono text-foreground">{agentName}</span>.
+          {t("playgroundDeep.agentBuilder.createKeyDescription", { model: agentName })}
         </p>
         <Button onClick={onCreateKey} disabled={creatingKey || disabledPersonalKeyCreation}>
-          Create key for this agent
+          {t("playgroundDeep.agentBuilder.createKey")}
         </Button>
         {disabledPersonalKeyCreation && (
-          <p className="text-xs text-warning mt-2">Key creation is disabled for your account.</p>
+          <p className="text-xs text-warning mt-2">{t("playgroundDeep.agentBuilder.keyCreationDisabled")}</p>
         )}
-        {createdKeyValue && (
-          <p className="text-xs text-success mt-2">
-            Key created. It is shown in the cURL example above — copy the snippet to use it.
-          </p>
-        )}
+        {createdKeyValue && <p className="text-xs text-success mt-2">{t("playgroundDeep.agentBuilder.keyCreated")}</p>}
       </div>
     </div>
   );
@@ -194,6 +193,7 @@ export default function AgentBuilderView({
   apiKey,
   customProxyBaseUrl,
 }: AgentBuilderViewProps) {
+  const { t } = useTranslation();
   const [agentModels, setAgentModels] = useState<AgentModel[]>([]);
   const [modelGroups, setModelGroups] = useState<ModelGroup[]>([]);
   const [loadingAgents, setLoadingAgents] = useState(true);
@@ -240,12 +240,12 @@ export default function AgentBuilderView({
       return list;
     } catch (e) {
       console.error(e);
-      toast.fromError("Failed to load agents");
+      toast.fromError(t("playgroundDeep.agentBuilder.loadFailed"));
       return [];
     } finally {
       setLoadingAgents(false);
     }
-  }, [accessToken, userID, userRole]);
+  }, [accessToken, userID, userRole, t]);
 
   const loadModels = useCallback(async () => {
     if (!effectiveApiKey) return;
@@ -333,7 +333,7 @@ export default function AgentBuilderView({
 
   const handleSaveAgent = async () => {
     if (!accessToken || !draftName?.trim() || !draftUnderlyingModel) {
-      toast.fromError("Name and underlying model are required");
+      toast.fromError(t("playgroundDeep.agentBuilder.nameModelRequired"));
       return;
     }
     setSaving(true);
@@ -360,7 +360,7 @@ export default function AgentBuilderView({
       setSelectedId(created ? getAgentSelectionKey(created) : list[0] ? getAgentSelectionKey(list[0]) : null);
       goToTab("chat");
     } catch (e) {
-      toast.fromError("Failed to save agent");
+      toast.fromError(t("playgroundDeep.agentBuilder.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -368,7 +368,7 @@ export default function AgentBuilderView({
 
   const handleUpdateAgent = async () => {
     if (!accessToken || !selectedAgent || !selectedAgentModelId || !draftName?.trim() || !draftUnderlyingModel) {
-      toast.fromError("Name and underlying model are required");
+      toast.fromError(t("playgroundDeep.agentBuilder.nameModelRequired"));
       return;
     }
     setSaving(true);
@@ -388,13 +388,13 @@ export default function AgentBuilderView({
         },
         selectedAgentModelId,
       );
-      toast.success("Agent updated successfully");
+      toast.success(t("playgroundDeep.agentBuilder.updated"));
       const list = await loadAgents();
       const stillSelected = list.find((a) => getAgentModelId(a) === selectedAgentModelId);
       const target = stillSelected ?? list[0];
       setSelectedId(target ? getAgentSelectionKey(target) : null);
     } catch (e) {
-      toast.fromError("Failed to update agent");
+      toast.fromError(t("playgroundDeep.agentBuilder.updateFailed"));
     } finally {
       setSaving(false);
     }
@@ -412,12 +412,12 @@ export default function AgentBuilderView({
       const keyValue = response?.key ?? null;
       if (keyValue) {
         setCreatedKeyValue(keyValue);
-        toast.success("Virtual key created. Use it in the curl example below.");
+        toast.success(t("playgroundDeep.agentBuilder.keyCreatedToast"));
       } else {
-        toast.fromError("Key created but value not returned");
+        toast.fromError(t("playgroundDeep.agentBuilder.keyValueMissing"));
       }
     } catch (e) {
-      toast.fromError("Failed to create key for agent");
+      toast.fromError(t("playgroundDeep.agentBuilder.keyCreateFailed"));
     } finally {
       setCreatingKey(false);
     }
@@ -433,12 +433,12 @@ export default function AgentBuilderView({
     setDeleting(true);
     try {
       await modelDeleteCall(accessToken, selectedAgentModelId);
-      toast.success("Agent deleted");
+      toast.success(t("playgroundDeep.agentBuilder.deleted"));
       const list = await loadAgents();
       const remaining = list.filter((a) => getAgentModelId(a) !== selectedAgentModelId);
       setSelectedId(remaining.length > 0 ? getAgentSelectionKey(remaining[0]) : null);
     } catch (e) {
-      toast.fromError("Failed to delete agent");
+      toast.fromError(t("playgroundDeep.agentBuilder.deleteFailed"));
     } finally {
       setDeleting(false);
       setConfirmingDelete(false);
@@ -448,7 +448,7 @@ export default function AgentBuilderView({
   if (!accessToken || !userID || !userRole) {
     return (
       <div className="flex h-full items-center justify-center p-8 text-muted-foreground">
-        Sign in to use Agent Builder.
+        {t("playgroundDeep.agentBuilder.signIn")}
       </div>
     );
   }
@@ -457,25 +457,24 @@ export default function AgentBuilderView({
     <div className="flex h-full flex-col bg-card text-foreground">
       <div className="flex shrink-0 flex-col border-b border-border">
         <div className="flex h-12 items-center justify-between px-4">
-          <span className="text-sm font-medium text-foreground">Agent Builder</span>
+          <span className="text-sm font-medium text-foreground">{t("playgroundDeep.agentBuilder.title")}</span>
           {isNewAgent ? (
             <Button onClick={handleSaveAgent} disabled={saving || !draftName?.trim() || !draftUnderlyingModel}>
               <Save />
-              Save Agent
+              {t("playgroundDeep.agentBuilder.saveAgent")}
             </Button>
           ) : (
-            <span className="text-xs text-muted-foreground">Build Agents that pass your compliance requirements.</span>
+            <span className="text-xs text-muted-foreground">{t("playgroundDeep.agentBuilder.description")}</span>
           )}
         </div>
         <div className="flex items-center gap-2 border-t border-warning/20 bg-warning/10 px-4 py-2 text-xs text-warning">
           <FlaskConical className="size-4 shrink-0 text-warning" />
           <span>
-            Agent Builder is experimental and may change or be removed without notice. We’d love your feedback—email us
-            at{" "}
+            {t("playgroundDeep.agentBuilder.experimental")}{" "}
             <a href="mailto:product@berri.ai" className="font-medium text-warning underline hover:text-warning/80">
               product@berri.ai
             </a>
-            .
+            {t("playgroundDeep.agentBuilder.feedbackSuffix")}
           </span>
         </div>
       </div>
@@ -484,8 +483,15 @@ export default function AgentBuilderView({
         {/* Roster */}
         <div className="w-60 shrink-0 border-r border-border bg-card flex flex-col">
           <div className="flex items-center justify-between border-b border-border p-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Agents</span>
-            <Button variant="ghost" size="icon-sm" onClick={handleAddAgent} aria-label="Add agent">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("playgroundDeep.agentBuilder.agents")}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleAddAgent}
+              aria-label={t("playgroundDeep.agentBuilder.addAgent")}
+            >
               <Plus />
             </Button>
           </div>
@@ -517,7 +523,7 @@ export default function AgentBuilderView({
                   onClick={handleAddAgent}
                   className="mb-1 w-full rounded-md border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:border-info hover:bg-info/10 hover:text-foreground"
                 >
-                  <Plus className="mr-1 inline size-4" /> New agent
+                  <Plus className="mr-1 inline size-4" /> {t("playgroundDeep.agentBuilder.newAgent")}
                 </button>
               </>
             )}
@@ -528,7 +534,7 @@ export default function AgentBuilderView({
         <div className="flex flex-1 flex-col overflow-hidden">
           {selectedId === null && !isNewAgent && agentModels.length === 0 && !loadingAgents && (
             <div className="flex flex-1 items-center justify-center p-8 text-muted-foreground">
-              No agents yet. Add an agent to get started.
+              {t("playgroundDeep.agentBuilder.noAgents")}
             </div>
           )}
           {(selectedId !== null || isNewAgent) && (
@@ -541,19 +547,19 @@ export default function AgentBuilderView({
                 <TabsList variant="line" className="h-auto w-full justify-start rounded-none border-b p-0 pl-4">
                   <TabsTrigger value="configure" className="flex-none rounded-none px-4 py-2">
                     <Bot />
-                    Configure
+                    {t("playgroundDeep.agentBuilder.configure")}
                   </TabsTrigger>
                   <TabsTrigger value="chat" disabled={isNewAgent} className="flex-none rounded-none px-4 py-2">
                     <MessageSquare />
-                    Chat
+                    {t("playgroundDeep.agentBuilder.chat")}
                   </TabsTrigger>
                   <TabsTrigger value="test" disabled={isNewAgent} className="flex-none rounded-none px-4 py-2">
                     <FlaskConical />
-                    Batch Test
+                    {t("playgroundDeep.agentBuilder.batchTest")}
                   </TabsTrigger>
                   <TabsTrigger value="connect" disabled={isNewAgent} className="flex-none rounded-none px-4 py-2">
                     <LinkIcon />
-                    Connect
+                    {t("playgroundDeep.agentBuilder.connect")}
                   </TabsTrigger>
                 </TabsList>
 
@@ -567,36 +573,44 @@ export default function AgentBuilderView({
                       <div className="mx-auto max-w-xl space-y-4">
                         {!selectedAgentModelId && selectedAgent && (
                           <div className="rounded-sm border border-warning/20 bg-warning/10 px-3 py-2 text-xs text-warning">
-                            This agent cannot be updated or deleted here (missing model id). Manage it from Models &amp;
-                            Endpoints.
+                            {t("playgroundDeep.agentBuilder.missingModelId")}
                           </div>
                         )}
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-foreground">Agent name</label>
+                          <label className="mb-1 block text-sm font-medium text-foreground">
+                            {t("playgroundDeep.agentBuilder.agentName")}
+                          </label>
                           <Input
                             value={draftName}
                             onChange={(e) => setDraftName(e.target.value)}
-                            placeholder="My Agent"
+                            placeholder={t("playgroundDeep.agentBuilder.agentNamePlaceholder")}
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-foreground">System prompt</label>
+                          <label className="mb-1 block text-sm font-medium text-foreground">
+                            {t("playgroundDeep.agentBuilder.systemPrompt")}
+                          </label>
                           <Textarea
                             value={draftSystemPrompt}
                             onChange={(e) => setDraftSystemPrompt(e.target.value)}
-                            placeholder="You are a helpful assistant..."
+                            placeholder={t("playgroundDeep.agentBuilder.systemPromptPlaceholder")}
                             rows={6}
                             className="field-sizing-fixed"
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-foreground">Underlying LLM</label>
+                          <label className="mb-1 block text-sm font-medium text-foreground">
+                            {t("playgroundDeep.agentBuilder.underlyingLlm")}
+                          </label>
                           <Select
                             value={draftUnderlyingModel ?? null}
                             onValueChange={(model: string | null) => setDraftUnderlyingModel(model ?? undefined)}
                           >
-                            <SelectTrigger className="w-full" aria-label="Underlying LLM">
-                              <SelectValue placeholder="Select model" />
+                            <SelectTrigger
+                              className="w-full"
+                              aria-label={t("playgroundDeep.agentBuilder.underlyingLlm")}
+                            >
+                              <SelectValue placeholder={t("playgroundDeep.agentBuilder.selectModel")} />
                             </SelectTrigger>
                             <SelectContent>
                               {modelGroups.map((m) => (
@@ -609,7 +623,9 @@ export default function AgentBuilderView({
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="mb-1 block text-sm font-medium text-foreground">Temperature</label>
+                            <label className="mb-1 block text-sm font-medium text-foreground">
+                              {t("playgroundDeep.agentBuilder.temperature")}
+                            </label>
                             <Input
                               type="number"
                               min={0}
@@ -620,7 +636,9 @@ export default function AgentBuilderView({
                             />
                           </div>
                           <div>
-                            <label className="mb-1 block text-sm font-medium text-foreground">Max tokens</label>
+                            <label className="mb-1 block text-sm font-medium text-foreground">
+                              {t("playgroundDeep.agentBuilder.maxTokens")}
+                            </label>
                             <Input
                               type="number"
                               min={1}
@@ -630,9 +648,11 @@ export default function AgentBuilderView({
                           </div>
                         </div>
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-foreground">MCP servers</label>
+                          <label className="mb-1 block text-sm font-medium text-foreground">
+                            {t("playgroundDeep.agentBuilder.mcpServers")}
+                          </label>
                           <MultiSelect
-                            placeholder="Select MCP servers to attach (same format as chat completions API)"
+                            placeholder={t("playgroundDeep.agentBuilder.selectMcpServers")}
                             value={selectedMCPServerIds}
                             onValueChange={handleMCPServerChange}
                             loading={loadingMCPServers}
@@ -644,9 +664,7 @@ export default function AgentBuilderView({
                           />
                           {selectedAgent && draftTools.length > 0 && (
                             <p className="mt-1 text-xs text-muted-foreground">
-                              {draftTools.length} MCP server{draftTools.length !== 1 ? "s" : ""} saved. Use the same{" "}
-                              <code className="rounded-sm bg-muted px-1">tools</code> array in chat completions when
-                              calling this agent.
+                              {t("playgroundDeep.agentBuilder.savedServers", { count: draftTools.length })}
                             </p>
                           )}
                         </div>
@@ -659,17 +677,17 @@ export default function AgentBuilderView({
                                   disabled={saving || !draftName?.trim() || !draftUnderlyingModel}
                                 >
                                   <Save />
-                                  Update Agent
+                                  {t("playgroundDeep.agentBuilder.updateAgent")}
                                 </Button>
                                 <Button variant="destructive" onClick={handleDeleteAgent} disabled={deleting}>
                                   <Trash2 />
-                                  Delete
+                                  {t("playgroundDeep.agentBuilder.delete")}
                                 </Button>
                               </>
                             )}
                             <Button onClick={() => goToTab("chat")}>
                               <MessageSquare />
-                              Test in Chat
+                              {t("playgroundDeep.agentBuilder.testInChat")}
                             </Button>
                           </div>
                         )}
@@ -693,7 +711,7 @@ export default function AgentBuilderView({
                       />
                     ) : (
                       <div className="flex flex-1 items-center justify-center text-muted-foreground">
-                        Save an agent first to test in Chat.
+                        {t("playgroundDeep.agentBuilder.saveFirst")}
                       </div>
                     )}
                   </div>
@@ -710,7 +728,7 @@ export default function AgentBuilderView({
                       />
                     ) : (
                       <div className="flex flex-1 items-center justify-center text-muted-foreground">
-                        Select an agent to run batch tests.
+                        {t("playgroundDeep.agentBuilder.selectToTest")}
                       </div>
                     )}
                   </div>
@@ -731,7 +749,7 @@ export default function AgentBuilderView({
                       />
                     ) : (
                       <div className="flex flex-1 items-center justify-center text-muted-foreground">
-                        Select an agent to see how to connect.
+                        {t("playgroundDeep.agentBuilder.selectToConnect")}
                       </div>
                     )}
                   </div>
@@ -745,15 +763,15 @@ export default function AgentBuilderView({
       <AlertDialog open={confirmingDelete} onOpenChange={setConfirmingDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete agent</AlertDialogTitle>
+            <AlertDialogTitle>{t("playgroundDeep.agentBuilder.deleteAgent")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{selectedAgent?.model_name}&quot;? This cannot be undone.
+              {t("playgroundDeep.agentBuilder.deleteConfirm", { name: selectedAgent?.model_name ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction variant="outline">Cancel</AlertDialogAction>
+            <AlertDialogAction variant="outline">{t("playgroundDeep.agentBuilder.cancel")}</AlertDialogAction>
             <Button variant="destructive" onClick={handleConfirmDelete} disabled={deleting}>
-              Delete
+              {t("playgroundDeep.agentBuilder.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -2,6 +2,7 @@
 
 import { useId, useState, type ReactNode } from "react";
 import { Blocks, KeyRound, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,7 +22,6 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import type { MCPServer, MCPToolset } from "@/components/mcp_tools/types";
-import { uiHref } from "@/utils/uiHref";
 import { ByokConnect } from "./ByokConnect";
 import {
   ALL_MCP_SERVERS,
@@ -53,6 +53,7 @@ function SearchField({
   placeholder: string;
   autoFocus: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <InputGroup className="h-8">
       <InputGroupAddon>
@@ -84,9 +85,14 @@ function MasterRow({
   onSelect: () => void;
   summary?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div data-active={active || undefined} className="flex items-center gap-1 rounded-sm pl-2 data-active:bg-accent">
-      <Checkbox checked={checked} onCheckedChange={onCheckedChange} aria-label={`Use ${row.label}`} />
+      <Checkbox
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        aria-label={t("playgroundDeep.mcp.useServer", { name: row.label })}
+      />
       <Button
         variant="ghost"
         size="sm"
@@ -168,6 +174,7 @@ export function McpDialog({
   onCredentialSaved: () => void;
   defaultOpen?: boolean;
 }) {
+  const { t } = useTranslation();
   const [focused, setFocused] = useState<string>(selection.find((item) => item !== ALL_MCP_SERVERS) ?? ALL_MCP_SERVERS);
   const [query, setQuery] = useState("");
   const [toolQuery, setToolQuery] = useState("");
@@ -200,11 +207,13 @@ export function McpDialog({
     if (!selection.includes(row.value)) return undefined;
     const server = serverById.get(row.value);
     if (!server) return undefined;
-    if (needsKey(server)) return "Needs your key";
+    if (needsKey(server)) return t("playgroundDeep.mcp.needsKey");
     const tools = toolNames(row.value);
     if (tools.length === 0) return undefined;
     const allowed = allowedTools(toolLimits, row.value, tools).length;
-    return allowed === tools.length ? `All ${tools.length} tools` : `${allowed} of ${tools.length} tools`;
+    return allowed === tools.length
+      ? t("playgroundDeep.mcp.allTools", { count: tools.length })
+      : t("playgroundDeep.mcp.someTools", { allowed, count: tools.length });
   };
 
   const focus = (item: string) => {
@@ -227,15 +236,13 @@ export function McpDialog({
 
   const detail = (): ReactNode => {
     if (focused === ALL_MCP_SERVERS)
-      return <Note title="All MCP servers">Every server this key can reach, with all of its tools</Note>;
+      return <Note title={t("playgroundDeep.mcp.allServers")}>{t("playgroundDeep.mcp.allServersDescription")}</Note>;
     const toolset = toolsets.find((item) => `${TOOLSET_PREFIX}${item.toolset_id}` === focused);
     if (toolset)
       return (
         <ScrollArea className="min-h-0 flex-1">
           <div className="flex flex-col gap-3 p-4">
-            <p className="text-sm text-muted-foreground">
-              {toolset.description || "A toolset's tools are fixed by whoever created it"}
-            </p>
+            <p className="text-sm text-muted-foreground">{toolset.description || t("playgroundDeep.mcp.fixedTools")}</p>
             <div className="flex flex-wrap gap-1.5">
               {toolset.tools.map((tool) => (
                 <Badge key={`${tool.server_id}-${tool.tool_name}`} variant="secondary" className="font-mono">
@@ -247,7 +254,8 @@ export function McpDialog({
         </ScrollArea>
       );
     const server = serverById.get(focused);
-    if (!server) return <Note title="Nothing selected">Pick a server or toolset on the left</Note>;
+    if (!server)
+      return <Note title={t("playgroundDeep.mcp.nothingSelected")}>{t("playgroundDeep.mcp.pickServer")}</Note>;
     const name = serverName(server);
     if (needsKey(server) || replacingKey === focused)
       return (
@@ -264,13 +272,13 @@ export function McpDialog({
     const replaceKey = server.is_byok ? (
       <Button variant="outline" size="sm" onClick={() => setReplacingKey(focused)}>
         <KeyRound />
-        Replace key
+        {t("playgroundDeep.mcp.replaceKey")}
       </Button>
     ) : undefined;
     if (!selection.includes(focused))
       return (
         <Note title={name} action={replaceKey}>
-          Check this server to choose which of its tools the model can call
+          {t("playgroundDeep.mcp.checkServer")}
         </Note>
       );
     const state = toolsByServer[focused];
@@ -283,11 +291,11 @@ export function McpDialog({
     if (state.failed)
       return (
         <Note title={name} action={replaceKey}>
-          Couldn&apos;t load this server&apos;s tools
+          {t("playgroundDeep.mcp.loadToolsFailed")}
         </Note>
       );
     const tools = toolNames(focused);
-    if (tools.length === 0) return <Note title={name}>This server has no tools</Note>;
+    if (tools.length === 0) return <Note title={name}>{t("playgroundDeep.mcp.noTools")}</Note>;
     const allowed = allowedTools(toolLimits, focused, tools);
     return (
       <div className="flex min-h-0 flex-1 flex-col">
@@ -295,7 +303,7 @@ export function McpDialog({
           <SearchField
             value={toolQuery}
             onChange={setToolQuery}
-            placeholder={`Search ${name} tools`}
+            placeholder={t("playgroundDeep.mcp.searchTools", { name })}
             autoFocus={false}
           />
           <Button
@@ -304,7 +312,7 @@ export function McpDialog({
             disabled={allowed.length === tools.length}
             onClick={() => onChange(selection, { ...toolLimits, [focused]: [] })}
           >
-            Allow all
+            {t("playgroundDeep.mcp.allowAll")}
           </Button>
           {replaceKey}
         </div>
@@ -344,23 +352,25 @@ export function McpDialog({
       </DialogTrigger>
       <DialogContent className="gap-0 p-0 sm:max-w-3xl">
         <DialogHeader className="border-b border-border p-4">
-          <DialogTitle>MCP servers</DialogTitle>
-          <DialogDescription>
-            Pick the servers the model can use, then limit their tools. A server allows every tool until you uncheck
-            some.
-          </DialogDescription>
+          <DialogTitle>{t("playgroundDeep.mcp.title")}</DialogTitle>
+          <DialogDescription>{t("playgroundDeep.mcp.description")}</DialogDescription>
         </DialogHeader>
         {nothingAvailable ? (
           <div className="h-96">
-            <Note title="No MCP servers for this key">
-              Add one on the <a href={uiHref("mcp-servers")}>MCP servers page</a>, or send as a key that can reach one
+            <Note title={t("playgroundDeep.mcp.noneForKey")}>
+              {t("playgroundDeep.mcp.addOnPage", { page: t("playgroundDeep.mcp.title") })}
             </Note>
           </div>
         ) : (
           <div className="grid h-96 grid-cols-[18rem_1fr]">
             <div className="flex min-h-0 flex-col border-r border-border">
               <div className="p-2">
-                <SearchField value={query} onChange={setQuery} placeholder="Search servers" autoFocus />
+                <SearchField
+                  value={query}
+                  onChange={setQuery}
+                  placeholder={t("playgroundDeep.mcp.searchServers")}
+                  autoFocus
+                />
               </div>
               <ScrollArea className="min-h-0 flex-1">
                 {isLoading ? (
@@ -370,11 +380,18 @@ export function McpDialog({
                 ) : (
                   <div className="p-1">
                     <RowGroup
-                      title="MCP servers"
-                      rows={visible([{ value: ALL_MCP_SERVERS, label: "All MCP servers" }, ...serverRows])}
+                      title={t("playgroundDeep.mcp.title")}
+                      rows={visible([
+                        { value: ALL_MCP_SERVERS, label: t("playgroundDeep.mcp.allServers") },
+                        ...serverRows,
+                      ])}
                       render={masterRow}
                     />
-                    <RowGroup title="Toolsets" rows={visible(toolsetRows)} render={masterRow} />
+                    <RowGroup
+                      title={t("playgroundDeep.chat.toolsets")}
+                      rows={visible(toolsetRows)}
+                      render={masterRow}
+                    />
                   </div>
                 )}
               </ScrollArea>
@@ -383,7 +400,7 @@ export function McpDialog({
           </div>
         )}
         <DialogFooter className="m-0 border-t border-border p-3">
-          <DialogClose render={<Button size="sm" />}>Done</DialogClose>
+          <DialogClose render={<Button size="sm" />}>{t("playgroundDeep.mcp.done")}</DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

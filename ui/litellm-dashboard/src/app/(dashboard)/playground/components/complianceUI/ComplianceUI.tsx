@@ -8,11 +8,11 @@ import {
 } from "@/data/compliancePrompts";
 import useCan from "@/app/(dashboard)/hooks/useCan";
 import { useTerminology } from "@/contexts/TerminologyContext";
+import type { TFunction } from "i18next";
 import { getGuardrailsList, testPoliciesAndGuardrails } from "@/components/networking";
 import PolicySelector, { getPolicyOptionEntries } from "@/components/policies/PolicySelector";
 import { Policy } from "@/components/policies/types";
 import { makeOpenAIChatCompletionRequest } from "@/components/llm_calls/chat_completion";
-import { Kbd } from "@/components/ui/kbd";
 import {
   AlertTriangle,
   BarChart3,
@@ -48,6 +48,7 @@ import {
 } from "lucide-react";
 import Papa from "papaparse";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const CATEGORY_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   lock: Lock,
@@ -105,6 +106,53 @@ interface QuickTestMessage {
 type ResultFilter = "all" | "matches" | "mismatches" | "pending";
 type RightPanelTab = "quick-test" | "batch-results";
 
+const FILTER_LABEL_KEYS = {
+  all: "playgroundDeep.compliance.filterAll",
+  matches: "playgroundDeep.compliance.filterMatches",
+  mismatches: "playgroundDeep.compliance.filterMismatches",
+  pending: "playgroundDeep.compliance.filterPending",
+} as const;
+
+const quickTestBubbleClass = (message: QuickTestMessage): string => {
+  if (message.type === "user") return "bg-info text-info-foreground";
+  if (message.result === "blocked") return "bg-destructive/10 border border-destructive/15";
+  return "bg-success/10 border border-success/15";
+};
+
+const quickTestTextClass = (message: QuickTestMessage): string => {
+  if (message.type === "user") return "text-info-foreground";
+  if (message.result === "blocked") return "text-destructive";
+  return "text-success";
+};
+
+const scoreToneClass = (ratio: number): string => {
+  if (ratio >= 0.8) return "bg-success/10 border-success/20 text-success";
+  if (ratio >= 0.5) return "bg-warning/10 border-warning/20 text-warning";
+  return "bg-destructive/10 border-destructive/20 text-destructive";
+};
+
+const resultBorderClass = (result: TestResult): string => {
+  if (result.status !== "complete") return "border-border bg-muted/50";
+  if (result.isMatch) return "border-success/15";
+  return "border-destructive/15";
+};
+
+function ResultStatusIcon({ result }: { result: TestResult }) {
+  if (result.status !== "complete") {
+    return <Loader2 className="w-3.5 h-3.5 text-muted-foreground animate-spin" />;
+  }
+  if (result.isMatch) {
+    return <CheckCircle2 className="w-3.5 h-3.5 text-success" />;
+  }
+  return <AlertTriangle className="w-3.5 h-3.5 text-destructive" />;
+}
+
+function verdictLabel(result: TestResult, t: TFunction): string {
+  if (result.isMatch) return t("playgroundDeep.compliance.correctlyHandled");
+  if (result.expectedResult === "fail") return t("playgroundDeep.compliance.gapShouldBlock");
+  return t("playgroundDeep.compliance.falsePositiveBlocked");
+}
+
 interface GuardrailOption {
   id: string;
   name: string;
@@ -132,6 +180,7 @@ export default function ComplianceUI({
   fixedModel,
   proxySettings,
 }: ComplianceUIProps) {
+  const { t } = useTranslation();
   const canViewPolicies = useCan("viewPolicies");
   const term = useTerminology();
   const frameworks = getFrameworks(term);
@@ -205,7 +254,7 @@ export default function ComplianceUI({
     const customFrameworks: ComplianceFramework[] = Array.from(fwMap.entries()).map(([fwName, catMap]) => ({
       name: fwName,
       icon: customPrompts.find((p) => p.framework === fwName)?.categoryIcon ?? "file-text",
-      description: `Custom prompts — ${fwName}.`,
+      description: t("playgroundDeep.compliance.customFrameworkDescription", { name: fwName }),
       categories: Array.from(catMap.entries()).map(([catName, prompts]) => ({
         name: catName,
         icon: prompts[0]?.categoryIcon ?? "file-text",
@@ -283,10 +332,10 @@ export default function ComplianceUI({
     const id = `custom-${Date.now()}`;
     const newPrompt: CompliancePrompt = {
       id,
-      framework: "Custom",
-      category: "Custom Prompts",
+      framework: t("playgroundDeep.compliance.custom"),
+      category: t("playgroundDeep.compliance.customPrompts"),
       categoryIcon: "pencil",
-      categoryDescription: "Custom prompts added this session.",
+      categoryDescription: t("playgroundDeep.compliance.customPromptsDescription"),
       prompt: newPromptText.trim(),
       expectedResult: newPromptExpected,
     };
@@ -294,8 +343,8 @@ export default function ComplianceUI({
     setNewPromptText("");
     setNewPromptExpected("fail");
     setShowAddPrompt(false);
-    setExpandedFrameworks((prev) => new Set([...prev, "Custom"]));
-    setExpandedCategories((prev) => new Set([...prev, "Custom Prompts"]));
+    setExpandedFrameworks((prev) => new Set([...prev, t("playgroundDeep.compliance.custom")]));
+    setExpandedCategories((prev) => new Set([...prev, t("playgroundDeep.compliance.customPrompts")]));
   };
 
   const deleteCustomPrompt = (id: string) => {
@@ -341,11 +390,11 @@ export default function ComplianceUI({
     setCsvError(null);
 
     if (!file.name.endsWith(".csv") && file.type !== "text/csv") {
-      setCsvError("Please upload a .csv file.");
+      setCsvError(t("playgroundDeep.compliance.csvWrongType"));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setCsvError("File too large (max 5 MB).");
+      setCsvError(t("playgroundDeep.compliance.csvTooLarge"));
       return;
     }
 
@@ -354,16 +403,14 @@ export default function ComplianceUI({
       skipEmptyLines: true,
       complete: (results) => {
         if (!results.data || results.data.length === 0) {
-          setCsvError("CSV file is empty.");
+          setCsvError(t("playgroundDeep.compliance.csvEmpty"));
           return;
         }
 
         const headers = results.meta.fields ?? [];
         const missing = EXPECTED_CSV_COLUMNS.filter((col) => !headers.includes(col));
         if (missing.length > 0) {
-          setCsvError(
-            `Missing required columns: ${missing.join(", ")}. Expected: prompt, expected_result. Optional: framework, category.`,
-          );
+          setCsvError(t("playgroundDeep.compliance.csvMissingColumns", { columns: missing.join(", ") }));
           return;
         }
 
@@ -376,23 +423,28 @@ export default function ComplianceUI({
           const expected = row.expected_result?.trim().toLowerCase();
 
           if (!prompt) {
-            errors.push(`Row ${rowNum}: missing prompt text`);
+            errors.push(t("playgroundDeep.compliance.csvRowMissingPrompt", { row: rowNum }));
             return;
           }
           if (expected !== "fail" && expected !== "pass") {
-            errors.push(`Row ${rowNum}: expected_result must be "fail" or "pass", got "${row.expected_result ?? ""}"`);
+            errors.push(
+              t("playgroundDeep.compliance.csvRowInvalidExpected", {
+                row: rowNum,
+                value: row.expected_result ?? "",
+              }),
+            );
             return;
           }
 
-          const framework = row.framework?.trim() || "CSV Upload";
-          const category = row.category?.trim() || "Uploaded Prompts";
+          const framework = row.framework?.trim() || t("playgroundDeep.compliance.csvUpload");
+          const category = row.category?.trim() || t("playgroundDeep.compliance.uploadedPrompts");
 
           newPrompts.push({
             id: `csv-${Date.now()}-${idx}`,
             framework,
             category,
             categoryIcon: "file-text",
-            categoryDescription: `Prompts uploaded from CSV — ${category}.`,
+            categoryDescription: t("playgroundDeep.compliance.uploadedPromptsDescription", { category }),
             prompt,
             expectedResult: expected as "fail" | "pass",
           });
@@ -400,13 +452,16 @@ export default function ComplianceUI({
 
         if (errors.length > 0) {
           setCsvError(
-            errors.slice(0, 5).join("\n") + (errors.length > 5 ? `\n...and ${errors.length - 5} more errors` : ""),
+            errors.slice(0, 5).join("\n") +
+              (errors.length > 5
+                ? `\n${t("playgroundDeep.compliance.csvMoreErrors", { count: errors.length - 5 })}`
+                : ""),
           );
           return;
         }
 
         if (newPrompts.length === 0) {
-          setCsvError("No valid prompts found in CSV.");
+          setCsvError(t("playgroundDeep.compliance.csvNoPrompts"));
           return;
         }
 
@@ -429,7 +484,7 @@ export default function ComplianceUI({
         setCsvError(null);
       },
       error: () => {
-        setCsvError("Failed to parse CSV file.");
+        setCsvError(t("playgroundDeep.compliance.csvParseFailed"));
       },
     });
 
@@ -481,7 +536,7 @@ export default function ComplianceUI({
         const sysMsg: QuickTestMessage = {
           id: `msg-${Date.now()}-sys`,
           type: "system",
-          text: "Allowed — model response received.",
+          text: t("playgroundDeep.compliance.allowedModelResponse"),
           result: "allowed",
           returnedText: fullResponse,
           timestamp: new Date(),
@@ -503,8 +558,10 @@ export default function ComplianceUI({
         const returnedText = Array.isArray(inputs?.texts) && inputs.texts.length > 0 ? inputs.texts[0] : undefined;
         const displayText =
           result === "blocked"
-            ? `Blocked — ${triggeredBy ?? "content filter"}`
-            : "Allowed — no policy or guardrail violations detected.";
+            ? t("playgroundDeep.compliance.blockedBy", {
+                trigger: triggeredBy ?? t("playgroundDeep.compliance.contentFilter"),
+              })
+            : t("playgroundDeep.compliance.allowedNoViolations");
         const sysMsg: QuickTestMessage = {
           id: `msg-${Date.now()}-sys`,
           type: "system",
@@ -521,7 +578,7 @@ export default function ComplianceUI({
       const sysMsg: QuickTestMessage = {
         id: `msg-${Date.now()}-sys`,
         type: "system",
-        text: `Error: ${errorMessage}`,
+        text: t("playgroundDeep.compliance.errorPrefix", { message: errorMessage }),
         result: "blocked",
         triggeredBy: errorMessage,
         timestamp: new Date(),
@@ -530,7 +587,16 @@ export default function ComplianceUI({
     } finally {
       setIsQuickTesting(false);
     }
-  }, [accessToken, quickTestInput, selectedPolicies, selectedGuardrails, backendMode, fixedModel, requestProxyBaseUrl]);
+  }, [
+    accessToken,
+    quickTestInput,
+    selectedPolicies,
+    selectedGuardrails,
+    backendMode,
+    fixedModel,
+    requestProxyBaseUrl,
+    t,
+  ]);
 
   const handleQuickTestKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -619,7 +685,7 @@ export default function ComplianceUI({
           ...row,
           actualResult: "blocked" as const,
           isMatch: false,
-          triggeredBy: `Error: ${errorMessage}`,
+          triggeredBy: t("playgroundDeep.compliance.errorPrefix", { message: errorMessage }),
           status: "complete" as const,
         })),
       );
@@ -636,6 +702,7 @@ export default function ComplianceUI({
     backendMode,
     fixedModel,
     requestProxyBaseUrl,
+    t,
   ]);
 
   const completedResults = testResults.filter((r) => r.status === "complete");
@@ -648,6 +715,13 @@ export default function ComplianceUI({
     (r) => r.expectedResult === "fail" && r.actualResult === "allowed",
   ).length;
   const pendingCount = testResults.filter((r) => r.status !== "complete").length;
+  const matchRate = completedResults.length === 0 ? 0 : matchCount / completedResults.length;
+  const resultCounts: Record<ResultFilter, number> = {
+    all: testResults.length,
+    matches: matchCount,
+    mismatches: mismatchCount,
+    pending: pendingCount,
+  };
   const filteredResults = testResults.filter((r) => {
     if (resultFilter === "matches") return r.status === "complete" && r.isMatch;
     if (resultFilter === "mismatches") return r.status === "complete" && !r.isMatch;
@@ -696,13 +770,20 @@ export default function ComplianceUI({
 
   const hasAnyConfig = selectedPolicies.length > 0 || selectedGuardrails.length > 0;
   const testButtonLabel = (() => {
-    const parts: string[] = [];
-    if (selectedPolicies.length > 0)
-      parts.push(`${selectedPolicies.length} ${selectedPolicies.length === 1 ? "policy" : "policies"}`);
-    if (selectedGuardrails.length > 0)
-      parts.push(`${selectedGuardrails.length} ${selectedGuardrails.length === 1 ? "guardrail" : "guardrails"}`);
-    if (parts.length === 0) return "Test";
-    return `Test ${parts.join(" & ")}`;
+    const policies =
+      selectedPolicies.length === 1
+        ? t("playgroundDeep.compliance.policyCountOne", { count: selectedPolicies.length })
+        : t("playgroundDeep.compliance.policyCount", { count: selectedPolicies.length });
+    const guardrails =
+      selectedGuardrails.length === 1
+        ? t("playgroundDeep.compliance.guardrailCountOne", { count: selectedGuardrails.length })
+        : t("playgroundDeep.compliance.guardrailCount", { count: selectedGuardrails.length });
+    if (selectedPolicies.length > 0 && selectedGuardrails.length > 0) {
+      return t("playgroundDeep.compliance.testBoth", { policies, guardrails });
+    }
+    if (selectedPolicies.length > 0) return t("playgroundDeep.compliance.testPolicies", { policies });
+    if (selectedGuardrails.length > 0) return t("playgroundDeep.compliance.testGuardrails", { guardrails });
+    return t("playgroundDeep.compliance.test");
   })();
 
   return (
@@ -711,11 +792,13 @@ export default function ComplianceUI({
         {/* Top config */}
         <div className="shrink-0 border-b border-border px-6 py-4">
           <div className="mb-3">
-            <h3 className="text-sm font-semibold text-foreground">Test Configuration</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              {t("playgroundDeep.compliance.testConfiguration")}
+            </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               {canViewPolicies
-                ? "Select policies, guardrails, or both to test against."
-                : "Select guardrails to test against."}
+                ? t("playgroundDeep.compliance.selectPoliciesGuardrails")
+                : t("playgroundDeep.compliance.selectGuardrails")}
             </p>
           </div>
 
@@ -724,7 +807,7 @@ export default function ComplianceUI({
               <>
                 <div className="flex-1 min-w-[200px]">
                   <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
-                    Policies
+                    {t("playgroundDeep.compliance.policies")}
                   </label>
                   {accessToken && (
                     <PolicySelector
@@ -738,7 +821,9 @@ export default function ComplianceUI({
 
                 <div className="flex flex-col items-center pt-6 shrink-0">
                   <div className="w-px h-4 bg-border" />
-                  <span className="text-[10px] font-medium text-muted-foreground my-1">or</span>
+                  <span className="text-[10px] font-medium text-muted-foreground my-1">
+                    {t("playgroundDeep.compliance.or")}
+                  </span>
                   <div className="w-px h-4 bg-border" />
                 </div>
               </>
@@ -746,7 +831,7 @@ export default function ComplianceUI({
 
             <div className="flex-1 min-w-[200px]">
               <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
-                Guardrails
+                {t("playgroundDeep.compliance.guardrails")}
               </label>
               <div className="relative">
                 <button
@@ -755,7 +840,9 @@ export default function ComplianceUI({
                   className="w-full flex items-center justify-between border border-border rounded-lg px-3 py-2 text-sm text-left hover:border-ring transition-colors"
                 >
                   <span className={selectedGuardrails.length > 0 ? "text-foreground" : "text-muted-foreground"}>
-                    {selectedGuardrails.length > 0 ? `${selectedGuardrails.length} selected` : "None selected"}
+                    {selectedGuardrails.length > 0
+                      ? t("playgroundDeep.compliance.selectedCount", { count: selectedGuardrails.length })
+                      : t("playgroundDeep.compliance.noneSelected")}
                   </span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </button>
@@ -763,7 +850,7 @@ export default function ComplianceUI({
                   <div className="absolute z-floating top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {guardrailOptions.length === 0 ? (
                       <div className="px-3 py-2 text-xs text-muted-foreground">
-                        No guardrails available. Create guardrails in the Guardrails page.
+                        {t("playgroundDeep.compliance.noGuardrails")}
                       </div>
                     ) : (
                       guardrailOptions.map((g) => (
@@ -802,7 +889,7 @@ export default function ComplianceUI({
                           type="button"
                           onClick={() => toggleGuardrail(id)}
                           className="hover:text-indigo-900 dark:hover:text-indigo-100"
-                          aria-label="Remove"
+                          aria-label={t("playgroundDeep.compliance.remove")}
                         >
                           <X className="w-2.5 h-2.5" />
                         </button>
@@ -820,7 +907,7 @@ export default function ComplianceUI({
                   onClick={() => batchAbortControllerRef.current?.abort()}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap bg-destructive text-destructive-foreground hover:bg-destructive/80"
                 >
-                  <Square className="w-3.5 h-3.5" /> Stop
+                  <Square className="w-3.5 h-3.5" /> {t("playgroundDeep.compliance.stop")}
                 </button>
               ) : (
                 <button
@@ -829,12 +916,13 @@ export default function ComplianceUI({
                   disabled={selectedPromptIds.size === 0 || disabledPersonalKeyCreation}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${selectedPromptIds.size === 0 || disabledPersonalKeyCreation ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-info text-info-foreground hover:bg-info/80"}`}
                 >
-                  <Play className="w-3.5 h-3.5" /> Simulate ({selectedPromptIds.size})
+                  <Play className="w-3.5 h-3.5" />{" "}
+                  {t("playgroundDeep.compliance.simulate", { count: selectedPromptIds.size })}
                 </button>
               )}
               {isRunning && (
                 <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" /> Running...
+                  <Loader2 className="w-3 h-3 animate-spin" /> {t("playgroundDeep.compliance.running")}
                 </span>
               )}
               <button
@@ -847,7 +935,7 @@ export default function ComplianceUI({
                 }}
                 className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:bg-accent transition-colors"
               >
-                <RotateCcw className="w-3 h-3" /> Reset
+                <RotateCcw className="w-3 h-3" /> {t("playgroundDeep.compliance.reset")}
               </button>
             </div>
           </div>
@@ -860,7 +948,9 @@ export default function ComplianceUI({
             <div className="flex-1 overflow-y-auto min-h-0">
               <div className="px-4 pt-4 pb-2">
                 <div className="flex items-center justify-between mb-2.5">
-                  <h3 className="text-sm font-semibold text-foreground">Test Prompts</h3>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t("playgroundDeep.compliance.testPrompts")}
+                  </h3>
                   <span className="text-[11px] text-muted-foreground tabular-nums">
                     {selectedPromptIds.size}/{totalPromptCount}
                   </span>
@@ -872,7 +962,7 @@ export default function ComplianceUI({
                     type="text"
                     value={searchPrompt}
                     onChange={(e) => setSearchPrompt(e.target.value)}
-                    placeholder="Search prompts..."
+                    placeholder={t("playgroundDeep.compliance.searchPrompts")}
                     className="w-full border border-border rounded-lg pl-8 pr-3 py-1.5 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-info"
                   />
                 </div>
@@ -884,7 +974,7 @@ export default function ComplianceUI({
                       onClick={selectAll}
                       className="text-[11px] font-medium text-info hover:text-info/80"
                     >
-                      Select All
+                      {t("playgroundDeep.compliance.selectAll")}
                     </button>
                     <span className="text-muted-foreground text-[10px]">·</span>
                     <button
@@ -892,7 +982,7 @@ export default function ComplianceUI({
                       onClick={deselectAll}
                       className="text-[11px] font-medium text-muted-foreground hover:text-foreground"
                     >
-                      Clear
+                      {t("playgroundDeep.compliance.clear")}
                     </button>
                   </div>
                   <div className="flex items-center gap-1">
@@ -904,7 +994,7 @@ export default function ComplianceUI({
                       }}
                       className={`flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-sm transition-colors ${showAddPrompt ? "bg-info/10 text-info" : "text-muted-foreground hover:bg-accent"}`}
                     >
-                      <Plus className="w-3 h-3" /> Add
+                      <Plus className="w-3 h-3" /> {t("playgroundDeep.compliance.add")}
                     </button>
                     <button
                       type="button"
@@ -925,7 +1015,7 @@ export default function ComplianceUI({
                   <textarea
                     value={newPromptText}
                     onChange={(e) => setNewPromptText(e.target.value)}
-                    placeholder="Enter your test prompt..."
+                    placeholder={t("playgroundDeep.compliance.enterPrompt")}
                     rows={2}
                     className="w-full border border-border rounded-sm px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-info resize-none bg-card"
                   />
@@ -936,14 +1026,14 @@ export default function ComplianceUI({
                         onClick={() => setNewPromptExpected("fail")}
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm ${newPromptExpected === "fail" ? "bg-destructive/15 text-destructive" : "bg-muted text-muted-foreground"}`}
                       >
-                        Should Fail
+                        {t("playgroundDeep.compliance.shouldFail")}
                       </button>
                       <button
                         type="button"
                         onClick={() => setNewPromptExpected("pass")}
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm ${newPromptExpected === "pass" ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"}`}
                       >
-                        Should Pass
+                        {t("playgroundDeep.compliance.shouldPass")}
                       </button>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -955,7 +1045,7 @@ export default function ComplianceUI({
                         }}
                         className="text-[11px] text-muted-foreground px-2 py-1"
                       >
-                        Cancel
+                        {t("playgroundDeep.compliance.cancel")}
                       </button>
                       <button
                         type="button"
@@ -963,7 +1053,7 @@ export default function ComplianceUI({
                         disabled={!newPromptText.trim()}
                         className={`text-[11px] font-medium px-2.5 py-1 rounded-sm ${newPromptText.trim() ? "bg-info text-info-foreground" : "bg-muted text-muted-foreground"}`}
                       >
-                        Add
+                        {t("playgroundDeep.compliance.add")}
                       </button>
                     </div>
                   </div>
@@ -973,25 +1063,31 @@ export default function ComplianceUI({
               {showCsvUpload && (
                 <div className="mx-4 mb-2 border border-info/20 bg-info/5 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-semibold text-foreground">Upload CSV Dataset</span>
+                    <span className="text-[11px] font-semibold text-foreground">
+                      {t("playgroundDeep.compliance.uploadCsv")}
+                    </span>
                     <button
                       type="button"
                       onClick={downloadCsvTemplate}
                       className="flex items-center gap-1 text-[10px] font-medium text-info hover:text-info/80"
                     >
-                      <Download className="w-3 h-3" /> Download Template
+                      <Download className="w-3 h-3" /> {t("playgroundDeep.compliance.downloadTemplate")}
                     </button>
                   </div>
 
                   <div className="mb-2 p-2 bg-card rounded-sm border border-border">
                     <p className="text-[10px] text-muted-foreground leading-relaxed">
-                      <span className="font-semibold text-muted-foreground">Required columns:</span>{" "}
+                      <span className="font-semibold text-muted-foreground">
+                        {t("playgroundDeep.compliance.requiredColumns")}
+                      </span>{" "}
                       <code className="bg-muted px-1 rounded-sm text-[10px]">prompt</code>,{" "}
                       <code className="bg-muted px-1 rounded-sm text-[10px]">expected_result</code>{" "}
-                      <span className="text-muted-foreground">(fail or pass)</span>
+                      <span className="text-muted-foreground">(fail / pass)</span>
                     </p>
                     <p className="text-[10px] text-muted-foreground leading-relaxed mt-0.5">
-                      <span className="font-semibold text-muted-foreground">Optional columns:</span>{" "}
+                      <span className="font-semibold text-muted-foreground">
+                        {t("playgroundDeep.compliance.optionalColumns")}
+                      </span>{" "}
                       <code className="bg-muted px-1 rounded-sm text-[10px]">framework</code>,{" "}
                       <code className="bg-muted px-1 rounded-sm text-[10px]">category</code>
                     </p>
@@ -1012,7 +1108,7 @@ export default function ComplianceUI({
                     onClick={() => csvInputRef.current?.click()}
                     className="w-full flex items-center justify-center gap-1.5 py-2 border-2 border-dashed border-border rounded-lg text-xs text-muted-foreground hover:border-info hover:text-info transition-colors"
                   >
-                    <Upload className="w-3.5 h-3.5" /> Choose CSV file
+                    <Upload className="w-3.5 h-3.5" /> {t("playgroundDeep.compliance.chooseCsv")}
                   </button>
 
                   {csvError && (
@@ -1030,7 +1126,7 @@ export default function ComplianceUI({
                       }}
                       className="text-[11px] text-muted-foreground px-2 py-1"
                     >
-                      Cancel
+                      {t("playgroundDeep.compliance.cancel")}
                     </button>
                   </div>
                 </div>
@@ -1059,7 +1155,9 @@ export default function ComplianceUI({
                         <CategoryIcon iconKey={fw.icon} className="w-4 h-4 text-muted-foreground shrink-0" />
                         <div className="flex-1 min-w-0">
                           <span className="text-xs font-semibold text-foreground">{fw.name}</span>
-                          <span className="text-[10px] text-muted-foreground ml-1.5">{fwPromptCount} prompts</span>
+                          <span className="text-[10px] text-muted-foreground ml-1.5">
+                            {t("playgroundDeep.compliance.promptsCount", { count: fwPromptCount })}
+                          </span>
                         </div>
                         {fwSelectedCount > 0 && (
                           <span className="text-[10px] font-medium bg-info/15 text-info px-1.5 py-0.5 rounded-full">
@@ -1074,7 +1172,9 @@ export default function ComplianceUI({
                           }}
                           className="text-[10px] font-medium text-info px-1.5 py-0.5 rounded-sm hover:bg-info/10 shrink-0"
                         >
-                          {fwSelectedCount === fwPromptCount ? "Clear" : "All"}
+                          {fwSelectedCount === fwPromptCount
+                            ? t("playgroundDeep.compliance.clear")
+                            : t("playgroundDeep.compliance.all")}
                         </button>
                       </button>
 
@@ -1129,7 +1229,9 @@ export default function ComplianceUI({
                                         onClick={() => toggleCategoryPrompts(category)}
                                         className="text-[10px] font-medium text-info hover:text-info/80 shrink-0 whitespace-nowrap"
                                       >
-                                        {allCatSelected ? "Clear" : "Select all"}
+                                        {allCatSelected
+                                          ? t("playgroundDeep.compliance.clear")
+                                          : t("playgroundDeep.compliance.selectAll")}
                                       </button>
                                     </div>
                                     {category.prompts.map((prompt) => (
@@ -1148,7 +1250,9 @@ export default function ComplianceUI({
                                           <span
                                             className={`inline-block mt-0.5 text-[9px] font-semibold px-1 py-0.5 rounded-sm ${prompt.expectedResult === "fail" ? "bg-destructive/10 text-destructive" : "bg-success/10 text-success"}`}
                                           >
-                                            {prompt.expectedResult === "fail" ? "Should Fail" : "Should Pass"}
+                                            {prompt.expectedResult === "fail"
+                                              ? t("playgroundDeep.compliance.shouldFail")
+                                              : t("playgroundDeep.compliance.shouldPass")}
                                           </span>
                                         </div>
                                         {isCustom && (
@@ -1160,7 +1264,7 @@ export default function ComplianceUI({
                                               deleteCustomPrompt(prompt.id);
                                             }}
                                             className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-destructive transition-all shrink-0"
-                                            aria-label="Delete"
+                                            aria-label={t("playgroundDeep.compliance.delete")}
                                           >
                                             <Trash2 className="w-3 h-3" />
                                           </button>
@@ -1190,7 +1294,7 @@ export default function ComplianceUI({
                   onClick={() => setRightTab("quick-test")}
                   className={`relative flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${rightTab === "quick-test" ? "text-info" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  <MessageSquare className="w-3.5 h-3.5" /> Quick Test
+                  <MessageSquare className="w-3.5 h-3.5" /> {t("playgroundDeep.compliance.quickTest")}
                   {rightTab === "quick-test" && (
                     <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-info rounded-t" />
                   )}
@@ -1200,7 +1304,7 @@ export default function ComplianceUI({
                   onClick={() => setRightTab("batch-results")}
                   className={`relative flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${rightTab === "batch-results" ? "text-info" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  <ListChecks className="w-3.5 h-3.5" /> Batch Results
+                  <ListChecks className="w-3.5 h-3.5" /> {t("playgroundDeep.compliance.batchResults")}
                   {testResults.length > 0 && (
                     <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
                       {testResults.length}
@@ -1218,7 +1322,9 @@ export default function ComplianceUI({
                 <div className="px-5 pt-4 pb-2 shrink-0">
                   {hasAnyConfig ? (
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[11px] font-medium text-muted-foreground">Testing against:</span>
+                      <span className="text-[11px] font-medium text-muted-foreground">
+                        {t("playgroundDeep.compliance.testingAgainst")}
+                      </span>
                       {selectedPolicies.map((id) => (
                         <span key={id} className="text-[11px] bg-info/10 text-info px-2 py-0.5 rounded-sm font-medium">
                           {policyValueToLabel.get(id) ?? id}
@@ -1237,9 +1343,7 @@ export default function ComplianceUI({
                       })}
                     </div>
                   ) : (
-                    <p className="text-[11px] text-muted-foreground">
-                      No policies or guardrails selected — select above to test against specific rules.
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">{t("playgroundDeep.compliance.noSelection")}</p>
                   )}
                 </div>
 
@@ -1250,18 +1354,14 @@ export default function ComplianceUI({
                         <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3">
                           <MessageSquare className="w-5 h-5 text-muted-foreground" />
                         </div>
-                        <p className="text-xs text-muted-foreground">Type a prompt below to quickly test it.</p>
+                        <p className="text-xs text-muted-foreground">{t("playgroundDeep.compliance.quickTestHint")}</p>
                       </div>
                     </div>
                   )}
                   {quickTestMessages.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
-                      <div
-                        className={`max-w-[85%] rounded-lg px-3 py-2 ${msg.type === "user" ? "bg-info text-info-foreground" : msg.result === "blocked" ? "bg-destructive/10 border border-destructive/15" : "bg-success/10 border border-success/15"}`}
-                      >
-                        <p
-                          className={`text-xs leading-relaxed ${msg.type === "user" ? "text-info-foreground" : msg.result === "blocked" ? "text-destructive" : "text-success"}`}
-                        >
+                      <div className={`max-w-[85%] rounded-lg px-3 py-2 ${quickTestBubbleClass(msg)}`}>
+                        <p className={`text-xs leading-relaxed ${quickTestTextClass(msg)}`}>
                           {msg.type === "system" && (
                             <span className="inline-flex items-center gap-1 font-semibold mr-1">
                               {msg.result === "blocked" ? (
@@ -1269,14 +1369,16 @@ export default function ComplianceUI({
                               ) : (
                                 <CheckCircle2 className="w-3 h-3 inline" />
                               )}
-                              {msg.result === "blocked" ? "Blocked" : "Allowed"}
+                              {msg.result === "blocked"
+                                ? t("playgroundDeep.compliance.blocked")
+                                : t("playgroundDeep.compliance.allowed")}
                               <span className="font-normal mx-0.5">—</span>
                             </span>
                           )}
                           {msg.text}
                           {msg.type === "system" && msg.returnedText != null && (
                             <span className="block mt-1.5 pt-1.5 border-t border-gray-200/60">
-                              <span className="text-muted-foreground">Returned: </span>
+                              <span className="text-muted-foreground">{t("playgroundDeep.compliance.returned")} </span>
                               <span className="font-medium text-foreground break-all">{msg.returnedText}</span>
                             </span>
                           )}
@@ -1301,13 +1403,13 @@ export default function ComplianceUI({
                       value={quickTestInput}
                       onChange={(e) => setQuickTestInput(e.target.value)}
                       onKeyDown={handleQuickTestKeyDown}
-                      placeholder="Enter text to test..."
+                      placeholder={t("playgroundDeep.compliance.quickTestPlaceholder")}
                       rows={3}
                       className="w-full px-3 pt-3 pb-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden resize-none"
                     />
                     <div className="flex items-center justify-between px-3 pb-2">
                       <span className="text-[10px] text-muted-foreground">
-                        Press <Kbd>Enter</Kbd> to submit · <Kbd>Shift+Enter</Kbd> for new line
+                        {t("playgroundDeep.compliance.submitHint")}
                       </span>
                       <span className="text-[10px] text-muted-foreground tabular-nums">{quickTestInput.length}</span>
                     </div>
@@ -1329,7 +1431,7 @@ export default function ComplianceUI({
               <div className="flex-1 flex flex-col overflow-hidden bg-card min-h-0">
                 <div className="px-5 py-3 border-b border-border shrink-0">
                   <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-semibold text-foreground">Results</h2>
+                    <h2 className="text-sm font-semibold text-foreground">{t("playgroundDeep.compliance.results")}</h2>
                     {testResults.length > 0 && (
                       <div className="flex items-center gap-2">
                         <button
@@ -1338,7 +1440,7 @@ export default function ComplianceUI({
                           disabled={filteredResults.length === 0}
                           className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-accent px-2 py-1 rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                         >
-                          <Download className="w-3 h-3" /> Export CSV
+                          <Download className="w-3 h-3" /> {t("playgroundDeep.compliance.exportCsv")}
                         </button>
                         <div className="flex items-center gap-2.5 text-[11px]">
                           <span className="flex items-center gap-1 text-success">
@@ -1347,17 +1449,17 @@ export default function ComplianceUI({
                           </span>
                           <span
                             className="flex items-center gap-1 text-warning"
-                            title="Allowed content that should have been blocked"
+                            title={t("playgroundDeep.compliance.falseNegativeTitle")}
                           >
                             <AlertTriangle className="w-3 h-3" />
-                            {falseNegativeCount} FN
+                            {falseNegativeCount} {t("playgroundDeep.compliance.falseNegative")}
                           </span>
                           <span
                             className="flex items-center gap-1 text-destructive"
-                            title="Blocked content that should have been allowed"
+                            title={t("playgroundDeep.compliance.falsePositiveTitle")}
                           >
                             <X className="w-3 h-3" />
-                            {falsePositiveCount} FP
+                            {falsePositiveCount} {t("playgroundDeep.compliance.falsePositive")}
                           </span>
                           {pendingCount > 0 && (
                             <span className="flex items-center gap-1 text-muted-foreground">
@@ -1372,14 +1474,7 @@ export default function ComplianceUI({
                   {testResults.length > 0 && (
                     <div className="flex items-center gap-1 flex-wrap">
                       {(["all", "matches", "mismatches", "pending"] as ResultFilter[]).map((filter) => {
-                        const count =
-                          filter === "all"
-                            ? testResults.length
-                            : filter === "matches"
-                              ? matchCount
-                              : filter === "mismatches"
-                                ? mismatchCount
-                                : pendingCount;
+                        const count = resultCounts[filter];
                         return (
                           <button
                             key={filter}
@@ -1387,7 +1482,7 @@ export default function ComplianceUI({
                             onClick={() => setResultFilter(filter)}
                             className={`text-[11px] font-medium px-2.5 py-1 rounded-md transition-colors capitalize ${resultFilter === filter ? "bg-gray-900 text-white" : "text-muted-foreground hover:bg-accent"}`}
                           >
-                            {filter} ({count})
+                            {t(FILTER_LABEL_KEYS[filter])} ({count})
                           </button>
                         );
                       })}
@@ -1403,7 +1498,7 @@ export default function ComplianceUI({
                           <FlaskConical className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="text-xs text-muted-foreground max-w-[240px]">
-                          Select prompts and click Simulate to run batch compliance tests.
+                          {t("playgroundDeep.compliance.emptyBatch")}
                         </p>
                       </div>
                     </div>
@@ -1414,35 +1509,35 @@ export default function ComplianceUI({
                           <div className="flex items-center gap-3 text-sm flex-1">
                             <span>
                               <span className="font-semibold text-foreground">{testResults.length}</span>{" "}
-                              <span className="text-muted-foreground">total</span>
+                              <span className="text-muted-foreground">{t("playgroundDeep.compliance.total")}</span>
                             </span>
                             <div className="w-px h-4 bg-border" />
                             <span>
                               <span className="font-semibold text-success">{matchCount}</span>{" "}
-                              <span className="text-muted-foreground">correct</span>
+                              <span className="text-muted-foreground">{t("playgroundDeep.compliance.correct")}</span>
                             </span>
                             <div className="w-px h-4 bg-border" />
-                            <span title="Allowed content that should have been blocked">
+                            <span title={t("playgroundDeep.compliance.falseNegativeTitle")}>
                               <span className="font-semibold text-warning">{falseNegativeCount}</span>{" "}
-                              <span className="text-muted-foreground">false negative</span>
+                              <span className="text-muted-foreground">
+                                {t("playgroundDeep.compliance.falseNegative")}
+                              </span>
                             </span>
                             <div className="w-px h-4 bg-border" />
-                            <span title="Blocked content that should have been allowed">
+                            <span title={t("playgroundDeep.compliance.falsePositiveTitle")}>
                               <span className="font-semibold text-destructive">{falsePositiveCount}</span>{" "}
-                              <span className="text-muted-foreground">false positive</span>
+                              <span className="text-muted-foreground">
+                                {t("playgroundDeep.compliance.falsePositive")}
+                              </span>
                             </span>
                           </div>
                           <div
-                            className={`flex flex-col items-center justify-center min-w-[88px] py-2.5 px-4 rounded-xl border-2 font-bold text-2xl tabular-nums ${
-                              matchCount / completedResults.length >= 0.8
-                                ? "bg-success/10 border-success/20 text-success"
-                                : matchCount / completedResults.length >= 0.5
-                                  ? "bg-warning/10 border-warning/20 text-warning"
-                                  : "bg-destructive/10 border-destructive/20 text-destructive"
-                            }`}
+                            className={`flex flex-col items-center justify-center min-w-[88px] py-2.5 px-4 rounded-xl border-2 font-bold text-2xl tabular-nums ${scoreToneClass(matchRate)}`}
                           >
-                            <span className="text-[10px] font-semibold uppercase tracking-wider opacity-90">Score</span>
-                            <span>{Math.round((matchCount / completedResults.length) * 100)}%</span>
+                            <span className="text-[10px] font-semibold uppercase tracking-wider opacity-90">
+                              {t("playgroundDeep.compliance.score")}
+                            </span>
+                            <span>{Math.round(matchRate * 100)}%</span>
                           </div>
                         </div>
                       )}
@@ -1452,18 +1547,12 @@ export default function ComplianceUI({
                         return (
                           <div
                             key={result.promptId}
-                            className={`border rounded-lg overflow-hidden ${result.status !== "complete" ? "border-border bg-muted/50" : result.isMatch ? "border-success/15" : "border-destructive/15"}`}
+                            className={`border rounded-lg overflow-hidden ${resultBorderClass(result)}`}
                           >
                             <div className="p-2.5">
                               <div className="flex items-start gap-2">
                                 <div className="shrink-0 mt-0.5">
-                                  {result.status !== "complete" ? (
-                                    <Loader2 className="w-3.5 h-3.5 text-muted-foreground animate-spin" />
-                                  ) : result.isMatch ? (
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                                  ) : (
-                                    <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
-                                  )}
+                                  <ResultStatusIcon result={result} />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-[11px] text-foreground leading-relaxed mb-1.5">{result.prompt}</p>
@@ -1475,13 +1564,17 @@ export default function ComplianceUI({
                                     <span
                                       className={`text-[9px] font-semibold px-1 py-0.5 rounded-sm ${result.expectedResult === "fail" ? "bg-destructive/10 text-destructive" : "bg-success/10 text-success"}`}
                                     >
-                                      {result.expectedResult === "fail" ? "Expect Block" : "Expect Allow"}
+                                      {result.expectedResult === "fail"
+                                        ? t("playgroundDeep.compliance.expectBlock")
+                                        : t("playgroundDeep.compliance.expectAllow")}
                                     </span>
                                     {result.status === "complete" && (
                                       <span
                                         className={`text-[9px] font-bold px-1 py-0.5 rounded-sm ${result.isMatch ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}
                                       >
-                                        {result.isMatch ? "✓ Match" : "✗ Gap"}
+                                        {result.isMatch
+                                          ? t("playgroundDeep.compliance.match")
+                                          : t("playgroundDeep.compliance.gap")}
                                       </span>
                                     )}
                                   </div>
@@ -1498,7 +1591,11 @@ export default function ComplianceUI({
                                       });
                                     }}
                                     className="shrink-0 p-0.5 text-muted-foreground hover:text-foreground"
-                                    aria-label={isExpanded ? "Collapse" : "Expand"}
+                                    aria-label={
+                                      isExpanded
+                                        ? t("playgroundDeep.compliance.collapse")
+                                        : t("playgroundDeep.compliance.expand")
+                                    }
                                   >
                                     {isExpanded ? (
                                       <ChevronDown className="w-3.5 h-3.5" />
@@ -1512,25 +1609,27 @@ export default function ComplianceUI({
                                 <div className="mt-2 pt-2 border-t border-border text-[11px] space-y-1">
                                   {result.triggeredBy && (
                                     <div>
-                                      <span className="text-muted-foreground">Triggered by:</span>{" "}
+                                      <span className="text-muted-foreground">
+                                        {t("playgroundDeep.compliance.triggeredBy")}
+                                      </span>{" "}
                                       <span className="font-medium text-foreground bg-muted px-1.5 py-0.5 rounded-sm">
                                         {result.triggeredBy}
                                       </span>
                                     </div>
                                   )}
                                   <div>
-                                    <span className="text-muted-foreground">Verdict:</span>{" "}
+                                    <span className="text-muted-foreground">
+                                      {t("playgroundDeep.compliance.verdict")}
+                                    </span>{" "}
                                     <span className={result.isMatch ? "text-success" : "text-destructive"}>
-                                      {result.isMatch
-                                        ? "Correctly handled"
-                                        : result.expectedResult === "fail"
-                                          ? "Gap — should have been blocked"
-                                          : "False positive — incorrectly blocked"}
+                                      {verdictLabel(result, t)}
                                     </span>
                                   </div>
                                   {result.returnedText != null && result.returnedText !== "" && (
                                     <div className="mt-1.5">
-                                      <span className="text-muted-foreground block mb-0.5">LLM response:</span>
+                                      <span className="text-muted-foreground block mb-0.5">
+                                        {t("playgroundDeep.compliance.llmResponse")}
+                                      </span>
                                       <div className="text-foreground bg-muted rounded-sm px-2 py-1.5 border border-border max-h-32 overflow-y-auto whitespace-pre-wrap wrap-break-word">
                                         {result.returnedText}
                                       </div>

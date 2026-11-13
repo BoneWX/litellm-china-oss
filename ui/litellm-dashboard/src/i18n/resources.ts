@@ -4,6 +4,7 @@ import commonEn from "./locales/en/common.json";
 import homeEn from "./locales/en/home.json";
 import modelsEn from "./locales/en/models.json";
 import navigationEn from "./locales/en/navigation.json";
+import playgroundDeepEn from "./locales/en/playground-deep.json";
 import shellEn from "./locales/en/shell.json";
 import usageLogEn from "./locales/en/usage-log.json";
 import baseEn from "./locales/en.json";
@@ -24,6 +25,7 @@ import navigationZhCN from "./locales/zh-CN/navigation.json";
 import organizationsZhCN from "./locales/zh-CN/organizations.json";
 import policiesZhCN from "./locales/zh-CN/policies.json";
 import playgroundZhCN from "./locales/zh-CN/playground.json";
+import playgroundDeepZhCN from "./locales/zh-CN/playground-deep.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
 import skillsZhCN from "./locales/zh-CN/skills.json";
 import teamsZhCN from "./locales/zh-CN/teams.json";
@@ -44,6 +46,7 @@ export const enResources = {
   ...homeEn,
   ...modelsEn,
   ...navigationEn,
+  ...playgroundDeepEn,
   ...shellEn,
   ...usageLogEn,
 };
@@ -65,6 +68,7 @@ export const zhCNResources = {
   ...navigationZhCN,
   ...organizationsZhCN,
   ...policiesZhCN,
+  ...playgroundDeepZhCN,
   ...playgroundZhCN,
   ...shellZhCN,
   ...skillsZhCN,

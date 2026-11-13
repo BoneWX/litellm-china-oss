@@ -1,5 +1,6 @@
 import React from "react";
 import { Copy, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { EndpointType } from "@/components/chat_ui/mode_endpoint_mapping";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
   useApiSessionManagement,
   onToggleSessionManagement,
 }) => {
+  const { t } = useTranslation();
   if (endpointType !== EndpointType.RESPONSES) {
     return null;
   }
@@ -27,19 +29,21 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
     if (responsesSessionId) {
       try {
         await navigator.clipboard.writeText(responsesSessionId);
-        toast.success("Response ID copied to clipboard!");
+        toast.success(t("playgroundDeep.session.copied"));
       } catch {
-        toast.error("Unable to copy response ID");
+        toast.error(t("playgroundDeep.session.copyFailed"));
       }
     }
   };
 
   const getSessionDisplay = () => {
     if (!responsesSessionId) {
-      return useApiSessionManagement ? "API Session: Ready" : "UI Session: Ready";
+      return useApiSessionManagement ? t("playgroundDeep.session.apiReady") : t("playgroundDeep.session.uiReady");
     }
 
-    const sessionPrefix = useApiSessionManagement ? "Response ID" : "UI Session";
+    const sessionPrefix = useApiSessionManagement
+      ? t("playgroundDeep.session.responseId")
+      : t("playgroundDeep.session.uiSession");
     const truncatedId = responsesSessionId.slice(0, 10);
     return `${sessionPrefix}: ${truncatedId}...`;
   };
@@ -47,13 +51,11 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
   const getSessionDescription = () => {
     if (!responsesSessionId) {
       return useApiSessionManagement
-        ? "LiteLLM will manage session using previous_response_id"
-        : "UI will manage session using chat history";
+        ? t("playgroundDeep.session.apiUsesPreviousResponse")
+        : t("playgroundDeep.session.uiUsesHistory");
     }
 
-    return useApiSessionManagement
-      ? "LiteLLM API session active - context maintained server-side"
-      : "UI session active - context maintained client-side";
+    return useApiSessionManagement ? t("playgroundDeep.session.apiActive") : t("playgroundDeep.session.uiActive");
   };
 
   return (
@@ -61,15 +63,12 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
       {/* Session Management Toggle */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-foreground">Session Management</span>
+          <span className="text-sm font-medium text-foreground">{t("playgroundDeep.session.title")}</span>
           <Tooltip>
-            <TooltipTrigger aria-label="About session management">
+            <TooltipTrigger aria-label={t("playgroundDeep.session.about")}>
               <Info className="size-3 text-muted-foreground" />
             </TooltipTrigger>
-            <TooltipContent>
-              Choose between LiteLLM API session management (using previous_response_id) or UI-based session management
-              (using chat history)
-            </TooltipContent>
+            <TooltipContent>{t("playgroundDeep.session.choose")}</TooltipContent>
           </Tooltip>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -77,7 +76,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
           <Switch
             checked={useApiSessionManagement}
             onCheckedChange={onToggleSessionManagement}
-            aria-label="Use API session management"
+            aria-label={t("playgroundDeep.session.useApi")}
             size="sm"
           />
           <span aria-hidden="true">API</span>
@@ -106,7 +105,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
                     variant="ghost"
                     size="icon-xs"
                     onClick={handleCopySessionId}
-                    aria-label="Copy response ID"
+                    aria-label={t("playgroundDeep.session.copyResponseId")}
                     className="ml-2 hover:bg-success/15"
                   />
                 }
@@ -115,7 +114,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
               </TooltipTrigger>
               <TooltipContent className="max-w-lg">
                 <div className="text-xs">
-                  <div className="mb-1">Copy response ID to continue session:</div>
+                  <div className="mb-1">{t("playgroundDeep.session.copyToContinue")}</div>
                   <div className="bg-gray-800 text-gray-100 p-2 rounded-sm font-mono text-xs whitespace-pre-wrap">
                     {`curl -X POST "your-proxy-url/v1/responses" \\
   -H "Authorization: Bearer your-api-key" \\

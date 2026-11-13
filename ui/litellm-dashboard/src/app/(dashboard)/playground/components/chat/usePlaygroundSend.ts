@@ -1,5 +1,7 @@
 import { useRef, useState, type RefObject } from "react";
 import { v4 as uuidv4 } from "uuid";
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import { EndpointType } from "@/components/chat_ui/mode_endpoint_mapping";
 import type { MessageType, ReplyTrace } from "@/components/chat_ui/types";
 import { gatewayTraceFromHeaders } from "@/components/llm_calls/reply_trace";
@@ -49,17 +51,17 @@ const previewFor = (file: File): string | undefined => {
   return url.startsWith("blob:") ? url : undefined;
 };
 
-const missingInput = (deps: SendDeps, text: string, files: readonly DraftFile[]): string | null => {
+const missingInput = (t: TFunction, deps: SendDeps, text: string, files: readonly DraftFile[]): string | null => {
   const { settings, capabilities } = deps;
   if (settings.endpoint === EndpointType.IMAGE_EDITS && files.length === 0)
-    return "Please upload at least one image for editing";
+    return t("playgroundDeep.chat.validation.imageRequired");
   if (settings.endpoint === EndpointType.TRANSCRIPTION && files.length === 0)
-    return "Please upload an audio file for transcription";
+    return t("playgroundDeep.chat.validation.audioRequired");
   if (capabilities.textRequired && text.trim() === "") return "";
   if (settings.endpoint === EndpointType.A2A_AGENTS && !settings.agent)
-    return "Please select an agent to send a message";
+    return t("playgroundDeep.chat.validation.agentRequired");
   if (MODEL_ENDPOINTS.includes(settings.endpoint) && !settings.model)
-    return "Please select a model before sending a request";
+    return t("playgroundDeep.chat.validation.modelRequired");
   return null;
 };
 
@@ -103,6 +105,7 @@ type PreparedRequest = Readonly<{
 }>;
 
 export function usePlaygroundSend(deps: SendDeps) {
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [draft, setDraft] = useState<Draft>({ kind: null, files: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -140,37 +143,39 @@ export function usePlaygroundSend(deps: SendDeps) {
   const cancel = () => {
     if (!abortRef.current) return;
     stop();
-    toast.info("Request cancelled");
+    toast.info(t("playgroundDeep.chat.requestCancelled"));
   };
 
   const prepare = async (): Promise<PreparedRequest | null> => {
     const { settings } = deps;
-    const missing = missingInput(deps, text, files);
+    const missing = missingInput(t, deps, text, files);
     if (missing !== null) {
       if (missing) toast.fromError(missing);
       return null;
     }
     const direct = settings.endpoint === EndpointType.MCP ? deps.directCall() : null;
     if (settings.endpoint === EndpointType.MCP && !direct) {
-      toast.fromError("Pick an MCP server and a tool to call");
+      toast.fromError(t("playgroundDeep.chat.validation.serverToolRequired"));
       return null;
     }
     const toolArguments = await (direct
       ? deps.toolArgsForm.current?.getSubmitValues().catch((error: unknown) => {
-          toast.fromError(error instanceof Error ? error.message : "Please fill in all required parameters");
+          toast.fromError(
+            error instanceof Error ? error.message : t("playgroundDeep.chat.validation.parametersRequired"),
+          );
           return null;
         })
       : Promise.resolve({}));
     if (toolArguments === null) return null;
     if (!deps.signedIn) return null;
     if (!deps.apiKey) {
-      toast.fromError("Please provide a Virtual Key or select Current UI Session");
+      toast.fromError(t("playgroundDeep.chat.validation.keyRequired"));
       return null;
     }
 
     const userMessage = await apiMessage(settings.endpoint, text, files[0]?.file).catch(() => null);
     if (!userMessage) {
-      toast.fromError("Failed to process the attachment. Please try again.");
+      toast.fromError(t("playgroundDeep.chat.validation.attachmentFailed"));
       return null;
     }
     return { direct, toolArguments: toolArguments ?? {}, userMessage };
