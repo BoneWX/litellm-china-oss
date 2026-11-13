@@ -1,0 +1,202 @@
+{
+  "skills": {
+    "panel": {
+      "title": "技能",
+      "intro": "注册 Claude Code 技能。已发布的技能会出现在所有用户的技能中心中，并通过 <endpoint/> 提供。",
+      "addButton": "+ 添加技能",
+      "deleteDialog": {
+        "title": "删除技能",
+        "confirm": "确定要删除技能：<name/>？",
+        "irreversible": "此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除"
+      },
+      "toasts": {
+        "deleted": "技能“{{name}}”已成功删除",
+        "deleteFailed": "删除技能失败"
+      }
+    },
+    "table": {
+      "empty": {
+        "title": "未找到技能",
+        "description": "添加一个技能以开始使用。"
+      },
+      "loading": "正在加载技能…",
+      "uncategorized": "未分类",
+      "noDescription": "暂无描述",
+      "versionMissing": "无",
+      "publicYes": "是",
+      "publicNo": "否",
+      "actions": {
+        "open": "打开技能操作",
+        "copyId": "复制技能 ID",
+        "idCopied": "技能 ID 已复制",
+        "delete": "删除"
+      },
+      "columns": {
+        "name": "技能名称",
+        "version": "版本",
+        "description": "描述",
+        "category": "分类",
+        "public": "公开",
+        "createdAt": "创建时间",
+        "actions": "操作"
+      }
+    },
+    "addForm": {
+      "title": "添加新技能",
+      "labels": {
+        "sourceUrl": "来源 URL",
+        "subPath": "子文件夹路径（可选）",
+        "sha256": "压缩包 SHA-256（可选）",
+        "name": "技能名称",
+        "domain": "领域（可选）",
+        "namespace": "命名空间（可选）",
+        "description": "描述（可选）",
+        "category": "分类（可选）",
+        "keywords": "关键词（可选）",
+        "version": "版本（可选）",
+        "authorName": "作者名称（可选）",
+        "authorEmail": "作者邮箱（可选）"
+      },
+      "hints": {
+        "sourceUrl": "粘贴 GitHub、GitLab、Bitbucket 或自托管主机的 HTTPS Git 仓库 URL（例如 github.com/org/repo 或 github.com/org/repo/tree/main/my-skill），也可以粘贴托管在 S3 或任意静态文件服务器上的技能 .zip 压缩包 HTTPS 链接。私有仓库请使用 SSH 克隆 URL（git@ghe.example.com:org/repo.git），以便 Claude Code 使用你的 SSH 密钥克隆。",
+        "subPath": "技能在仓库中的路径（例如 plugins/my-skill）。技能位于仓库根目录时留空。",
+        "sha256": "zip 文件的十六进制摘要。校验和不匹配时 Claude Code 会拒绝安装。",
+        "name": "使用 kebab-case 格式的唯一标识符（例如 my-skill）",
+        "domain": "技能中心中的顶级分组（例如 Productivity）",
+        "namespace": "领域内的子分组（例如 workflows）",
+        "description": "简要说明此技能的功能",
+        "category": "选择分类或输入自定义分类",
+        "keywords": "用于搜索的关键词，以逗号分隔",
+        "version": "语义化版本（例如 1.0.0）",
+        "authorName": "技能作者或组织名称",
+        "authorEmail": "技能作者的联系邮箱"
+      },
+      "placeholders": {
+        "sourceUrl": "https://github.com/org/repo 或 https://bucket.s3.amazonaws.com/my-skill.zip",
+        "sha256": "64 个十六进制字符",
+        "domain": "生产力",
+        "description": "一个帮助处理...的技能",
+        "category": "选择或输入分类",
+        "keywords": "搜索, web, api",
+        "authorName": "你的姓名或组织名称"
+      },
+      "subPathLock": {
+        "gitSubdir": "URL 已指向子文件夹，因此此字段已禁用",
+        "archive": "zip 压缩包会整体安装，因此此字段已禁用"
+      },
+      "detected": "已检测到：{{source}}",
+      "noCategories": "没有匹配的分类",
+      "cancel": "取消",
+      "adding": "正在添加...",
+      "submit": "添加技能",
+      "errors": {
+        "urlRequired": "请输入仓库或 zip 压缩包 URL",
+        "subPathInvalid": "子文件夹必须是类似 plugins/my-skill 的相对路径，只能包含字母、数字、点、连字符和下划线",
+        "sha256Invalid": "SHA-256 必须是 64 个字符的十六进制摘要",
+        "nameRequired": "请输入技能名称",
+        "nameInvalid": "名称必须使用 kebab-case，只能包含小写字母、数字和连字符",
+        "emailInvalid": "请输入有效的邮箱"
+      },
+      "toasts": {
+        "noToken": "没有可用的访问令牌",
+        "invalidUrl": "请输入有效的仓库或 zip 压缩包 URL",
+        "invalidName": "技能名称必须使用 kebab-case，只能包含小写字母、数字和连字符",
+        "invalidVersion": "版本必须使用语义化版本格式（例如 1.0.0）",
+        "invalidEmail": "邮箱格式无效",
+        "registered": "技能注册成功",
+        "registerFailed": "注册技能失败"
+      }
+    }
+  },
+  "claudeCodePlugins": {
+    "sources": {
+      "githubRepo": "GitHub 仓库 — {{repo}}",
+      "githubSubdir": "GitHub 子目录 — {{repo}} @ {{path}}",
+      "gitRepo": "{{kind}} 仓库 — {{url}}",
+      "gitSubdir": "{{kind}} 子目录 — {{url}} @ {{path}}",
+      "zipArchive": "Zip 压缩包 — {{location}}",
+      "githubDisplay": "GitHub：{{repo}}",
+      "unknown": "未知来源"
+    },
+    "skillDetail": {
+      "back": "技能",
+      "tabs": {
+        "overview": "概览",
+        "usage": "使用方法"
+      },
+      "properties": {
+        "category": "分类",
+        "domain": "领域",
+        "namespace": "命名空间",
+        "version": "版本",
+        "author": "作者",
+        "added": "添加时间"
+      },
+      "overview": {
+        "title": "技能详情",
+        "subtitle": "此技能注册的元数据",
+        "propertyHeader": "属性",
+        "status": "状态",
+        "public": "公开",
+        "draft": "草稿",
+        "source": "来源",
+        "tags": "标签",
+        "skillId": "技能 ID"
+      },
+      "runInClaudeCode": "在 Claude Code 中运行",
+      "copy": "复制",
+      "copied": "已复制",
+      "usage": {
+        "title": "使用此技能",
+        "intro": "将代理设置为市场后，在 Claude Code 中使用一个命令启用此技能：",
+        "staleCatalog": "如果出现“Plugin {{name}} not found in marketplace”，请先更新目录：",
+        "notConfigured": "还没有配置市场？",
+        "seeSetup": "查看一次性设置 ->"
+      },
+      "setup": {
+        "title": "一次性市场设置",
+        "removeFirst": "如果之前添加过不带密钥的此市场，请先在 Claude Code 中移除。移除市场也会卸载从中安装的插件，因此添加代码片段后请重新通过 /plugin 安装。",
+        "requiresKey": "此代理读取市场需要 LiteLLM 密钥。将以下内容添加到 <settings/>，并用你的密钥替换 <placeholder/>：",
+        "runCommand": "在 Claude Code 中运行以下命令以注册市场：",
+        "orSettings": "或者将以下内容添加到 <settings/> 以持久保存配置："
+      }
+    },
+    "makePublic": {
+      "title": "发布到技能中心",
+      "steps": {
+        "select": "选择技能",
+        "confirm": "确认"
+      },
+      "step1": {
+        "title": "选择要发布的技能",
+        "selectAll": "全选（{{total}}）",
+        "description": "选中的技能会对技能中心中的所有用户可见。未选中的技能将取消发布。",
+        "empty": "尚未注册技能。",
+        "public": "公开",
+        "selectedCount_one": "将发布 <strong>{{count}}</strong> 个技能",
+        "selectedCount_other": "将发布 <strong>{{count}}</strong> 个技能"
+      },
+      "step2": {
+        "title": "确认发布到技能中心",
+        "note": "<strong>注意：</strong>已发布的技能会在技能中心标签页中对所有用户可见。未出现在下方列表中的技能将取消发布。",
+        "listTitle": "将发布的技能：",
+        "total_one": "总计：将发布 <strong>{{count}}</strong> 个技能",
+        "total_other": "总计：将发布 <strong>{{count}}</strong> 个技能"
+      },
+      "buttons": {
+        "cancel": "取消",
+        "previous": "上一步",
+        "next": "下一步",
+        "publish": "发布到中心"
+      },
+      "toasts": {
+        "selectAtLeastOne": "请至少选择一个技能",
+        "published_one": "技能中心已更新，已发布 {{count}} 个技能",
+        "published_other": "技能中心已更新，已发布 {{count}} 个技能",
+        "publishFailed": "更新技能失败，请重试。"
+      }
+    }
+  }
+}

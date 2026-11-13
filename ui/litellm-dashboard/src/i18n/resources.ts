@@ -22,6 +22,7 @@ import navigationZhCN from "./locales/zh-CN/navigation.json";
 import organizationsZhCN from "./locales/zh-CN/organizations.json";
 import policiesZhCN from "./locales/zh-CN/policies.json";
 import shellZhCN from "./locales/zh-CN/shell.json";
+import skillsZhCN from "./locales/zh-CN/skills.json";
 import teamsZhCN from "./locales/zh-CN/teams.json";
 import usageLogZhCN from "./locales/zh-CN/usage-log.json";
 import usersZhCN from "./locales/zh-CN/users.json";
@@ -59,6 +60,7 @@ export const zhCNResources = {
   ...organizationsZhCN,
   ...policiesZhCN,
   ...shellZhCN,
+  ...skillsZhCN,
   ...teamsZhCN,
   ...usageLogZhCN,
   ...usersZhCN,
