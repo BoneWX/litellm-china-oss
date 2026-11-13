@@ -10,6 +10,8 @@ import baseEn from "./locales/en.json";
 import agentsZhCN from "./locales/zh-CN/agents.json";
 import apiKeysZhCN from "./locales/zh-CN/api-keys.json";
 import authZhCN from "./locales/zh-CN/auth.json";
+import budgetScheduleZhCN from "./locales/zh-CN/budget-schedule.json";
+import budgetsZhCN from "./locales/zh-CN/budgets.json";
 import commonZhCN from "./locales/zh-CN/common.json";
 import deploymentHealthZhCN from "./locales/zh-CN/deployment-health.json";
 import homeZhCN from "./locales/zh-CN/home.json";
@@ -41,6 +43,8 @@ export const zhCNResources = {
   ...agentsZhCN,
   ...apiKeysZhCN,
   ...authZhCN,
+  ...budgetScheduleZhCN,
+  ...budgetsZhCN,
   ...commonZhCN,
   ...deploymentHealthZhCN,
   ...homeZhCN,

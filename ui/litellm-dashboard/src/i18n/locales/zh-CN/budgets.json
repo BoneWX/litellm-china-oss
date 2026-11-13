@@ -1,0 +1,117 @@
+{
+  "budgets": {
+    "panel": {
+      "title": "预算",
+      "description": "可分配给客户的消费、TPM 和 RPM 限额。",
+      "create": "新建预算",
+      "tabs": {
+        "budgets": "预算",
+        "examples": "示例"
+      },
+      "examples": {
+        "title": "如何使用预算 ID",
+        "assign": "为客户分配预算",
+        "curl": "使用 Curl 测试",
+        "openaiSdk": "使用 OpenAI SDK 测试"
+      },
+      "toasts": {
+        "deleted": "预算已删除。",
+        "deleteFailed": "删除预算失败"
+      }
+    },
+    "delete": {
+      "title": "删除预算？",
+      "message": "确定要删除此预算吗？此操作无法撤销。",
+      "infoTitle": "预算信息",
+      "budgetId": "预算 ID",
+      "maxBudget": "最大预算",
+      "tpm": "TPM",
+      "rpm": "RPM",
+      "tpd": "TPD（批处理）"
+    },
+    "modal": {
+      "makeCall": "正在调用 API",
+      "createTitle": "新建预算",
+      "editTitle": "编辑预算",
+      "created": "预算已创建",
+      "updated": "预算已更新",
+      "createFailed": "创建预算失败：{{error}}",
+      "updateFailed": "更新预算失败：{{error}}",
+      "cancel": "取消",
+      "create": "新建预算",
+      "save": "保存"
+    },
+    "form": {
+      "budgetId": "预算 ID",
+      "budgetIdLocked": "预算创建后不能修改预算 ID",
+      "budgetIdRequired": "请输入预算 ID",
+      "optional": "可选",
+      "spendLimit": "消费限额",
+      "noLimit": "无限制",
+      "resetPeriod": "重置周期",
+      "resetOptions": {
+        "total": "累计",
+        "day": "每天",
+        "week": "每周",
+        "month": "每月"
+      },
+      "rateLimits": "速率限制",
+      "tokensPerMinute": "每分钟 Token 数",
+      "requestsPerMinute": "每分钟请求数",
+      "batchTokensPerDay": "每天批处理 Token 数",
+      "batchHint": "批处理会计入每日限额，而不是每分钟限额。提供商自身的速率限制仍然适用。"
+    },
+    "table": {
+      "notAvailable": "无",
+      "notSet": "未设置",
+      "openActions": "打开预算操作",
+      "edit": "编辑预算",
+      "delete": "删除预算",
+      "columns": {
+        "budgetId": "预算 ID",
+        "maxBudget": "最大预算",
+        "tpm": "TPM",
+        "rpm": "RPM",
+        "tpd": "TPD（批处理）",
+        "reset": "重置",
+        "created": "创建时间",
+        "actions": "操作"
+      },
+      "unlimited": "无限制",
+      "loading": "正在加载预算…",
+      "search": "按预算 ID 搜索…",
+      "filters": {
+        "title": "筛选条件",
+        "description": "缩小预算范围",
+        "maxBudget": "最大预算（CNY）",
+        "min": "最小值",
+        "max": "最大值",
+        "minAria": "最大预算最小值",
+        "maxAria": "最大预算最大值",
+        "unlimitedOnly": "仅无限制",
+        "createdFrom": "创建时间起始",
+        "createdTo": "创建时间截止",
+        "any": "任意",
+        "range": "{{min}} 至 {{max}}"
+      },
+      "duration": {
+        "hourly": "每小时",
+        "daily": "每天",
+        "weekly": "每周",
+        "monthly": "每月",
+        "notSet": "未设置"
+      },
+      "empty": {
+        "filteredTitle": "没有匹配的预算",
+        "title": "暂无预算",
+        "filteredDescription": "没有预算符合当前搜索或筛选条件。",
+        "description": "创建预算后，可以为客户设置消费、TPM 和 RPM 限额。"
+      },
+      "errors": {
+        "forbiddenTitle": "你没有访问预算的权限",
+        "loadTitle": "无法加载预算",
+        "forbiddenDescription": "请联系代理管理员为你授予管理员查看者角色。"
+      }
+    }
+  }
+}

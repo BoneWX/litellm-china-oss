@@ -1,4 +1,119 @@
 {
+  "budgets": {
+    "panel": {
+      "title": "Budgets",
+      "description": "Spend, TPM and RPM limits you can assign to customers.",
+      "create": "Create Budget",
+      "tabs": {
+        "budgets": "Budgets",
+        "examples": "Examples"
+      },
+      "examples": {
+        "title": "How to use budget id",
+        "assign": "Assign Budget to Customer",
+        "curl": "Test it (Curl)",
+        "openaiSdk": "Test it (OpenAI SDK)"
+      },
+      "toasts": {
+        "deleted": "Budget deleted.",
+        "deleteFailed": "Failed to delete budget"
+      }
+    },
+    "delete": {
+      "title": "Delete Budget?",
+      "message": "Are you sure you want to delete this budget? This action cannot be undone.",
+      "infoTitle": "Budget Information",
+      "budgetId": "Budget ID",
+      "maxBudget": "Max Budget",
+      "tpm": "TPM",
+      "rpm": "RPM",
+      "tpd": "TPD (batch)"
+    },
+    "modal": {
+      "makeCall": "Making API Call",
+      "createTitle": "Create budget",
+      "editTitle": "Edit budget",
+      "created": "Budget Created",
+      "updated": "Budget Updated",
+      "createFailed": "Error creating the budget: {{error}}",
+      "updateFailed": "Error updating the budget: {{error}}",
+      "cancel": "Cancel",
+      "create": "Create budget",
+      "save": "Save"
+    },
+    "form": {
+      "budgetId": "Budget ID",
+      "budgetIdLocked": "Budget ID cannot be changed after creation",
+      "budgetIdRequired": "Enter a budget ID",
+      "optional": "Optional",
+      "spendLimit": "Spend limit",
+      "noLimit": "No limit",
+      "resetPeriod": "Reset period",
+      "resetOptions": {
+        "total": "in total",
+        "day": "per day",
+        "week": "per week",
+        "month": "per month"
+      },
+      "rateLimits": "Rate limits",
+      "tokensPerMinute": "Tokens per minute",
+      "requestsPerMinute": "Requests per minute",
+      "batchTokensPerDay": "Batch tokens per day",
+      "batchHint": "Batches count against the daily limit instead of the per-minute ones. Provider rate limits still apply."
+    },
+    "table": {
+      "notAvailable": "n/a",
+      "notSet": "Not set",
+      "openActions": "Open budget actions",
+      "edit": "Edit budget",
+      "delete": "Delete budget",
+      "columns": {
+        "budgetId": "Budget ID",
+        "maxBudget": "Max Budget",
+        "tpm": "TPM",
+        "rpm": "RPM",
+        "tpd": "TPD (batch)",
+        "reset": "Reset",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "unlimited": "Unlimited",
+      "loading": "Loading budgets…",
+      "search": "Search by budget ID…",
+      "filters": {
+        "title": "Filters",
+        "description": "Narrow down your budgets",
+        "maxBudget": "Max Budget (CNY)",
+        "min": "Min",
+        "max": "Max",
+        "minAria": "Minimum max budget",
+        "maxAria": "Maximum max budget",
+        "unlimitedOnly": "Unlimited only",
+        "createdFrom": "Created from",
+        "createdTo": "Created to",
+        "any": "any",
+        "range": "{{min}} to {{max}}"
+      },
+      "duration": {
+        "hourly": "hourly",
+        "daily": "daily",
+        "weekly": "weekly",
+        "monthly": "monthly",
+        "notSet": "Not set"
+      },
+      "empty": {
+        "filteredTitle": "No matching budgets",
+        "title": "No budgets yet",
+        "filteredDescription": "No budget matches your search or filters.",
+        "description": "Create a budget to set spend, TPM and RPM limits for customers."
+      },
+      "errors": {
+        "forbiddenTitle": "You do not have access to budgets",
+        "loadTitle": "Could not load budgets",
+        "forbiddenDescription": "Ask a proxy admin to grant you the admin viewer role."
+      }
+    }
+  },
   "deploymentHealth": {
     "icon": {
       "label": "Deployment health",

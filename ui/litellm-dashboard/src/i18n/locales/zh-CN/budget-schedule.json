@@ -1,0 +1,16 @@
+{
+  "budgetSchedule": {
+    "coverageWithPeriod": "当前周期消费覆盖 {{period}}，每 {{duration}} 重置。",
+    "coverageWithoutPeriod": "当前周期消费按计划重置。",
+    "scheduledTooltip": "{{coverage}} 下次重置：{{label}}（{{timeZone}}）。{{rolloverNote}}",
+    "rolloverNote": "重置时超出结转上限的消费会结转到下一周期。",
+    "neverResets": {
+      "label": "不会重置",
+      "tooltip": "此预算没有重置窗口，因此显示的是成员关系存续期间的生命周期消费。"
+    },
+    "unscheduled": {
+      "label": "未知",
+      "tooltip": "每 {{duration}} 重置，但尚未安排下次重置时间。{{rolloverNote}}"
+    }
+  }
+}

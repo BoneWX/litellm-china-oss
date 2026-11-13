@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ApiError } from "@/lib/http/client";
 import { CURRENCY_SYMBOL } from "@/utils/currency";
+import { useTranslation } from "react-i18next";
+import type { ParseKeys, TFunction } from "i18next";
 
 import { BUDGET_TABLE_HIDDEN_COLUMNS, getBudgetTableColumns } from "./BudgetTableColumns";
 
@@ -35,28 +37,38 @@ interface BudgetTableProps {
 
 const PAGE_SIZE_OPTIONS = [25, 50, 100];
 
-const FILTER_LABELS: Record<string, string> = {
-  budget_duration: "Reset",
-  max_budget: "Max Budget",
-  created_at: "Created",
-};
+const DURATION_LABEL_KEYS = {
+  "1h": "budgets.table.duration.hourly",
+  "24h": "budgets.table.duration.daily",
+  "7d": "budgets.table.duration.weekly",
+  "30d": "budgets.table.duration.monthly",
+  [BUDGET_DURATION_UNSET]: "budgets.table.duration.notSet",
+} as const satisfies Record<string, ParseKeys>;
 
-const durationLabel = (value: string): string =>
-  BUDGET_DURATION_FILTER_OPTIONS.find((option) => option.value === value)?.label ?? value;
-
-const formatFilterValue = (columnId: string, value: unknown): string => {
+const formatFilterValue = (columnId: string, value: unknown, t: TFunction): string => {
   if (columnId === "budget_duration") {
-    return (Array.isArray(value) ? value : []).map((entry) => durationLabel(String(entry))).join(", ");
+    return (Array.isArray(value) ? value : [])
+      .map((entry) => {
+        const key = DURATION_LABEL_KEYS[String(entry) as keyof typeof DURATION_LABEL_KEYS];
+        return key ? t(key) : String(entry);
+      })
+      .join(", ");
   }
   if (columnId === "max_budget") {
     const { min, max, unlimitedOnly } = (value ?? {}) as MaxBudgetFilterValue;
     return unlimitedOnly === true
-      ? "Unlimited only"
-      : `${min ? `${CURRENCY_SYMBOL}${min}` : "any"} to ${max ? `${CURRENCY_SYMBOL}${max}` : "any"}`;
+      ? t("budgets.table.filters.unlimitedOnly")
+      : t("budgets.table.filters.range", {
+          min: min ? `${CURRENCY_SYMBOL}${min}` : t("budgets.table.filters.any"),
+          max: max ? `${CURRENCY_SYMBOL}${max}` : t("budgets.table.filters.any"),
+        });
   }
   if (columnId === "created_at") {
     const { from, to } = (value ?? {}) as CreatedAtFilterValue;
-    return `${from || "any"} to ${to || "any"}`;
+    return t("budgets.table.filters.range", {
+      min: from || t("budgets.table.filters.any"),
+      max: to || t("budgets.table.filters.any"),
+    });
   }
   return String(value);
 };
@@ -84,22 +96,24 @@ const normalizeCreatedAt = (draft: CreatedAtFilterValue): CreatedAtFilterValue |
 };
 
 function EmptyState({ hasQuery }: { hasQuery: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-1 py-6">
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <Inbox className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">{hasQuery ? "No matching budgets" : "No budgets yet"}</div>
+      <div className="text-sm font-medium text-foreground">
+        {hasQuery ? t("budgets.table.empty.filteredTitle") : t("budgets.table.empty.title")}
+      </div>
       <div className="text-sm text-muted-foreground">
-        {hasQuery
-          ? "No budget matches your search or filters."
-          : "Create a budget to set spend, TPM and RPM limits for customers."}
+        {hasQuery ? t("budgets.table.empty.filteredDescription") : t("budgets.table.empty.description")}
       </div>
     </div>
   );
 }
 
 function ErrorState({ error }: { error: Error }) {
+  const { t } = useTranslation();
   const forbidden = error instanceof ApiError && error.status === 403;
   return (
     <div className="flex flex-col items-center gap-1 py-6">
@@ -107,10 +121,10 @@ function ErrorState({ error }: { error: Error }) {
         <ShieldAlert className="size-5 text-muted-foreground" />
       </div>
       <div className="text-sm font-medium text-foreground">
-        {forbidden ? "You do not have access to budgets" : "Could not load budgets"}
+        {forbidden ? t("budgets.table.errors.forbiddenTitle") : t("budgets.table.errors.loadTitle")}
       </div>
       <div className="text-sm text-muted-foreground">
-        {forbidden ? "Ask a proxy admin to grant you the admin viewer role." : error.message}
+        {forbidden ? t("budgets.table.errors.forbiddenDescription") : error.message}
       </div>
     </div>
   );
@@ -118,6 +132,7 @@ function ErrorState({ error }: { error: Error }) {
 
 /** "Not set" and the concrete durations are exclusive; see serializeBudgetFilters for why. */
 function DurationFilter({ selected, onChange }: { selected: string[]; onChange: (selected: string[]) => void }) {
+  const { t } = useTranslation();
   const toggle = (value: string, checked: boolean): void => {
     if (!checked) {
       onChange(selected.filter((entry) => entry !== value));
@@ -136,7 +151,7 @@ function DurationFilter({ selected, onChange }: { selected: string[]; onChange: 
             onCheckedChange={(checked) => toggle(option.value, checked === true)}
             data-testid={`budget-filter-duration-${option.value}`}
           />
-          {option.label}
+          {t(DURATION_LABEL_KEYS[option.value as keyof typeof DURATION_LABEL_KEYS])}
         </Label>
       ))}
     </div>
@@ -144,19 +159,20 @@ function DurationFilter({ selected, onChange }: { selected: string[]; onChange: 
 }
 
 function BudgetFilterFields({ get, set }: FilterDraft) {
+  const { t } = useTranslation();
   const maxBudget = (get("max_budget") as MaxBudgetFilterValue | undefined) ?? {};
   const created = (get("created_at") as CreatedAtFilterValue | undefined) ?? {};
   const unlimitedOnly = maxBudget.unlimitedOnly === true;
 
   return (
     <>
-      <DataTableFilterField label="Reset">
+      <DataTableFilterField label={t("budgets.table.columns.reset")}>
         <DurationFilter
           selected={(get("budget_duration") as string[] | undefined) ?? []}
           onChange={(selected) => set("budget_duration", selected)}
         />
       </DataTableFilterField>
-      <DataTableFilterField label="Max Budget (CNY)">
+      <DataTableFilterField label={t("budgets.table.filters.maxBudget")}>
         <div className="flex items-center gap-2">
           <Input
             type="number"
@@ -165,8 +181,8 @@ function BudgetFilterFields({ get, set }: FilterDraft) {
             value={maxBudget.min ?? ""}
             disabled={unlimitedOnly}
             onChange={(event) => set("max_budget", normalizeMaxBudget({ ...maxBudget, min: event.target.value }))}
-            placeholder="Min"
-            aria-label="Minimum max budget"
+            placeholder={t("budgets.table.filters.min")}
+            aria-label={t("budgets.table.filters.minAria")}
             data-testid="budget-filter-max-budget-min"
           />
           <Input
@@ -176,8 +192,8 @@ function BudgetFilterFields({ get, set }: FilterDraft) {
             value={maxBudget.max ?? ""}
             disabled={unlimitedOnly}
             onChange={(event) => set("max_budget", normalizeMaxBudget({ ...maxBudget, max: event.target.value }))}
-            placeholder="Max"
-            aria-label="Maximum max budget"
+            placeholder={t("budgets.table.filters.max")}
+            aria-label={t("budgets.table.filters.maxAria")}
             data-testid="budget-filter-max-budget-max"
           />
         </div>
@@ -187,23 +203,23 @@ function BudgetFilterFields({ get, set }: FilterDraft) {
             onCheckedChange={(checked) => set("max_budget", normalizeMaxBudget({ unlimitedOnly: checked === true }))}
             data-testid="budget-filter-max-budget-unlimited"
           />
-          Unlimited only
+          {t("budgets.table.filters.unlimitedOnly")}
         </Label>
       </DataTableFilterField>
-      <DataTableFilterField label="Created">
+      <DataTableFilterField label={t("budgets.table.columns.created")}>
         <div className="flex items-center gap-2">
           <Input
             type="date"
             value={created.from ?? ""}
             onChange={(event) => set("created_at", normalizeCreatedAt({ ...created, from: event.target.value }))}
-            aria-label="Created from"
+            aria-label={t("budgets.table.filters.createdFrom")}
             data-testid="budget-filter-created-from"
           />
           <Input
             type="date"
             value={created.to ?? ""}
             onChange={(event) => set("created_at", normalizeCreatedAt({ ...created, to: event.target.value }))}
-            aria-label="Created to"
+            aria-label={t("budgets.table.filters.createdTo")}
             data-testid="budget-filter-created-to"
           />
         </div>
@@ -213,11 +229,12 @@ function BudgetFilterFields({ get, set }: FilterDraft) {
 }
 
 const BudgetTable: React.FC<BudgetTableProps> = ({ list, canModify, onEditClick, onDeleteClick }) => {
+  const { t } = useTranslation();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const columns = useMemo(
-    () => getBudgetTableColumns({ canModify, onEditClick, onDeleteClick }),
-    [canModify, onEditClick, onDeleteClick],
+    () => getBudgetTableColumns({ canModify, onEditClick, onDeleteClick, t }),
+    [canModify, onEditClick, onDeleteClick, t],
   );
 
   const hasQuery = list.searchValue.trim() !== "" || list.columnFilters.length > 0;
@@ -242,7 +259,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({ list, canModify, onEditClick,
       columnFilters={list.columnFilters}
       onColumnFiltersChange={list.onColumnFiltersChange}
       isLoading={list.isLoading}
-      loadingMessage="Loading budgets…"
+      loadingMessage={t("budgets.table.loading")}
       noDataMessage={emptyMessage}
       size="compact"
       toolbar={(table) => (
@@ -251,19 +268,23 @@ const BudgetTable: React.FC<BudgetTableProps> = ({ list, canModify, onEditClick,
             table={table}
             searchValue={list.searchValue}
             onSearchChange={list.onSearchChange}
-            searchPlaceholder="Search by budget ID…"
+            searchPlaceholder={t("budgets.table.search")}
             onOpenFilters={() => setFiltersOpen(true)}
             onRefresh={list.refetch}
             isRefreshing={list.isFetching}
-            filterLabels={FILTER_LABELS}
-            formatFilterValue={formatFilterValue}
+            filterLabels={{
+              budget_duration: t("budgets.table.columns.reset"),
+              max_budget: t("budgets.table.columns.maxBudget"),
+              created_at: t("budgets.table.columns.created"),
+            }}
+            formatFilterValue={(columnId, value) => formatFilterValue(columnId, value, t)}
           />
           <DataTableFilterDrawer
             table={table}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
-            title="Filters"
-            description="Narrow down your budgets"
+            title={t("budgets.table.filters.title")}
+            description={t("budgets.table.filters.description")}
           >
             {(draft) => <BudgetFilterFields {...draft} />}
           </DataTableFilterDrawer>

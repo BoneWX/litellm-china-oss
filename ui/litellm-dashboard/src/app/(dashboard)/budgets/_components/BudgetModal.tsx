@@ -1,4 +1,5 @@
 import React, { useId } from "react";
+import { useTranslation } from "react-i18next";
 import { useCreateBudget } from "@/app/(dashboard)/hooks/budgets/useBudgets";
 import { applyBudgetPrecision } from "./budgetPrecision";
 import { BudgetFormFields, type BudgetFormValues, useBudgetForm } from "./BudgetFormFields";
@@ -11,6 +12,7 @@ interface BudgetModalProps {
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const BudgetModal: React.FC<BudgetModalProps> = ({ isModalVisible, setIsModalVisible }) => {
+  const { t } = useTranslation();
   const formId = useId();
   const form = useBudgetForm({ budget_id: "" });
   const createBudget = useCreateBudget();
@@ -22,14 +24,14 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isModalVisible, setIsModalVis
 
   const handleCreate = async (formValues: BudgetFormValues) => {
     try {
-      toast.info("Making API Call");
+      toast.info(t("budgets.modal.makeCall"));
       await createBudget.mutateAsync(applyBudgetPrecision(formValues));
-      toast.success("Budget Created");
+      toast.success(t("budgets.modal.created"));
       form.reset();
       setIsModalVisible(false);
     } catch (error) {
       console.error("Error creating the budget:", error);
-      toast.fromError(`Error creating the budget: ${error}`);
+      toast.fromError(t("budgets.modal.createFailed", { error: String(error) }));
     }
   };
 
@@ -37,15 +39,17 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isModalVisible, setIsModalVis
     <Dialog open={isModalVisible} onOpenChange={(open) => !open && handleCancel()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-[15px] leading-[22px] font-semibold">Create budget</DialogTitle>
+          <DialogTitle className="text-[15px] leading-[22px] font-semibold">
+            {t("budgets.modal.createTitle")}
+          </DialogTitle>
         </DialogHeader>
         <form id={formId} onSubmit={form.handleSubmit(handleCreate)} noValidate>
           <BudgetFormFields form={form} isEditing={false} />
         </form>
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" />}>{t("budgets.modal.cancel")}</DialogClose>
           <Button type="submit" form={formId}>
-            Create budget
+            {t("budgets.modal.create")}
           </Button>
         </DialogFooter>
       </DialogContent>
