@@ -31,6 +31,7 @@ const nextConfig = {
   output: devProxyUrl ? undefined : "export",
   typescript: { tsconfigPath: "tsconfig.production.json" },
   experimental: {
+    agentUpgrade: "security",
     useTypeScriptCli: false,
   },
   compiler: {
