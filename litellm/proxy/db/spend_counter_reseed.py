@@ -14,7 +14,7 @@ memory in long-lived deployments.
 
 import asyncio
 from collections import OrderedDict
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from datetime import datetime, timezone
 from types import MappingProxyType
 from typing import TYPE_CHECKING, ClassVar, Final, Optional
@@ -225,6 +225,7 @@ class SpendCounterReseed:
         spend_counter_cache: "DualCache",
         counter_key: str,
         require_cache_warm: bool = False,
+        fallback_spend_getter: Callable[[], Awaitable[float]] | None = None,
     ) -> float | None:
         """
         Reseed a cold spend counter from the DB and warm the cache,
@@ -232,7 +233,9 @@ class SpendCounterReseed:
         + write path) collapse to one DB query per cold-cache window.
 
         Returns the spend value (including 0.0 from a fresh budget reset)
-        when the DB read succeeds, or None when the DB is unavailable.
+        when the DB read succeeds, or the value from
+        ``fallback_spend_getter`` when the DB is unavailable. Returns None
+        when neither source can provide a positive spend baseline.
         """
         lock: Final = await SpendCounterReseed._get_lock(counter_key)
         async with lock:
@@ -256,27 +259,33 @@ class SpendCounterReseed:
                     return float(val)
 
             db_spend: Final = await SpendCounterReseed.from_db(prisma_client, counter_key)
-            if db_spend is None:
+            fallback_spend: Final = (
+                await fallback_spend_getter() if db_spend is None and fallback_spend_getter is not None else None
+            )
+            if db_spend is None and (fallback_spend is None or fallback_spend <= 0.0):
+                return None
+            seed_spend: Final = db_spend if db_spend is not None else fallback_spend
+            if seed_spend is None:
                 return None
             # Warm even when 0 so subsequent reads hit cache, not DB.
             #
             # Seed via SET NX (cross-pod safe): only one pod initializes the
-            # Redis key with db_spend; concurrent seeders read the winner's
-            # value. INCRBYFLOAT-of-db_spend from N pods would multiply the
-            # counter (N x db_spend) and trigger spurious budget alerts.
-            current_value: float = float(db_spend)
+            # Redis key with seed_spend; concurrent seeders read the winner's
+            # value. INCRBYFLOAT-of-seed_spend from N pods would multiply the
+            # counter (N x seed_spend) and trigger spurious budget alerts.
+            current_value: float = float(seed_spend)
             try:
                 if spend_counter_cache.redis_cache is not None:
                     seeded: Final = await spend_counter_cache.redis_cache.async_set_cache(
                         key=counter_key,
-                        value=db_spend,
+                        value=seed_spend,
                         nx=True,
                     )
                     if seeded:
-                        current_value = float(db_spend)
+                        current_value = float(seed_spend)
                     else:
                         cached: Final = await spend_counter_cache.redis_cache.async_get_cache(key=counter_key)
-                        current_value = float(cached) if cached is not None else float(db_spend)
+                        current_value = float(cached) if cached is not None else float(seed_spend)
                     spend_counter_cache.in_memory_cache.set_cache(
                         key=counter_key,
                         value=current_value,
@@ -284,7 +293,9 @@ class SpendCounterReseed:
                     record_spend_counter_value(counter_key, current_value)
                 else:
                     cached_spend: Final = spend_counter_cache.in_memory_cache.get_cache(key=counter_key)
-                    seeded_spend: Final = max(db_spend, float(cached_spend)) if cached_spend is not None else db_spend
+                    seeded_spend: Final = (
+                        max(seed_spend, float(cached_spend)) if cached_spend is not None else seed_spend
+                    )
                     spend_counter_cache.in_memory_cache.set_cache(key=counter_key, value=seeded_spend)
                     return seeded_spend
             except Exception:
