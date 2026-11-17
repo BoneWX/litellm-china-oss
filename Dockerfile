@@ -115,8 +115,8 @@ RUN uv sync --frozen --no-default-groups --no-editable \
     --extra bedrock-realtime \
     --python python3.13
 
-# Prisma Client Python 0.11's recursive Jinja macro breaks on Python 3.13.
-# Keep the generated base types and disable recursive relationship expansion.
+# Prisma Client Python 0.11's recursive Jinja macro is unsafe on Python 3.13.
+# Expand its call sites once while keeping the generated base relationship types.
 RUN .venv/bin/python docker/patch_prisma_types_template.py
 
 RUN HOME=/opt/prisma XDG_CACHE_HOME=/opt/prisma/.cache PRISMA_BINARY_CACHE_DIR=/opt/prisma/binaries \
