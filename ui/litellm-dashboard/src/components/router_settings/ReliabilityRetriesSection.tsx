@@ -1,6 +1,8 @@
 import React from "react";
-import { CONFIG_OWNED_HINT, ConfigOwnedBadge, RouterSettingsSource, isOwnedByConfig } from "./ConfigOwned";
+import { useTranslation } from "react-i18next";
+import { ConfigOwnedBadge, RouterSettingsSource, isOwnedByConfig } from "./ConfigOwned";
 import { Input } from "@/components/ui/input";
+import { routerFieldDescription, routerFieldLabel } from "./routerFieldText";
 
 interface ReliabilityRetriesSectionProps {
   routerSettings: { [key: string]: any };
@@ -13,11 +15,12 @@ const ReliabilityRetriesSection: React.FC<ReliabilityRetriesSectionProps> = ({
   routerFieldsMetadata,
   routerSettingsSource = {},
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <h3 className="text-sm font-medium text-foreground">Reliability & Retries</h3>
-        <p className="text-xs text-muted-foreground mt-1">Configure retry logic and failure handling</p>
+        <h3 className="text-sm font-medium text-foreground">{t("routerSettings.reliability.title")}</h3>
+        <p className="text-xs text-muted-foreground mt-1">{t("routerSettings.reliability.description")}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
@@ -33,33 +36,41 @@ const ReliabilityRetriesSection: React.FC<ReliabilityRetriesSectionProps> = ({
               param != "model_group_retry_policy" &&
               param != "routing_groups",
           )
-          .map(([param, value]) => (
-            <div key={param} className="space-y-2">
-              <label className="block">
-                <span className="text-xs font-medium text-foreground uppercase tracking-wide">
-                  {routerFieldsMetadata[param]?.ui_field_name || param}
-                </span>
-                {isOwnedByConfig(routerSettingsSource, param) && <ConfigOwnedBadge />}
-                <p className="text-xs text-muted-foreground mt-0.5 mb-2">
-                  {routerFieldsMetadata[param]?.field_description || ""}
-                </p>
-                <Input
-                  name={param}
-                  defaultValue={
-                    value === null || value === undefined || value === "null"
-                      ? ""
-                      : typeof value === "object"
-                        ? JSON.stringify(value, null, 2)
-                        : value?.toString() || ""
-                  }
-                  placeholder="—"
-                  disabled={isOwnedByConfig(routerSettingsSource, param)}
-                  title={isOwnedByConfig(routerSettingsSource, param) ? CONFIG_OWNED_HINT : undefined}
-                  className="font-mono text-sm w-full"
-                />
-              </label>
-            </div>
-          ))}
+          .map(([param, value]) => {
+            const metadata = routerFieldsMetadata[param];
+            const label = routerFieldLabel(param, metadata, t);
+            return (
+              <div key={param} className="space-y-2">
+                <label className="block">
+                  <span className="text-xs font-medium text-foreground uppercase tracking-wide">
+                    {label}
+                    {!metadata && <code className="ml-2 font-mono text-[10px] normal-case opacity-70">{param}</code>}
+                  </span>
+                  {isOwnedByConfig(routerSettingsSource, param) && <ConfigOwnedBadge />}
+                  <p className="text-xs text-muted-foreground mt-0.5 mb-2">
+                    {routerFieldDescription(param, metadata, t)}
+                  </p>
+                  <Input
+                    name={param}
+                    aria-label={`${label} (${param})`}
+                    defaultValue={
+                      value === null || value === undefined || value === "null"
+                        ? ""
+                        : typeof value === "object"
+                          ? JSON.stringify(value, null, 2)
+                          : value?.toString() || ""
+                    }
+                    placeholder="—"
+                    disabled={isOwnedByConfig(routerSettingsSource, param)}
+                    title={
+                      isOwnedByConfig(routerSettingsSource, param) ? t("routerSettings.configOwned.hint") : undefined
+                    }
+                    className="font-mono text-sm w-full"
+                  />
+                </label>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

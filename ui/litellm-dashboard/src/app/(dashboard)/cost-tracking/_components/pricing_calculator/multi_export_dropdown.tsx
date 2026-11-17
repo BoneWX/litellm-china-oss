@@ -1,5 +1,6 @@
 import React from "react";
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +16,7 @@ interface MultiExportDropdownProps {
 }
 
 const MultiExportDropdown: React.FC<MultiExportDropdownProps> = ({ multiResult }) => {
+  const { t } = useTranslation();
   const hasResults = multiResult.entries.some((e) => e.result !== null);
 
   if (!hasResults) {
@@ -25,16 +27,16 @@ const MultiExportDropdown: React.FC<MultiExportDropdownProps> = ({ multiResult }
     <DropdownMenu>
       <DropdownMenuTrigger className={buttonVariants({ variant: "secondary", size: "xs" })}>
         <Download />
-        Export
+        {t("costTracking.export.export")}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onClick={() => exportMultiToPDF(multiResult)}>
           <FileText />
-          Export as PDF
+          {t("costTracking.export.pdf")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => exportMultiToCSV(multiResult)}>
           <FileSpreadsheet />
-          Export as CSV
+          {t("costTracking.export.csv")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

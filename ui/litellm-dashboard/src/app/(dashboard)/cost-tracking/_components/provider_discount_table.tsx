@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SimpleTable } from "@/components/common_components/simple_table";
@@ -33,6 +34,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
   onDiscountChange,
   onRemoveProvider,
 }) => {
+  const { t } = useTranslation();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>("");
 
@@ -82,7 +84,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
       data={data}
       columns={[
         {
-          header: "Provider",
+          header: t("costTracking.tables.provider"),
           cell: (row) => {
             const { displayName } = getProviderLogoAndName(row.provider);
             return (
@@ -94,16 +96,16 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
           },
         },
         {
-          header: "Models",
+          header: t("costTracking.tables.models"),
           cell: (row) =>
             row.modelPattern ? (
               <span className="font-mono text-sm">{row.modelPattern}</span>
             ) : (
-              <span className="text-muted-foreground">All models</span>
+              <span className="text-muted-foreground">{t("costTracking.tables.allModels")}</span>
             ),
         },
         {
-          header: "Discount Percentage",
+          header: t("costTracking.tables.discountPercentage"),
           numeric: true,
           cell: (row) => {
             const label = rowLabel(row);
@@ -123,7 +125,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`Save discount for ${label}`}
+                      aria-label={t("costTracking.tables.saveDiscount", { label })}
                       onClick={() => handleSaveEdit(row.key)}
                       className="cursor-pointer text-success hover:text-success/80"
                     >
@@ -132,7 +134,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`Cancel editing discount for ${label}`}
+                      aria-label={t("costTracking.tables.cancelDiscount", { label })}
                       onClick={handleCancelEdit}
                       className="cursor-pointer text-muted-foreground hover:text-foreground"
                     >
@@ -145,7 +147,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`Edit discount for ${label}`}
+                      aria-label={t("costTracking.tables.editDiscount", { label })}
                       onClick={() => handleStartEdit(row.key, row.discount)}
                       className="cursor-pointer text-info hover:text-info/80"
                     >
@@ -159,14 +161,14 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
           width: "250px",
         },
         {
-          header: "Actions",
+          header: t("costTracking.tables.actions"),
           cell: (row) => {
             const label = rowLabel(row);
             return (
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={`Remove discount for ${label}`}
+                aria-label={t("costTracking.tables.removeDiscount", { label })}
                 onClick={() => onRemoveProvider(row.key, label)}
                 className="cursor-pointer hover:text-destructive"
               >
@@ -178,7 +180,7 @@ const ProviderDiscountTable: React.FC<ProviderDiscountTableProps> = ({
         },
       ]}
       getRowKey={(row) => row.key}
-      emptyMessage="No provider discounts configured"
+      emptyMessage={t("costTracking.tables.noDiscounts")}
     />
   );
 };

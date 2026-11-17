@@ -1,0 +1,282 @@
+{
+  "prompts": {
+    "panel": {
+      "environments": {
+        "all": "全部环境",
+        "development": "开发环境",
+        "staging": "预发布环境",
+        "production": "生产环境"
+      },
+      "addNew": "新建提示词",
+      "uploadFile": "上传 .prompt 文件",
+      "deleteDialog": {
+        "title": "删除提示词",
+        "description": "确定要删除 {{environment}} 环境中的提示词“{{name}}”吗？此操作无法撤销。",
+        "cancel": "取消",
+        "confirm": "删除"
+      },
+      "toasts": {
+        "deleted": "提示词“{{name}}”已从 {{environment}} 环境删除",
+        "deleteFailed": "删除提示词失败"
+      }
+    },
+    "table": {
+      "empty": {
+        "title": "暂无提示词",
+        "description": "添加提示词后即可开始管理可复用模板。"
+      },
+      "loading": "正在加载提示词...",
+      "columns": {
+        "promptId": "Prompt ID",
+        "model": "模型",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "environment": "环境",
+        "createdBy": "创建者",
+        "type": "类型",
+        "actions": "操作"
+      },
+      "rowActions": {
+        "open": "打开提示词操作",
+        "copyId": "复制 Prompt ID",
+        "idCopied": "Prompt ID 已复制",
+        "delete": "删除",
+        "unknownPrompt": "未知提示词"
+      }
+    },
+    "addForm": {
+      "title": "新建提示词",
+      "fields": {
+        "promptId": "Prompt ID",
+        "promptIdPlaceholder": "输入唯一的 Prompt ID（例如 my_prompt_id）",
+        "integration": "提示词集成",
+        "file": "提示词文件",
+        "fileInput": "提示词文件",
+        "selectFile": "选择 .prompt 文件",
+        "selected": "已选择：{{name}}",
+        "removeFile": "移除 {{name}}",
+        "fileDescription": "上传符合 Dotprompt 规范的 .prompt 文件"
+      },
+      "errors": {
+        "idRequired": "请输入 Prompt ID",
+        "idInvalid": "Prompt ID 只能包含字母、数字、下划线和连字符"
+      },
+      "toasts": {
+        "fileRequired": "请上传 .prompt 文件",
+        "convertFailed": "无法将提示词文件转换为 JSON",
+        "tokenRequired": "需要访问 Token",
+        "created": "提示词创建成功！",
+        "createFailed": "创建提示词失败"
+      },
+      "cancel": "取消",
+      "submit": "创建提示词"
+    },
+    "info": {
+      "loading": "加载中...",
+      "notFound": "未找到提示词",
+      "toasts": {
+        "loadFailed": "加载提示词信息失败",
+        "deleted": "提示词“{{name}}”删除成功",
+        "deleteFailed": "删除提示词失败",
+        "loadVersionFailed": "加载版本 v{{version}} 失败"
+      },
+      "back": "返回提示词列表",
+      "title": "提示词详情",
+      "openStudio": "提示词工作台",
+      "deletePrompt": "删除提示词",
+      "environmentVersion": "（v{{version}}）",
+      "oldVersionBanner": "正在查看 v{{selected}}，这不是最新版本（v{{latest}}）",
+      "goToLatest": "转到最新版本",
+      "tabs": {
+        "overview": "概览",
+        "template": "提示词模板",
+        "rawJson": "原始 JSON"
+      },
+      "overview": {
+        "version": "版本",
+        "promptType": "提示词类型",
+        "createdBy": "创建者",
+        "createdAt": "创建时间",
+        "updated": "更新时间：{{date}}"
+      },
+      "versionLabel": "v{{version}}",
+      "history": {
+        "title": "版本历史 — {{environment}}",
+        "loading": "正在加载版本...",
+        "columns": {
+          "version": "版本",
+          "createdBy": "创建者",
+          "date": "日期",
+          "actions": "操作"
+        },
+        "latest": "最新",
+        "edit": "编辑",
+        "empty": "{{environment}} 环境中没有版本"
+      },
+      "copied": "已复制！",
+      "template": {
+        "title": "提示词模板",
+        "copy": "复制内容",
+        "id": "模板 ID",
+        "content": "内容",
+        "metadata": "模板元数据"
+      },
+      "rawJson": {
+        "title": "原始 API 响应",
+        "copy": "复制 JSON"
+      },
+      "deleteDialog": {
+        "title": "删除提示词",
+        "description": "确定要从所有环境删除提示词：<strong><name/></strong> 吗？",
+        "warning": "此操作无法撤销。",
+        "cancel": "取消",
+        "confirm": "删除"
+      }
+    },
+    "editor": {
+      "unnamedTool": "未命名工具",
+      "viewModes": {
+        "pretty": "格式化"
+      },
+      "toasts": {
+        "parseFailed": "解析提示词数据失败",
+        "invalidJson": "JSON 格式无效",
+        "loadVersionFailed": "加载提示词版本失败",
+        "tokenRequired": "需要访问 Token",
+        "nameRequired": "请输入有效的提示词名称",
+        "updated": "提示词更新成功！",
+        "created": "提示词创建成功！",
+        "updateFailed": "更新提示词失败",
+        "saveFailed": "保存提示词失败"
+      }
+    },
+    "editorHeader": {
+      "environments": {
+        "development": "开发环境",
+        "staging": "预发布环境",
+        "production": "生产环境"
+      },
+      "back": "返回",
+      "nameLabel": "提示词名称",
+      "environmentLabel": "环境",
+      "draft": "草稿",
+      "unsaved": "有未保存的更改",
+      "history": "历史记录",
+      "update": "更新",
+      "save": "保存"
+    },
+    "codeSnippets": {
+      "trigger": "获取代码",
+      "title": "生成的代码",
+      "language": "语言",
+      "copy": "复制到剪贴板",
+      "copied": "已复制到剪贴板！",
+      "typeLabel": "生成代码类型",
+      "tabs": {
+        "basic": "基础",
+        "messages": "包含消息",
+        "version": "包含版本"
+      }
+    },
+    "modelConfig": {
+      "parameters": "参数",
+      "title": "模型参数",
+      "temperature": "温度",
+      "maxTokens": "最大 Token 数"
+    },
+    "developerMessage": {
+      "title": "Developer 消息",
+      "description": "提供给模型的可选系统指令",
+      "placeholder": "例如：你是一个乐于助人的助手..."
+    },
+    "messagesCard": {
+      "title": "提示词消息",
+      "syntaxHint": "使用 <code><variable/></code> 语法定义模板变量",
+      "roles": {
+        "user": "用户",
+        "assistant": "助手",
+        "system": "系统"
+      },
+      "roleLabel": "消息 {{number}} 的角色",
+      "remove": "移除消息 {{number}}",
+      "contentPlaceholder": "输入提示词内容...",
+      "add": "添加消息"
+    },
+    "toolsCard": {
+      "title": "工具",
+      "add": "添加",
+      "empty": "尚未添加工具",
+      "edit": "编辑",
+      "remove": "移除 {{name}}"
+    },
+    "toolModal": {
+      "title": "添加工具",
+      "invalidJson": "JSON 格式无效，请检查语法。",
+      "jsonLabel": "工具 JSON",
+      "jsonPlaceholder": "在此粘贴工具 JSON...",
+      "cancel": "取消",
+      "add": "添加"
+    },
+    "variableTextarea": {
+      "detected": "检测到的变量：",
+      "editTitle": "编辑变量名称",
+      "namePlaceholder": "变量名称",
+      "save": "保存",
+      "cancel": "取消"
+    },
+    "publishModal": {
+      "title": "发布提示词",
+      "description": "已发布的提示词会生成版本，并可在 API 调用中使用。",
+      "nameLabel": "名称",
+      "namePlaceholder": "输入提示词名称",
+      "hint": "已发布的提示词可在 API 调用中使用，并通过版本管理便于追踪。",
+      "cancel": "取消",
+      "publish": "发布"
+    },
+    "versionHistory": {
+      "title": "版本历史",
+      "close": "关闭",
+      "loading": "正在加载版本历史",
+      "empty": "暂无版本历史。",
+      "latest": "最新",
+      "active": "当前",
+      "savedToDatabase": "已保存到数据库",
+      "configPrompt": "配置提示词"
+    },
+    "dotpromptView": {
+      "title": "生成的 .prompt 文件",
+      "description": "这是将保存到数据库的 dotprompt 格式"
+    },
+    "conversation": {
+      "emptyState": {
+        "withVariables": "填写上方变量，然后输入消息开始测试",
+        "withoutVariables": "在下方输入消息开始测试提示词"
+      },
+      "input": {
+        "placeholder": "输入消息...（Shift+Enter 换行）",
+        "send": "发送消息",
+        "cancel": "取消"
+      },
+      "list": {
+        "loadingResponse": "正在加载响应"
+      },
+      "variables": {
+        "title": "填写模板变量以开始测试",
+        "placeholder": "输入 {{name}} 的值"
+      },
+      "warning": {
+        "title": "请填写上方所有模板变量",
+        "missing": "缺少：{{variables}}"
+      },
+      "panel": {
+        "clearChat": "清空聊天"
+      },
+      "toasts": {
+        "tokenRequired": "需要访问 Token",
+        "variablesRequired": "请填写所有模板变量",
+        "cancelled": "请求已取消",
+        "cleared": "聊天记录已清除。"
+      }
+    }
+  }
+}

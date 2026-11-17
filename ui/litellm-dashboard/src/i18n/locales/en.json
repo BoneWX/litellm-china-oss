@@ -4455,6 +4455,103 @@
       "addFromDropdown": "Add models from the dropdown above",
       "chainAriaLabel": "Fallback chain",
       "removeModel": "Remove {{model}}"
+    },
+    "loadbalancing": {
+      "title": "Routing Settings",
+      "description": "Configure how requests are routed to deployments"
+    },
+    "latencyConfiguration": {
+      "title": "Latency-Based Configuration",
+      "description": "Fine-tune latency-based routing behavior",
+      "params": {
+        "ttl": {
+          "label": "TTL",
+          "description": "Sliding window to look back over when calculating the average latency of a deployment. Default - 1 hour (in seconds)."
+        },
+        "lowestLatencyBuffer": {
+          "label": "Lowest Latency Buffer",
+          "description": "Shuffle between deployments within this % of the lowest latency. Default - 0 (i.e. always pick lowest latency)."
+        }
+      }
+    },
+    "reliability": {
+      "title": "Reliability & Retries",
+      "description": "Configure retry logic and failure handling"
+    },
+    "tagFiltering": {
+      "defaultLabel": "Enable Tag Filtering",
+      "learnMore": "Learn more"
+    },
+    "configOwned": {
+      "badge": "config.yaml",
+      "hint": "Set in config.yaml. Edit the file to change it.",
+      "sourceUnknownHint": "Could not load which settings config.yaml owns. Reload the page to make changes."
+    },
+    "page": {
+      "reset": "Reset",
+      "saveChanges": "Save Changes",
+      "saveSuccess": "router settings updated successfully",
+      "saveFailed": "Failed to update router settings: {{error}}"
+    },
+    "routingStrategy": {
+      "defaultLabel": "Routing Strategy",
+      "descriptions": {
+        "simpleShuffle": "Randomly pick a deployment",
+        "leastBusy": "Pick the deployment with the fewest active requests",
+        "usageBased": "Pick a deployment based on recent usage",
+        "latencyBased": "Pick the lowest-latency deployment",
+        "priority": "Pick a deployment in priority order"
+      }
+    },
+    "backendFields": {
+      "routingStrategy": {
+        "label": "Routing Strategy",
+        "description": "Routing algorithm to use for load balancing across deployments"
+      },
+      "enableTagFiltering": {
+        "label": "Enable Tag Filtering",
+        "description": "Route requests based on tags"
+      },
+      "allowedFails": {
+        "label": "Allowed Fails",
+        "description": "Number of times a deployment can fail before being added to cooldown"
+      },
+      "cooldownTime": {
+        "label": "Cooldown Time",
+        "description": "Time in seconds to cooldown a deployment after failure"
+      },
+      "numRetries": {
+        "label": "Number of Retries",
+        "description": "Number of retries for failed requests"
+      },
+      "timeout": {
+        "label": "Timeout",
+        "description": "Timeout for requests in seconds"
+      },
+      "retryAfter": {
+        "label": "Retry After",
+        "description": "Minimum time to wait before retrying a failed request in seconds"
+      },
+      "modelGroupAlias": {
+        "label": "Model Group Alias",
+        "description": "Aliases for model groups"
+      },
+      "enableWeightedFailover": {
+        "label": "Enable Weighted Failover",
+        "description": "Fail over between deployments according to their weights"
+      },
+      "enableMidStreamFallbackContinuation": {
+        "label": "Enable Mid-Stream Fallback Continuation",
+        "description": "Continue fallback when a streaming response fails mid-stream"
+      },
+      "tagRoutingPrefix": {
+        "label": "Tag Routing Prefix",
+        "description": "Request tag prefix used for tag routing"
+      },
+      "fallbackOnUnsupportedParams": {
+        "label": "Fallback on Unsupported Params",
+        "description": "Allow switching to another deployment when parameters are unsupported"
+      }
     }
   },
   "routingGroups": {

@@ -1,0 +1,21 @@
+{
+  "uiTheme": {
+    "title": "界面主题自定义",
+    "description": "使用自定义 Logo 和 Favicon 自定义 LiteLLM 管理后台。",
+    "logoUrl": "自定义 Logo URL",
+    "logoPlaceholder": "https://example.com/logo.png",
+    "logoHint": "输入自定义 Logo URL，留空则使用默认值",
+    "logoDarkUrl": "自定义 Logo URL（深色模式）",
+    "logoDarkPlaceholder": "https://example.com/logo-dark.png",
+    "logoDarkHint": "输入适合深色背景的 Logo URL，留空则复用上方 Logo",
+    "faviconUrl": "自定义 Favicon URL",
+    "faviconPlaceholder": "https://example.com/favicon.ico",
+    "faviconHint": "输入自定义 Favicon URL（.ico、.png 或 .svg），留空则使用默认值",
+    "save": "保存更改",
+    "reset": "恢复默认",
+    "saved": "主题设置更新成功！",
+    "resetSuccess": "主题设置已恢复为默认值！",
+    "updateFailed": "更新主题设置失败",
+    "resetFailed": "重置主题设置失败"
+  }
+}

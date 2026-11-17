@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { apiClient } from "@/components/networking";
 
 export type HolidayCalendarStatus = "pending" | "active" | "archived" | "needs_source";
@@ -26,17 +27,22 @@ export interface HolidayCalendarDocument {
 }
 
 const ENDPOINT = "/config/off_peak_holiday_calendars";
-const errorMessage = (error: unknown) => (error instanceof Error ? error.message : "Unable to load holiday calendar");
 
 export const useHolidayCalendarConfig = ({ accessToken }: { accessToken: string | null }) => {
+  const { t } = useTranslation();
   const [document, setDocument] = useState<HolidayCalendarDocument | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const errorMessage = useCallback(
+    (fetchError: unknown) =>
+      fetchError instanceof Error ? fetchError.message : t("costTracking.holiday.loadConfigFailed"),
+    [t],
+  );
 
   const requestDocument = useCallback(async () => {
-    if (!accessToken) throw new Error("Missing access token");
+    if (!accessToken) throw new Error(t("costTracking.holiday.missingToken"));
     return apiClient.get<HolidayCalendarDocument>(ENDPOINT, { accessToken });
-  }, [accessToken]);
+  }, [accessToken, t]);
 
   const fetchConfig = useCallback(async () => {
     if (!accessToken) return;
@@ -49,11 +55,11 @@ export const useHolidayCalendarConfig = ({ accessToken }: { accessToken: string 
     } finally {
       setIsLoading(false);
     }
-  }, [accessToken, requestDocument]);
+  }, [accessToken, errorMessage, requestDocument]);
 
   const refreshConfig = useCallback(
     async (year: number, sourceUrl: string) => {
-      if (!accessToken) throw new Error("Missing access token");
+      if (!accessToken) throw new Error(t("costTracking.holiday.missingToken"));
       const nextDocument = await apiClient.post<HolidayCalendarDocument>(`${ENDPOINT}/china/refresh`, {
         accessToken,
         body: { year, source_url: sourceUrl },
@@ -61,12 +67,12 @@ export const useHolidayCalendarConfig = ({ accessToken }: { accessToken: string 
       setDocument(nextDocument);
       return nextDocument;
     },
-    [accessToken],
+    [accessToken, t],
   );
 
   const confirmVersion = useCallback(
     async (version: HolidayCalendarVersion) => {
-      if (!accessToken || !document) throw new Error("Holiday calendar is not loaded");
+      if (!accessToken || !document) throw new Error(t("costTracking.holiday.notLoaded"));
       const nextDocument = await apiClient.post<HolidayCalendarDocument>(`${ENDPOINT}/china/${version.year}/confirm`, {
         accessToken,
         body: {
@@ -77,7 +83,7 @@ export const useHolidayCalendarConfig = ({ accessToken }: { accessToken: string 
       setDocument(nextDocument);
       return nextDocument;
     },
-    [accessToken, document],
+    [accessToken, document, t],
   );
 
   useEffect(() => {
@@ -95,7 +101,7 @@ export const useHolidayCalendarConfig = ({ accessToken }: { accessToken: string 
     return () => {
       cancelled = true;
     };
-  }, [accessToken, requestDocument]);
+  }, [accessToken, errorMessage, requestDocument]);
 
   const isInitialLoading = Boolean(accessToken) && document === null && error === null;
 

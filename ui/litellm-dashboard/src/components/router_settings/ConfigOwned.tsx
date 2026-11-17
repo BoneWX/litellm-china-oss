@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Lock } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export type RouterSettingSource = "config" | "db" | "env" | "default" | "unset";
 export type RouterSettingsSource = { [key: string]: RouterSettingSource };
@@ -14,15 +15,16 @@ export function isOwnedByConfig(source: RouterSettingsSource, key: string): bool
 }
 
 export function ConfigOwnedBadge(): React.ReactElement {
+  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger
         render={<Badge variant="outline" data-testid="config-owned-badge" className="ml-2 align-middle" />}
       >
         <Lock aria-hidden />
-        config.yaml
+        {t("routerSettings.configOwned.badge")}
       </TooltipTrigger>
-      <TooltipContent>{CONFIG_OWNED_HINT}</TooltipContent>
+      <TooltipContent>{t("routerSettings.configOwned.hint")}</TooltipContent>
     </Tooltip>
   );
 }

@@ -1,0 +1,258 @@
+{
+  "loggingAndAlerts": {
+    "page": {
+      "tabs": {
+        "loggingCallbacks": "日志回调",
+        "cloudZero": "CloudZero 成本跟踪",
+        "alertingTypes": "告警类型",
+        "alertingSettings": "告警设置",
+        "emailAlerts": "邮件告警",
+        "msTeamsAlerts": "MS Teams 告警"
+      }
+    },
+    "alertTypes": {
+      "intro": "告警会发送到任何兼容 Slack 的传入 Webhook URL（Slack、Rocket.Chat、Mattermost 等）。可<docs>在此处</docs>获取 Slack Webhook URL",
+      "columns": {
+        "webhookUrl": "Webhook URL（兼容 Slack）"
+      },
+      "labels": {
+        "llmExceptions": "LLM 异常",
+        "llmTooSlow": "LLM 响应过慢",
+        "llmRequestsHanging": "LLM 请求挂起",
+        "budgetAlerts": "预算告警（API 密钥、用户）",
+        "userSpendThresholds": "用户消费阈值（每日/每月）",
+        "userSpendAnomalies": "用户消费异常检测",
+        "dbExceptions": "数据库异常（读取/写入）",
+        "dailyReports": "每周/每月消费报告",
+        "outageAlerts": "服务中断告警",
+        "regionOutageAlerts": "区域中断告警",
+        "modelDeprecationWarnings": "模型弃用警告"
+      },
+      "enterpriseFeature": "✨ 企业版功能",
+      "saveChanges": "保存更改",
+      "testAlerts": "测试告警",
+      "toasts": {
+        "saved": "告警更新成功",
+        "testTriggered": "已触发告警测试。已向 Slack 发送测试请求，请检查 Slack 的日志/告警以确认"
+      }
+    },
+    "loggingCallbacks": {
+      "table": {
+        "title": "启用的日志回调",
+        "add": "添加回调",
+        "loading": "正在加载回调...",
+        "empty": {
+          "title": "尚未配置回调",
+          "description": "添加第一个回调，以开始将数据记录到外部服务。"
+        },
+        "columns": {
+          "name": "回调名称",
+          "mode": "模式",
+          "actions": "操作"
+        },
+        "modes": {
+          "success": "成功",
+          "failure": "失败",
+          "successAndFailure": "成功和失败"
+        },
+        "readOnly": "只读",
+        "readOnlyHint": "此启用中的回调不是通过仪表盘添加的。请在原始配置位置进行编辑。",
+        "actions": {
+          "open": "打开回调操作",
+          "test": "测试",
+          "edit": "编辑",
+          "delete": "删除"
+        }
+      },
+      "selector": {
+        "label": "回调",
+        "placeholder": "选择日志回调...",
+        "noResults": "无结果",
+        "required": "请选择回调"
+      },
+      "params": {
+        "required": "请输入{{field}}",
+        "selectPlaceholder": "选择{{field}}",
+        "inputPlaceholder": "输入{{field}}",
+        "numberPlaceholder": "输入{{field}}"
+      },
+      "addDialog": {
+        "title": "添加日志回调",
+        "docsLink": "LiteLLM 文档：日志",
+        "cancel": "取消",
+        "submit": "添加回调",
+        "submitting": "正在添加..."
+      },
+      "editDialog": {
+        "title": "编辑回调设置",
+        "cancel": "取消",
+        "submit": "保存更改",
+        "submitting": "正在保存..."
+      },
+      "deleteDialog": {
+        "title": "删除回调",
+        "message": "确定要删除此回调吗？此操作无法撤销。",
+        "infoTitle": "回调信息",
+        "callbackName": "回调名称",
+        "mode": "模式"
+      },
+      "toasts": {
+        "configsLoadFailed": "加载回调配置失败：{{error}}",
+        "added": "回调 {{name}} 添加成功",
+        "updated": "回调更新成功",
+        "deleted": "回调 {{name}} 删除成功",
+        "healthCheckTriggered": "已触发健康检查"
+      }
+    },
+    "emailSettings": {
+      "title": "邮件服务器设置",
+      "docsLink": "LiteLLM 文档：邮件告警",
+      "required": "必填 * ",
+      "help": {
+        "smtpHost": "输入 SMTP 主机地址，例如 `smtp.resend.com`",
+        "smtpPort": "输入 SMTP 端口，例如 `587`",
+        "smtpUsername": "输入 SMTP 用户名，例如 `username`",
+        "smtpSenderEmail": "输入发件人邮箱，例如 `sender@berri.ai`",
+        "testEmailAddress": "接收 `测试邮件告警` 的邮箱地址，例如：`info@berri.ai`",
+        "emailLogoUrl": "（可选）自定义邮件中显示的 Logo，填写 Logo URL",
+        "emailSupportContact": "（可选）自定义邮件中显示的支持邮箱，默认是 support@berri.ai"
+      },
+      "showCredential": "显示凭证",
+      "hideCredential": "隐藏凭证",
+      "saveChanges": "保存更改",
+      "testEmailAlerts": "测试邮件告警",
+      "toasts": {
+        "saved": "邮件设置更新成功",
+        "testTriggered": "已触发邮件测试。请检查配置的邮箱收件箱/日志。"
+      }
+    },
+    "emailEvents": {
+      "title": "邮件通知",
+      "description": "选择哪些事件应触发邮件通知。",
+      "descriptions": {
+        "virtualKeyCreated": "使用用户 ID 创建新的虚拟密钥时，会向该用户发送邮件",
+        "newUserInvitation": "创建新用户时，会向该用户的邮箱发送邮件",
+        "generic": "发生{{event}}时接收邮件通知"
+      },
+      "saveChanges": "保存更改",
+      "resetToDefaults": "恢复默认值",
+      "toasts": {
+        "saved": "邮件事件设置更新成功",
+        "reset": "邮件事件设置已恢复为默认值"
+      }
+    },
+    "msTeams": {
+      "title": "Microsoft Teams 告警设置",
+      "intro": "通过传入 Webhook 将 LiteLLM 告警发送到 Microsoft Teams 频道。可按<docs>Microsoft 文档：传入 Webhook</docs>创建",
+      "required": "必填 * ",
+      "help": {
+        "webhookUrl": "Teams 频道的传入 Webhook URL（Workflows 或传入 Webhook 连接器）"
+      },
+      "showCredential": "显示凭证",
+      "hideCredential": "隐藏凭证",
+      "saveChanges": "保存更改",
+      "testAlerts": "测试 MS Teams 告警",
+      "toasts": {
+        "saved": "MS Teams 设置更新成功",
+        "testTriggered": "已触发 MS Teams 测试告警。请检查 Teams 频道。"
+      }
+    },
+    "alerting": {
+      "enterpriseFeature": "✨ 企业版功能",
+      "storage": {
+        "inDb": "数据库",
+        "inConfig": "配置文件",
+        "notSet": "未设置"
+      },
+      "resetField": "重置{{field}}",
+      "submit": "更新设置",
+      "toasts": {
+        "saved": "请等待 10 秒以便代理完成更新。"
+      }
+    },
+    "cloudZero": {
+      "page": {
+        "loading": "正在加载 CloudZero 设置...",
+        "loadErrorPrefix": "加载 CloudZero 设置失败："
+      },
+      "emptyPlaceholder": {
+        "title": "未找到 CloudZero 集成",
+        "description": "连接 CloudZero 账户，即可直接在 LiteLLM 中跟踪和分析云成本。",
+        "add": "添加 CloudZero 集成"
+      },
+      "form": {
+        "apiKey": "CloudZero API 密钥",
+        "apiKeyPlaceholder": "输入 CloudZero API 密钥",
+        "apiKeyRequired": "请输入 CloudZero API 密钥",
+        "connectionId": "连接 ID",
+        "connectionIdPlaceholder": "输入 CloudZero 连接 ID",
+        "connectionIdRequired": "请输入 CloudZero 连接 ID",
+        "timezone": "时区",
+        "timezoneHint": "用于日期处理的时区（未提供时默认为 UTC）",
+        "showApiKey": "显示 API 密钥",
+        "hideApiKey": "隐藏 API 密钥"
+      },
+      "createModal": {
+        "title": "创建 CloudZero 集成",
+        "cancel": "取消",
+        "submit": "创建",
+        "submitting": "正在创建...",
+        "toasts": {
+          "created": "CloudZero 集成创建成功",
+          "createFailed": "创建 CloudZero 集成失败"
+        }
+      },
+      "updateModal": {
+        "title": "编辑 CloudZero 集成",
+        "apiKeyHint": "留空则保留现有 API 密钥",
+        "apiKeyPlaceholder": "留空以保留现有值",
+        "cancel": "取消",
+        "submit": "更新",
+        "submitting": "正在更新...",
+        "toasts": {
+          "updated": "CloudZero 集成更新成功",
+          "updateFailed": "更新 CloudZero 集成失败"
+        }
+      },
+      "settings": {
+        "title": "CloudZero 配置",
+        "statusFallback": "启用",
+        "edit": "编辑",
+        "delete": "删除",
+        "fields": {
+          "apiKey": "API 密钥（已隐藏）",
+          "connectionId": "连接 ID",
+          "timezone": "时区"
+        },
+        "notConfigured": "未配置",
+        "defaultTimezone": "默认（UTC）",
+        "actions": "操作",
+        "dryRun": "运行模拟",
+        "exportNow": "立即导出数据",
+        "dryRunResults": "模拟结果",
+        "simulationOutputPrefix": "连接模拟输出：",
+        "exportDialog": {
+          "title": "导出数据到 CloudZero",
+          "description": "此操作会将当前累计的成本数据推送到 CloudZero。是否继续？",
+          "cancel": "取消",
+          "confirm": "导出"
+        },
+        "deleteDialog": {
+          "title": "删除 CloudZero 集成？",
+          "message": "确定要删除此 CloudZero 集成吗？所有相关设置和配置都将被永久移除。",
+          "infoTitle": "集成详情",
+          "connectionId": "连接 ID",
+          "timezone": "时区"
+        },
+        "toasts": {
+          "dryRunSucceeded": "模拟运行成功",
+          "dryRunFailed": "模拟运行失败",
+          "exported": "数据已成功导出到 CloudZero",
+          "exportFailed": "导出数据失败",
+          "deleted": "CloudZero 集成删除成功",
+          "deleteFailed": "删除 CloudZero 集成失败"
+        }
+      }
+    }
+  }
+}

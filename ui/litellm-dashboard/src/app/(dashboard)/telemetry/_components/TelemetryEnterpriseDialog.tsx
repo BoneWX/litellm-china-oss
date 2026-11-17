@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslation } from "react-i18next";
 
 export function TelemetryEnterpriseDialog({
   open,
@@ -18,17 +19,16 @@ export function TelemetryEnterpriseDialog({
   onOpenChange: (open: boolean) => void;
   premiumUser: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={open} onOpenChange={(next) => onOpenChange(next)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {premiumUser ? "Contact your enterprise representative" : "Telemetry is an enterprise-only feature"}
+            {t(premiumUser ? "telemetry.enterpriseContactTitle" : "telemetry.enterpriseOnlyTitle")}
           </DialogTitle>
           <DialogDescription>
-            {premiumUser
-              ? "Telemetry can't be turned on from this page. Reach out to your LiteLLM enterprise representative to turn it on for this proxy."
-              : "Telemetry is only available on LiteLLM Enterprise, and this proxy isn't on an enterprise license."}
+            {t(premiumUser ? "telemetry.enterpriseContactDescription" : "telemetry.enterpriseOnlyDescription")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter showCloseButton />

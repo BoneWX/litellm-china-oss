@@ -1,0 +1,130 @@
+{
+  "tagManagement": {
+    "page": {
+      "title": "标签管理",
+      "lastRefreshedPrefix": "上次刷新：",
+      "refresh": "刷新标签",
+      "intro": "点击标签名称即可查看和编辑其详情。",
+      "routingHelp": "你可以根据请求中传入的标签限制特定 LLM 的使用。了解标签路由的更多信息，请<docs>点击此处</docs>。",
+      "create": "+ 新建标签",
+      "deleteDialog": {
+        "title": "删除标签",
+        "message": "确定要删除此标签吗？此操作无法撤销。",
+        "infoTitle": "标签信息",
+        "tagName": "标签名称"
+      },
+      "toasts": {
+        "fetchTagsFailed": "获取标签失败：{{error}}",
+        "fetchModelsFailed": "获取模型失败：{{error}}",
+        "created": "标签创建成功",
+        "createFailed": "创建标签失败：{{error}}",
+        "deleted": "标签删除成功",
+        "deleteFailed": "删除标签失败：{{error}}"
+      }
+    },
+    "table": {
+      "loading": "正在加载标签...",
+      "empty": {
+        "title": "暂无标签",
+        "description": "创建标签后即可用于路由和限制模型使用。"
+      },
+      "noMatch": {
+        "title": "没有匹配的标签",
+        "description": "请尝试其他标签名称或描述。"
+      },
+      "filters": {
+        "name": "按标签名称筛选",
+        "namePlaceholder": "按标签名称筛选...",
+        "description": "按描述筛选",
+        "descriptionPlaceholder": "按描述筛选..."
+      },
+      "columns": {
+        "name": "标签名称",
+        "description": "描述",
+        "models": "允许的模型",
+        "created": "创建时间",
+        "actions": "操作"
+      },
+      "dynamicTagHint": "无法查看动态生成的消费标签信息",
+      "allModels": "全部模型",
+      "modelId": "ID：{{id}}",
+      "actions": {
+        "open": "打开标签操作",
+        "edit": "编辑",
+        "delete": "删除",
+        "editDisabled": "动态生成的消费标签不可编辑",
+        "deleteDisabled": "动态生成的消费标签不可删除"
+      }
+    },
+    "createModal": {
+      "title": "新建标签",
+      "fields": {
+        "name": "标签名称",
+        "description": "描述",
+        "models": "允许的模型",
+        "modelsHint": "选择允许处理此标签请求的模型",
+        "modelsPlaceholder": "选择模型",
+        "maxBudget": "最大预算（CNY）",
+        "maxBudgetHint": "此标签可花费的最高 CNY 金额。达到上限后，使用此标签的请求将被阻止",
+        "resetBudget": "重置预算",
+        "resetBudgetHint": "预算重置周期。例如设置为“daily”后，每 24 小时重置一次预算"
+      },
+      "budgetSection": "预算与速率限制（可选）",
+      "rateLimitsNotice": "标签的 TPM/RPM 限制暂不支持。如需此功能，请<issue>创建 GitHub Issue</issue>。",
+      "submit": "创建标签",
+      "validation": {
+        "nameRequired": "请输入标签名称"
+      }
+    },
+    "info": {
+      "loading": "加载中...",
+      "back": "← 返回标签列表",
+      "tagNameLabel": "标签名称：",
+      "noDescription": "暂无描述",
+      "editTag": "编辑标签",
+      "details": {
+        "title": "标签详情",
+        "name": "名称",
+        "description": "描述",
+        "models": "允许的模型",
+        "allModels": "全部模型",
+        "modelId": "ID：{{id}}",
+        "created": "创建时间",
+        "lastUpdated": "最后更新"
+      },
+      "budget": {
+        "title": "预算与速率限制",
+        "maxBudget": "最大预算",
+        "duration": "预算周期",
+        "tpmLimit": "TPM 限制",
+        "rpmLimit": "RPM 限制"
+      },
+      "toasts": {
+        "fetchFailed": "获取标签详情失败：{{error}}",
+        "updated": "标签更新成功",
+        "updateFailed": "更新标签失败：{{error}}"
+      }
+    },
+    "editForm": {
+      "fields": {
+        "name": "标签名称",
+        "description": "描述",
+        "models": "允许的模型",
+        "modelsDescription": "选择允许处理此类数据的模型",
+        "modelsPlaceholder": "选择模型",
+        "maxBudget": "最大预算（CNY）",
+        "maxBudgetDescription": "此标签可花费的最高 CNY 金额",
+        "resetBudget": "重置预算",
+        "resetBudgetDescription": "预算重置周期"
+      },
+      "budgetSection": "预算与速率限制",
+      "rateLimitsNotice": "标签的 TPM/RPM 限制暂不支持。如需此功能，请<issue>创建 GitHub Issue</issue>。",
+      "cancel": "取消",
+      "save": "保存更改",
+      "validation": {
+        "nameRequired": "请输入标签名称",
+        "budgetNonnegative": "请输入非负预算"
+      }
+    }
+  }
+}

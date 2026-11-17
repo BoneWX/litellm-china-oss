@@ -1,5 +1,6 @@
 import React from "react";
-import { CONFIG_OWNED_HINT, ConfigOwnedBadge } from "./ConfigOwned";
+import { useTranslation } from "react-i18next";
+import { ConfigOwnedBadge } from "./ConfigOwned";
 import { Input } from "@/components/ui/input";
 
 interface routingStrategyArgs {
@@ -21,10 +22,21 @@ const LatencyBasedConfiguration: React.FC<LatencyBasedConfigurationProps> = ({
   routingStrategyArgs,
   ownedByConfig = false,
 }) => {
-  const paramExplanation: { [key: string]: string } = {
-    ttl: "Sliding window to look back over when calculating the average latency of a deployment. Default - 1 hour (in seconds).",
-    lowest_latency_buffer:
-      "Shuffle between deployments within this % of the lowest latency. Default - 0 (i.e. always pick lowest latency).",
+  const { t } = useTranslation();
+  const paramText = (param: string) => {
+    if (param === "ttl") {
+      return {
+        label: t("routerSettings.latencyConfiguration.params.ttl.label"),
+        description: t("routerSettings.latencyConfiguration.params.ttl.description"),
+      };
+    }
+    if (param === "lowest_latency_buffer") {
+      return {
+        label: t("routerSettings.latencyConfiguration.params.lowestLatencyBuffer.label"),
+        description: t("routerSettings.latencyConfiguration.params.lowestLatencyBuffer.description"),
+      };
+    }
+    return { label: param.replace(/_/g, " "), description: "" };
   };
 
   return (
@@ -32,10 +44,10 @@ const LatencyBasedConfiguration: React.FC<LatencyBasedConfigurationProps> = ({
       <div className="space-y-6">
         <div className="max-w-3xl">
           <h3 className="text-sm font-medium text-foreground">
-            Latency-Based Configuration
+            {t("routerSettings.latencyConfiguration.title")}
             {ownedByConfig && <ConfigOwnedBadge />}
           </h3>
-          <p className="text-xs text-muted-foreground mt-1">Fine-tune latency-based routing behavior</p>
+          <p className="text-xs text-muted-foreground mt-1">{t("routerSettings.latencyConfiguration.description")}</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
@@ -43,14 +55,14 @@ const LatencyBasedConfiguration: React.FC<LatencyBasedConfigurationProps> = ({
             <div key={param} className="space-y-2">
               <label className="block">
                 <span className="text-xs font-medium text-foreground uppercase tracking-wide">
-                  {param.replace(/_/g, " ")}
+                  {paramText(param).label}
                 </span>
-                <p className="text-xs text-muted-foreground mt-0.5 mb-2">{paramExplanation[param] || ""}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 mb-2">{paramText(param).description}</p>
                 <Input
                   name={param}
                   defaultValue={typeof value === "object" ? JSON.stringify(value, null, 2) : value?.toString()}
                   disabled={ownedByConfig}
-                  title={ownedByConfig ? CONFIG_OWNED_HINT : undefined}
+                  title={ownedByConfig ? t("routerSettings.configOwned.hint") : undefined}
                   className="font-mono text-sm w-full"
                 />
               </label>

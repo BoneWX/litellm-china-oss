@@ -1,0 +1,81 @@
+{
+  "telemetry": {
+    "title": "Telemetry",
+    "description": "Choose what privacy-safe, aggregated usage data this proxy shares",
+    "loading": "Loading telemetry settings...",
+    "loadFailed": "Could not load telemetry settings: {{error}}",
+    "proxyRequests": "Proxy requests",
+    "adminUi": "Admin UI",
+    "destination": "Destination",
+    "missingDestination": "Telemetry is on but no destination is chosen, so nothing is recorded",
+    "setByEnvironment": "Set by LITELLM_TELEMETRY_DESTINATION",
+    "slicesBy": "Slices by: {{value}}",
+    "counts": "Counts: {{value}}",
+    "sends": "Sends: {{value}}",
+    "helpsCatch": "Helps catch: {{value}}",
+    "on": "On",
+    "off": "Off",
+    "sampleReport": "Sample report",
+    "lastReport": "Last report sent from this worker",
+    "sampleReportHint": "Made-up traffic through the real filter, with the groups that are on (all groups while telemetry is off)",
+    "lastReportHint": "Exactly what this worker last sent or stored",
+    "howSent": "How and when it is sent",
+    "sendWindow": "{{description}}. Changes apply from the next window",
+    "privacy": "Off by default. Each switch adds aggregated counts, never prompts, responses, keys, ids or header values. LITELLM_TELEMETRY_DISABLED=true turns everything off",
+    "uiEventsHint": "Sent only while Page navigation is on, to this proxy at POST /telemetry/ui_events, and counted into the same report as proxy traffic",
+    "destinationHttp": "One JSON report per worker every {{seconds}} s and on shutdown, by HTTP POST to LITELLM_TELEMETRY_ENDPOINT. A failed send is retried next window",
+    "destinationLocal": "One report per worker every {{seconds}} s and on shutdown, stored in this proxy's LiteLLM_TelemetryReport table for {{days}} days. Nothing leaves the proxy. Admins can export from GET /telemetry/reports",
+    "destinationNone": "No destination is chosen, so nothing is recorded",
+    "localTable": "Local table (LiteLLM_TelemetryReport in this proxy's database)",
+    "http": "HTTP (POST to LITELLM_TELEMETRY_ENDPOINT)",
+    "enterpriseContactTitle": "Contact your enterprise representative",
+    "enterpriseOnlyTitle": "Telemetry is an enterprise-only feature",
+    "enterpriseContactDescription": "Telemetry can't be turned on from this page. Reach out to your LiteLLM enterprise representative to turn it on for this proxy.",
+    "enterpriseOnlyDescription": "Telemetry is only available on LiteLLM Enterprise, and this proxy isn't on an enterprise license.",
+    "envDisabledTitle": "Telemetry is turned off by an environment variable",
+    "envSetTitle": "Telemetry environment variables are set",
+    "envNotice": "Set on this proxy: {{variables}}. {{action}}",
+    "envOverride": "These override the settings on this page, which are read-only until they are removed.",
+    "envStillEditable": "The groups below can still be changed here.",
+    "groups": {
+      "heartbeat": {
+        "title": "Heartbeat",
+        "counts": "Random instance id, LiteLLM version, report window, which groups are on",
+        "helps": "Which versions are running"
+      },
+      "requestSuccess": {
+        "title": "Request success",
+        "slices": "endpoint, LiteLLM status, provider status, stream, handled by Rust, LiteLLM cache hit",
+        "counts": "requests, provider attempts, latency to headers and to first byte",
+        "helps": "Error-rate and latency regressions, Rust vs Python"
+      },
+      "tokenInfo": {
+        "title": "Token info",
+        "slices": "provider prompt-cache hit",
+        "counts": "input, output and cache-read token sums",
+        "helps": "Broken prompt caching or token counting"
+      },
+      "requestTaxonomy": {
+        "title": "Request taxonomy",
+        "slices": "provider, salted deployment hash",
+        "counts": "one row per provider attempt with its status",
+        "helps": "Which provider is failing, retries and fallbacks"
+      },
+      "eventDetails": {
+        "title": "Event details",
+        "counts": "message block counts and types, allowlisted header names (no values), provider time to first token",
+        "helps": "Which request shapes and clients fail"
+      },
+      "instanceConfiguration": {
+        "title": "Instance configuration",
+        "counts": "names of allowlisted config keys that are set (no values)",
+        "helps": "Which features an upgrade must keep working"
+      },
+      "pageNavigation": {
+        "title": "Page navigation",
+        "counts": "Admin UI page views and tab switches by route name (no ids or typed text)",
+        "helps": "Which pages and tabs get used"
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "telemetry": {
+    "title": "遥测",
+    "description": "选择此代理共享哪些隐私安全的聚合用量数据",
+    "loading": "正在加载遥测设置...",
+    "loadFailed": "无法加载遥测设置：{{error}}",
+    "proxyRequests": "代理请求",
+    "adminUi": "管理界面",
+    "destination": "发送目标",
+    "missingDestination": "遥测已开启但未选择发送目标，因此不会记录任何数据",
+    "setByEnvironment": "由 LITELLM_TELEMETRY_DESTINATION 设置",
+    "slicesBy": "分组维度：{{value}}",
+    "counts": "统计：{{value}}",
+    "sends": "发送：{{value}}",
+    "helpsCatch": "有助于发现：{{value}}",
+    "on": "开启",
+    "off": "关闭",
+    "sampleReport": "示例报告",
+    "lastReport": "此工作节点上次发送的报告",
+    "sampleReportHint": "通过真实过滤器生成的模拟流量，包含已开启的分组（遥测关闭时为全部分组）",
+    "lastReportHint": "此工作节点上次发送或存储的原始内容",
+    "howSent": "发送方式和时机",
+    "sendWindow": "{{description}}。更改将在下个窗口生效",
+    "privacy": "默认关闭。每个开关只增加聚合计数，绝不会包含提示词、响应、密钥、ID 或 Header 值。LITELLM_TELEMETRY_DISABLED=true 可全部关闭",
+    "uiEventsHint": "仅在页面导航开启时发送到此代理的 POST /telemetry/ui_events，并计入与代理流量相同的报告",
+    "destinationHttp": "每个工作节点每 {{seconds}} 秒及关闭时通过 HTTP POST 向 LITELLM_TELEMETRY_ENDPOINT 发送一份 JSON 报告。发送失败将在下个窗口重试",
+    "destinationLocal": "每个工作节点每 {{seconds}} 秒及关闭时发送一份报告，存储在此代理的 LiteLLM_TelemetryReport 表中，保留 {{days}} 天。数据不会离开代理。管理员可通过 GET /telemetry/reports 导出",
+    "destinationNone": "未选择发送目标，因此不会记录任何数据",
+    "localTable": "本地表（此代理数据库中的 LiteLLM_TelemetryReport）",
+    "http": "HTTP（POST 到 LITELLM_TELEMETRY_ENDPOINT）",
+    "enterpriseContactTitle": "联系企业代表",
+    "enterpriseOnlyTitle": "遥测是企业版功能",
+    "enterpriseContactDescription": "无法在此页面开启遥测。请联系 LiteLLM 企业代表为此代理开启。",
+    "enterpriseOnlyDescription": "遥测仅在 LiteLLM Enterprise 中可用，此代理未使用企业许可证。",
+    "envDisabledTitle": "遥测已被环境变量关闭",
+    "envSetTitle": "已设置遥测环境变量",
+    "envNotice": "此代理已设置：{{variables}}。{{action}}",
+    "envOverride": "这些变量会覆盖本页设置；移除前本页设置只读。",
+    "envStillEditable": "下方分组仍可在此修改。",
+    "groups": {
+      "heartbeat": {
+        "title": "心跳",
+        "counts": "随机实例 ID、LiteLLM 版本、报告窗口、已开启的分组",
+        "helps": "正在运行的版本"
+      },
+      "requestSuccess": {
+        "title": "请求成功率",
+        "slices": "端点、LiteLLM 状态、提供商状态、流式、是否由 Rust 处理、LiteLLM 缓存命中",
+        "counts": "请求数、提供商尝试次数、Header 延迟和首字节延迟",
+        "helps": "错误率和延迟回归，以及 Rust 与 Python 的差异"
+      },
+      "tokenInfo": {
+        "title": "Token 信息",
+        "slices": "提供商提示词缓存命中",
+        "counts": "输入、输出和缓存读取 Token 总数",
+        "helps": "提示词缓存或 Token 计数异常"
+      },
+      "requestTaxonomy": {
+        "title": "请求分类",
+        "slices": "提供商、加盐部署哈希",
+        "counts": "每次提供商尝试及其状态",
+        "helps": "哪个提供商失败、重试和故障转移情况"
+      },
+      "eventDetails": {
+        "title": "事件详情",
+        "counts": "消息块数量和类型、允许列表中的 Header 名称（不含值）、提供商首 Token 时间",
+        "helps": "哪些请求形态和客户端会失败"
+      },
+      "instanceConfiguration": {
+        "title": "实例配置",
+        "counts": "已设置的允许列表配置键名称（不含值）",
+        "helps": "升级需要保持哪些功能正常"
+      },
+      "pageNavigation": {
+        "title": "页面导航",
+        "counts": "按路由名称统计的管理界面页面浏览和标签切换（不含 ID 或输入内容）",
+        "helps": "哪些页面和标签会被使用"
+      }
+    }
+  }
+}

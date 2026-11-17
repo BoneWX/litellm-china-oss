@@ -1,0 +1,454 @@
+{
+  "vectorStores": {
+    "page": {
+      "title": "向量存储管理",
+      "lastRefreshed": "上次刷新：{{time}}",
+      "refresh": "刷新",
+      "description": "可使用向量存储保存和检索 LLM 嵌入。",
+      "tabs": {
+        "create": "创建向量存储",
+        "manage": "管理向量存储",
+        "test": "测试向量存储",
+        "indexes": "索引"
+      },
+      "addVectorStore": "+ 添加向量存储",
+      "deleteModal": {
+        "title": "删除向量存储",
+        "message": "确定要删除此向量存储吗？此操作无法撤销。",
+        "resourceTitle": "向量存储信息",
+        "vectorStoreId": "向量存储 ID"
+      },
+      "toasts": {
+        "fetchStoresFailed": "获取向量存储失败：{{error}}",
+        "fetchCredentialsFailed": "获取凭证失败：{{error}}",
+        "deleted": "向量存储删除成功",
+        "deleteFailed": "删除向量存储失败：{{error}}"
+      }
+    },
+    "table": {
+      "loading": "正在加载向量存储...",
+      "empty": {
+        "title": "暂无向量存储",
+        "description": "连接向量存储后即可启用检索增强生成。"
+      },
+      "columns": {
+        "vectorStoreId": "向量存储 ID",
+        "name": "名称",
+        "description": "描述",
+        "source": "来源",
+        "files": "文件",
+        "provider": "提供商",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "actions": "操作"
+      },
+      "source": {
+        "config": "配置文件",
+        "db": "数据库"
+      },
+      "files": {
+        "unknown": "未知",
+        "count_one": "{{count}} 个文件",
+        "count_other": "{{count}} 个文件"
+      },
+      "actions": {
+        "open": "打开向量存储操作",
+        "edit": "编辑",
+        "copyId": "复制向量存储 ID",
+        "idCopied": "向量存储 ID 已复制",
+        "delete": "删除",
+        "configHint": "只读：此向量存储定义在配置文件中，无法在仪表盘编辑或删除。"
+      }
+    },
+    "documents": {
+      "empty": {
+        "title": "尚未上传文档",
+        "description": "请在上方上传文档以开始使用。"
+      },
+      "columns": {
+        "name": "名称",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "actions": {
+        "open": "打开文档操作",
+        "copyId": "复制文档 ID",
+        "idCopied": "文档 ID 已复制到剪贴板",
+        "remove": "移除"
+      }
+    },
+    "indexes": {
+      "intro": "通过 <endpoint/> API 注册到此代理的向量存储索引。有关工作方式，请参阅<docs>向量存储索引文档</docs>。目前支持 Azure AI Search 和 Milvus 的索引透传；后续可增加更多提供商，如需支持你的提供商，请<issues>提交 GitHub Issue</issues>。",
+      "loading": "正在加载索引...",
+      "empty": {
+        "title": "尚未注册索引",
+        "description": "注册到此代理的索引会显示在这里。"
+      },
+      "columns": {
+        "indexName": "索引名称",
+        "vectorStore": "向量存储",
+        "providerIndex": "提供商索引",
+        "createdBy": "创建者",
+        "createdAt": "创建时间"
+      },
+      "toasts": {
+        "fetchFailed": "获取索引失败：{{error}}"
+      }
+    },
+    "testTab": {
+      "noToken": "测试向量存储需要访问 Token。",
+      "noStores": "暂无向量存储。请先创建一个再进行测试。",
+      "selectTitle": "选择向量存储",
+      "selectDescription": "选择要用于测试搜索查询的向量存储",
+      "selectPlaceholder": "选择向量存储",
+      "noMatch": "没有匹配的向量存储"
+    },
+    "tester": {
+      "title": "测试向量存储",
+      "clearHistory": "清除历史记录",
+      "emptyHint": "在下方输入搜索查询以测试向量存储",
+      "query": "查询",
+      "results": "向量存储结果",
+      "resultCount_one": "{{count}} 条结果",
+      "resultCount_other": "{{count}} 条结果",
+      "result": "结果 {{number}}",
+      "score": "分数：{{score}}",
+      "content": "内容（{{type}}）",
+      "metadata": "元数据",
+      "fileId": "文件 ID：",
+      "filename": "文件名：",
+      "attributes": "属性：",
+      "searchFailed": "搜索失败：{{error}}",
+      "noResults": "未找到结果",
+      "placeholder": "输入搜索查询...（Shift+Enter 换行）",
+      "search": "搜索",
+      "toasts": {
+        "emptyQuery": "请输入搜索查询",
+        "historyCleared": "搜索历史已清除"
+      }
+    },
+    "s3Config": {
+      "errors": {
+        "bucketTooShort": "存储桶名称至少需要 3 个字符",
+        "indexTooShort": "如填写索引名称，至少需要 3 个字符"
+      },
+      "setup": {
+        "title": "AWS S3 Vectors 配置",
+        "intro": "AWS S3 Vectors 可直接在 S3 中存储和查询向量嵌入：",
+        "autoCreate": "如果向量存储桶和索引不存在，系统会自动创建",
+        "dimensions": "向量维度会根据所选嵌入模型自动检测",
+        "permissions": "请确保 AWS 凭证具有 S3 Vectors 操作权限",
+        "learnMore": "了解更多：<docs>AWS S3 Vectors 文档</docs>"
+      },
+      "fields": {
+        "bucketName": "向量存储桶名称",
+        "bucketNameHint": "用于向量存储的 S3 存储桶名称（至少 3 个字符，只能包含小写字母、数字、连字符和句点）",
+        "bucketNamePlaceholder": "my-vector-bucket（至少 3 个字符）",
+        "indexName": "索引名称",
+        "indexNameHint": "向量索引名称（可选，未填写时自动生成）。如填写则至少需要 3 个字符。",
+        "indexNamePlaceholder": "my-vector-index（可选，至少 3 个字符）",
+        "region": "AWS 区域",
+        "regionHint": "S3 存储桶所在的 AWS 区域（例如 us-west-2）",
+        "embeddingModel": "嵌入模型",
+        "embeddingModelHint": "选择用于生成向量的嵌入模型",
+        "embeddingModelPlaceholder": "选择嵌入模型",
+        "loadingModels": "正在加载模型...",
+        "noModels": "未找到嵌入模型。"
+      }
+    },
+    "create": {
+      "title": "创建向量存储",
+      "description": "上传文档并选择提供商，以创建包含嵌入内容的新向量存储。",
+      "upload": {
+        "title": "第 1 步：上传文档",
+        "description": "上传一个或多个文档（PDF、TXT、DOCX、MD）。每个文件最大 50 MB。",
+        "dropzone": "点击或将文件拖到此区域上传",
+        "formats": "支持单个或批量上传。支持格式：PDF、TXT、DOCX、MD"
+      },
+      "uploadedDocuments_one": "已上传文档（{{count}}）",
+      "uploadedDocuments_other": "已上传文档（{{count}}）",
+      "configure": {
+        "title": "第 2 步：配置向量存储",
+        "description": "选择提供商，并可选填向量存储的名称和描述。"
+      },
+      "fields": {
+        "name": "向量存储名称",
+        "nameHint": "可选：为向量存储设置有意义的名称",
+        "namePlaceholder": "例如：产品文档、客户支持知识库",
+        "description": "描述",
+        "descriptionHint": "可选：描述此向量存储包含的内容",
+        "descriptionPlaceholder": "例如：包含所有产品文档和用户指南",
+        "provider": "提供商",
+        "providerHint": "选择用于嵌入和向量存储操作的提供商",
+        "providerPlaceholder": "选择提供商"
+      },
+      "buttons": {
+        "create": "创建向量存储",
+        "creating": "正在创建向量存储..."
+      },
+      "success": {
+        "title": "向量存储创建成功",
+        "vectorStoreId": "向量存储 ID：",
+        "documentsIngested": "已导入文档：",
+        "close": "关闭"
+      },
+      "toasts": {
+        "unsupportedType": "{{name}} 不是支持的文件类型。请上传 PDF、TXT、DOCX 或 MD 文件。",
+        "tooLarge": "{{name}} 必须小于 50 MB！",
+        "noDocuments": "请至少上传一个文档",
+        "noProvider": "请选择提供商",
+        "fieldRequired": "请填写{{field}}",
+        "bucketTooShort": "向量存储桶名称至少需要 3 个字符",
+        "indexTooShort": "如填写索引名称，至少需要 3 个字符",
+        "noAccessToken": "没有可用的访问 Token",
+        "partialFailure_one": "向量存储 {{id}} 已创建并包含 {{count}} 个文档，但 {{name}} 导入失败",
+        "partialFailure_other": "向量存储 {{id}} 已创建并包含 {{count}} 个文档，但 {{name}} 导入失败",
+        "created_one": "已成功创建包含 {{count}} 个文档的向量存储。向量存储 ID：{{id}}",
+        "created_other": "已成功创建包含 {{count}} 个文档的向量存储。向量存储 ID：{{id}}",
+        "createFailed": "创建向量存储失败：{{error}}"
+      }
+    },
+    "info": {
+      "back": "返回向量存储列表",
+      "notFound": {
+        "title": "未找到向量存储",
+        "description": "无法加载向量存储 {{id}}，它可能已被删除。"
+      },
+      "loading": "加载中...",
+      "heading": "向量存储 ID：{{id}}",
+      "source": {
+        "config": "配置文件",
+        "db": "数据库"
+      },
+      "noDescription": "暂无描述",
+      "editButton": "编辑向量存储",
+      "readOnly": {
+        "title": "只读：定义在配置文件中",
+        "description": "此向量存储来自代理配置 YAML，无法在仪表盘编辑或删除。请在配置文件中修改或移除，然后重启代理。"
+      },
+      "tabs": {
+        "details": "详情",
+        "test": "测试向量存储"
+      },
+      "edit": {
+        "title": "编辑向量存储",
+        "vectorStoreId": "向量存储 ID",
+        "name": "向量存储名称",
+        "description": "描述",
+        "provider": "提供商",
+        "providerHint": "选择此向量存储的提供商",
+        "credentialsHint": "选择现有凭证，或在下方输入提供商凭证",
+        "credentials": "现有凭证",
+        "credentialsPlaceholder": "选择或搜索现有凭证",
+        "or": "或",
+        "metadata": "元数据",
+        "metadataHint": "向量存储的 JSON 元数据",
+        "cancel": "取消",
+        "save": "保存更改"
+      },
+      "details": {
+        "title": "向量存储详情",
+        "id": "ID",
+        "name": "名称",
+        "description": "描述",
+        "provider": "提供商",
+        "metadata": "元数据",
+        "created": "创建时间",
+        "lastUpdated": "最后更新"
+      },
+      "errors": {
+        "idRequired": "请输入向量存储 ID",
+        "providerRequired": "请选择提供商"
+      },
+      "toasts": {
+        "fetchFailed": "获取向量存储详情失败：{{error}}",
+        "invalidMetadata": "元数据字段中的 JSON 无效",
+        "updated": "向量存储更新成功",
+        "updateFailed": "更新向量存储失败：{{error}}"
+      }
+    },
+    "form": {
+      "title": "添加新向量存储",
+      "fields": {
+        "provider": "提供商",
+        "providerHint": "选择此向量存储的提供商",
+        "vectorStoreId": "向量存储 ID",
+        "vectorStoreIdHint": "输入 API 提供商提供的向量存储 ID",
+        "name": "向量存储名称",
+        "nameHint": "为向量存储设置的自定义名称，将显示在 LiteLLM UI 中",
+        "description": "描述",
+        "credentials": "现有凭证",
+        "credentialsHint": "可选：为此向量存储选择 API 提供商凭证，例如 Bedrock API KEY",
+        "credentialsPlaceholder": "选择或搜索现有凭证",
+        "metadata": "元数据",
+        "metadataHint": "向量存储的 JSON 元数据（可选）"
+      },
+      "idPlaceholders": {
+        "default": "输入提供商提供的向量存储 ID",
+        "vertexRagEngine": "6917529027641081856（Vertex AI / RAG Engine 控制台中的 corpus ID）",
+        "vertexAiSearch": "my-datastore_1234567890（Vertex AI / Agent Search 控制台中的数据存储 ID）",
+        "vertexAiSearchWithEngine": "在 LiteLLM 中引用此记录时使用的任意标识符",
+        "valkey": "my-search-index（Valkey 中的 FT 索引名称）",
+        "mongodb": "my-vector-index（MongoDB Vector Search 索引名称）",
+        "opensearch": "my-knn-index（OpenSearch 索引名称）"
+      },
+      "password": {
+        "show": "显示密码",
+        "hide": "隐藏密码"
+      },
+      "noMatchingOptions": "没有匹配项",
+      "buttons": {
+        "cancel": "取消",
+        "create": "创建"
+      },
+      "errors": {
+        "providerRequired": "请选择提供商",
+        "vectorStoreIdRequired": "请输入 API 提供商提供的向量存储 ID",
+        "selectField": "请选择{{field}}",
+        "inputField": "请输入{{field}}"
+      },
+      "toasts": {
+        "invalidMetadata": "元数据字段中的 JSON 无效",
+        "created": "向量存储创建成功",
+        "createFailed": "创建向量存储失败：{{error}}"
+      },
+      "pgVector": {
+        "title": "需要配置 PG Vector",
+        "intro": "LiteLLM 提供用于连接 PG Vector 的服务。使用此提供商前请执行：",
+        "steps": {
+          "deploy": "部署 litellm-pgvector 服务，地址为：",
+          "configure": "使用 pgvector 扩展配置 PostgreSQL 数据库",
+          "start": "启动服务并记录 API 基础 URL 和 API 密钥",
+          "enter": "在下方字段中输入这些信息"
+        }
+      },
+      "valkey": {
+        "title": "需要配置 Valkey",
+        "intro": "LiteLLM 会搜索已存储在 Valkey 中的文档，不会自动创建索引或上传文档。创建此向量存储前，请确认：",
+        "steps": {
+          "searchEnabled": "Valkey 服务已启用向量搜索（valkey-search 模块，包含在 valkey-bundle 镜像以及 AWS ElastiCache / MemoryDB for Valkey 中）",
+          "indexLoaded": "已创建搜索索引，并将文档及其嵌入加载到索引中。请将该索引名称填写到向量存储 ID",
+          "embeddingModel": "已知生成这些嵌入的模型。该模型必须已添加到此代理的模型页面，才能在下方选择。使用不同模型会返回错误结果",
+          "fieldNames": "已知文档用于文本和嵌入的字段名称。如果字段不是“text”和“embedding”，请在下方设置"
+        },
+        "howItWorks": "收到查询后，LiteLLM 使用下方模型将其转换为嵌入，并从索引中返回最接近的匹配文档。"
+      },
+      "opensearch": {
+        "title": "需要配置 OpenSearch",
+        "intro": "LiteLLM 会搜索 OpenSearch Serverless 集合或 OpenSearch Service 域中已有的 k-NN 索引，不会创建索引或上传文档。创建此向量存储前，请确认：",
+        "steps": {
+          "knnField": "索引包含保存每个文档嵌入的 knn_vector 字段。请将索引名称填写到向量存储 ID；如果其他端点已使用该 ID，则填写到索引名称",
+          "embeddingModel": "已知生成这些嵌入的模型。该模型必须已添加到此代理的模型页面，才能在下方选择。使用不同模型会返回错误结果",
+          "credentials": "代理具有可读取索引的 AWS 凭证，可以来自自身环境变量/IAM 角色，也可以来自“现有凭证”中保存的凭证。Serverless 集合需要为其配置数据访问策略，域需要访问策略允许访问"
+        }
+      },
+      "vertexRagEngine": {
+        "title": "Vertex AI RAG Engine 配置",
+        "intro": "使用 Vertex AI RAG Engine 前请执行：",
+        "renameNote": "注意：Google Cloud 已将其控制台中的名称改为“RAG Engine”，以下步骤仍然适用。",
+        "steps": {
+          "guide": "按指南创建 Vertex AI RAG Engine 语料库：<guide>Vertex AI RAG Engine 概览</guide>",
+          "createCorpus": "在 Google Cloud 项目中创建语料库",
+          "noteCorpusId": "从 Vertex AI 控制台（Google Cloud 中现名为“RAG Engine”）记录 corpus ID",
+          "enterCorpusId": "在下方向量存储 ID 字段中输入 corpus ID"
+        }
+      },
+      "vertexAiSearch": {
+        "title": "Vertex AI Search 配置",
+        "intro": "使用 Vertex AI Search（Discovery Engine）前请执行：",
+        "renameNote": "注意：Google Cloud 已将其控制台中的名称改为“Agent Search”，以下步骤仍然适用。",
+        "steps": {
+          "guide": "在 Google Cloud 项目中启用 Discovery Engine API，并按指南创建数据存储：<guide>创建 Vertex AI Search 数据存储</guide>",
+          "location": "选择受支持的位置：global、us 或 eu",
+          "dataStoreId": "对于大多数数据存储类型（Cloud Storage、BigQuery、Media）：复制数据存储 ID，并填入下方向量存储 ID。",
+          "engineId": "对于网站、医疗和连接器来源（Drive、Gmail、Slack、Jira 等）：在数据存储之上创建搜索应用，然后复制 <strong>Engine ID</strong> 并填入 Engine ID。向量存储 ID 仍必须填写，作为此记录在 LiteLLM 侧的名称；设置 Engine ID 后，它不会用于 GCP URL。"
+        }
+      }
+    },
+    "providerFields": {
+      "labels": {
+        "apiBase": "API 基础地址",
+        "apiKey": "API 密钥",
+        "vertexProject": "Vertex 项目",
+        "vertexLocation": "Vertex 位置",
+        "collectionIdOptional": "集合 ID（可选）",
+        "engineIdOptional": "Engine ID（可选）",
+        "embeddingModel": "嵌入模型",
+        "sidecarUrl": "Sidecar URL",
+        "sidecarApiKey": "Sidecar API 密钥",
+        "database": "数据库",
+        "collection": "集合",
+        "vectorFieldName": "向量字段名称",
+        "textField": "文本字段",
+        "candidatesConsidered": "候选数量",
+        "valkeyHost": "Valkey 主机",
+        "valkeyPort": "Valkey 端口",
+        "valkeyPassword": "Valkey 密码",
+        "useTls": "使用 TLS",
+        "opensearchEndpoint": "OpenSearch 端点",
+        "awsRegionOptional": "AWS 区域（可选）",
+        "indexNameOptional": "索引名称（可选）",
+        "vectorBucketName": "向量存储桶名称",
+        "indexName": "索引名称",
+        "awsRegion": "AWS 区域"
+      },
+      "tooltips": {
+        "pgVector": {
+          "apiBase": "输入已部署 litellm-pgvector 服务的基础 URL（例如 http://your-server:8000）",
+          "apiKey": "输入已部署 litellm-pgvector 服务的 API 密钥"
+        },
+        "vertexAiSearch": {
+          "project": "托管 Vertex AI Search 数据存储的 Google Cloud 项目 ID。",
+          "location": "Vertex AI Search 数据存储位置，必须为 global、us 或 eu。",
+          "collectionId": "Discovery Engine 集合 ID。留空则使用默认集合。",
+          "engineId": "搜索应用（引擎）ID。网站、医疗和连接器型数据存储（Workspace、Slack、Jira 等）需要此项，因为这些来源通过引擎进行搜索。留空则直接查询数据存储。"
+        },
+        "openai": {
+          "apiKey": "输入 OpenAI API 密钥"
+        },
+        "azure": {
+          "apiKey": "输入 Azure OpenAI API 密钥",
+          "apiBase": "输入 Azure OpenAI 端点（例如 https://your-resource.openai.azure.com/）"
+        },
+        "milvus": {
+          "apiKey": "获取 Token 时，请用冒号（:）连接访问 Milvus 实例的用户名和密码（例如 username:password）",
+          "apiBase": "输入 Milvus 端点（例如 https://your-milvus-endpoint.com/）",
+          "embeddingModel": "选择要使用的嵌入模型"
+        },
+        "mongodb": {
+          "apiBase": "远程 Sidecar 请使用 HTTPS；与代理位于同一主机或 Pod 的 Sidecar 可使用 HTTP 和回环 IP",
+          "apiKey": "MongoDB Sidecar 中配置的 MONGODB_SIDECAR_API_KEY",
+          "database": "保存待搜索集合的 MongoDB 数据库",
+          "collection": "创建 MongoDB Vector Search 索引时使用的集合",
+          "embeddingModel": "创建集合中已存向量时使用的此代理嵌入模型。LiteLLM 会用它为每次搜索查询生成嵌入，因此必须完全相同。相同维度但不同的模型不会报错，只会返回错误结果。如未列出，请先在模型页面添加",
+          "embeddingField": "每个文档中保存嵌入的字段，必须与创建 MongoDB Vector Search 索引时的路径一致（默认：embedding）",
+          "textField": "每个文档中保存可读文本的字段。LiteLLM 会在搜索结果中返回此文本，支持 metadata.body 等点分路径（默认：text）",
+          "numCandidates": "MongoDB 在返回最佳结果前检查的最近邻数量。数值越大越准确但越慢。留空则由 LiteLLM 根据请求结果数自动调整"
+        },
+        "valkey": {
+          "host": "Valkey 服务的主机名或 IP，不要包含 redis:// 或端口（例如 my-valkey.example.com）",
+          "port": "Valkey 服务监听端口。除非已修改，否则保持 6379",
+          "password": "登录 Valkey 服务所用的密码。无密码时留空",
+          "ssl": "如果 Valkey 服务要求加密（TLS）连接则设为 true，例如启用了传输加密的 AWS ElastiCache",
+          "embeddingModel": "用于创建 Valkey 索引中已存嵌入的此代理模型。LiteLLM 会用它生成每次搜索查询的嵌入，因此必须完全相同，否则结果会错误。如未列出，请先在模型页面添加",
+          "textField": "每个已存文档中保存可读文本的字段。LiteLLM 会在搜索结果中返回此文本。必须与文档存储方式一致（默认：text）",
+          "embeddingField": "每个已存文档中保存嵌入的字段。LiteLLM 会在此字段上搜索，因此必须与创建索引时的字段一致（默认：embedding）"
+        },
+        "opensearch": {
+          "apiBase": "OpenSearch Serverless 集合或 OpenSearch Service 域的端点，以 https:// 开头",
+          "region": "集合或域所在的 AWS 区域。端点本身包含区域时可留空；使用自定义域名时请设置",
+          "embeddingModel": "用于创建索引中已存向量的此代理模型。LiteLLM 会用它为每次搜索查询生成嵌入，因此必须完全相同。如未列出，请先在模型页面添加",
+          "embeddingField": "索引映射中保存每个文档嵌入的顶层 knn_vector 字段（默认：embedding）",
+          "textField": "每个文档中保存可读文本的顶层字段。LiteLLM 会在搜索结果中返回此文本（默认：text）",
+          "indexName": "要搜索的 OpenSearch 索引。留空则使用向量存储 ID；如需用不同 ID 注册两个端点中的同名索引，请设置此字段"
+        },
+        "s3Vectors": {
+          "bucketName": "用于向量存储的 S3 存储桶名称（不存在时会自动创建）",
+          "indexName": "向量索引名称（可选，未填写时自动生成）",
+          "region": "S3 存储桶所在的 AWS 区域（例如 us-west-2）",
+          "embeddingModel": "选择用于生成向量的嵌入模型"
+        }
+      }
+    }
+  }
+}

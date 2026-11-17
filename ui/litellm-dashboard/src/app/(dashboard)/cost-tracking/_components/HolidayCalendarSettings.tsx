@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CalendarDays, ExternalLink, RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,14 +22,15 @@ interface HolidayCalendarSettingsProps {
   canEdit: boolean;
 }
 
-const statusLabel: Record<HolidayCalendarVersion["status"], string> = {
-  active: "Active",
-  pending: "Pending confirmation",
-  needs_source: "Official notice required",
-  archived: "Archived",
-};
+const statusLabelKeys = {
+  active: "costTracking.holiday.statusActive",
+  pending: "costTracking.holiday.statusPending",
+  needs_source: "costTracking.holiday.statusNeedsSource",
+  archived: "costTracking.holiday.statusArchived",
+} as const;
 
 const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ accessToken, canEdit }) => {
+  const { t } = useTranslation();
   const { document, error, isLoading, refreshConfig, confirmVersion } = useHolidayCalendarConfig({
     accessToken,
   });
@@ -58,10 +60,10 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
     setIsSubmitting(true);
     try {
       await refreshConfig(Number(year), sourceUrl.trim());
-      toast.success("Official notice loaded into pending review");
+      toast.success(t("costTracking.holiday.noticeLoaded"));
       setIsRefreshOpen(false);
     } catch (refreshError) {
-      toast.fromError(refreshError instanceof Error ? refreshError.message : "Unable to load holiday notice");
+      toast.fromError(refreshError instanceof Error ? refreshError.message : t("costTracking.holiday.loadFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -71,9 +73,9 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
     setIsSubmitting(true);
     try {
       await confirmVersion(version);
-      toast.success(`${version.year} holiday calendar is now active`);
+      toast.success(t("costTracking.holiday.activated", { year: version.year }));
     } catch (confirmError) {
-      toast.fromError(confirmError instanceof Error ? confirmError.message : "Unable to confirm holiday calendar");
+      toast.fromError(confirmError instanceof Error ? confirmError.message : t("costTracking.holiday.confirmFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -87,16 +89,14 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
         <div>
           <div className="flex items-center gap-2">
             <CalendarDays className="size-4 text-muted-foreground" />
-            <p className="font-medium text-foreground">China holiday calendar</p>
+            <p className="font-medium text-foreground">{t("costTracking.holiday.title")}</p>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Review the official notice and confirm the dates before they affect off-peak billing.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("costTracking.holiday.description")}</p>
         </div>
         {canEdit && (
           <Button onClick={() => openRefreshDialog()}>
             <RefreshCw className="mr-2 size-4" />
-            Load official notice
+            {t("costTracking.holiday.loadNotice")}
           </Button>
         )}
       </div>
@@ -107,23 +107,25 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
         </Alert>
       )}
 
-      {isLoading && <p className="mt-4 text-sm text-muted-foreground">Loading calendar…</p>}
+      {isLoading && <p className="mt-4 text-sm text-muted-foreground">{t("costTracking.holiday.loading")}</p>}
 
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
         <section className="rounded-lg border p-4">
           <div className="flex items-center justify-between">
-            <p className="font-medium">Active calendar</p>
+            <p className="font-medium">{t("costTracking.holiday.active")}</p>
             <Badge variant="secondary">{china?.timezone ?? "Asia/Shanghai"}</Badge>
           </div>
           <div className="mt-3 space-y-3">
             {activeVersions.length === 0 && (
-              <p className="text-sm text-muted-foreground">No database-confirmed calendar. Built-in data is used.</p>
+              <p className="text-sm text-muted-foreground">{t("costTracking.holiday.noActive")}</p>
             )}
             {activeVersions.map((version) => (
               <div key={version.year} className="rounded-md bg-muted/40 p-3">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium">{version.year}</span>
-                  <span className="text-xs text-muted-foreground">{version.dates.length} days</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("costTracking.holiday.days", { count: version.dates.length })}
+                  </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {version.dates.map((holidayDate) => (
@@ -138,20 +140,18 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
         </section>
 
         <section className="rounded-lg border p-4">
-          <p className="font-medium">Pending review</p>
+          <p className="font-medium">{t("costTracking.holiday.pending")}</p>
           <div className="mt-3 space-y-3">
             {pendingVersions.length === 0 && needsSource.length === 0 && (
-              <p className="text-sm text-muted-foreground">No holiday calendar is waiting for review.</p>
+              <p className="text-sm text-muted-foreground">{t("costTracking.holiday.noPending")}</p>
             )}
             {needsSource.map((version) => (
               <div key={`${version.year}-needs-source`} className="rounded-md border border-dashed p-3">
-                <p className="font-medium">{version.year} official notice required</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  The annual task created this review item. Load the official gov.cn notice to continue.
-                </p>
+                <p className="font-medium">{t("costTracking.holiday.needsSource", { year: version.year })}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{t("costTracking.holiday.needsSourceHint")}</p>
                 {canEdit && (
                   <Button className="mt-3" onClick={() => openRefreshDialog(version.year)} size="sm" variant="outline">
-                    Load official notice
+                    {t("costTracking.holiday.loadNotice")}
                   </Button>
                 )}
               </div>
@@ -162,7 +162,8 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
                   <div>
                     <p className="font-medium">{version.year}</p>
                     <p className="text-xs text-muted-foreground">
-                      {statusLabel[version.status]} · {version.dates.length} days
+                      {t(statusLabelKeys[version.status])} ·{" "}
+                      {t("costTracking.holiday.days", { count: version.dates.length })}
                     </p>
                   </div>
                   {version.source_url && (
@@ -172,7 +173,7 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
                       rel="noreferrer"
                       target="_blank"
                     >
-                      Official notice
+                      {t("costTracking.holiday.officialNotice")}
                       <ExternalLink className="size-3" />
                     </a>
                   )}
@@ -191,7 +192,7 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
                     onClick={() => void handleConfirm(version)}
                     size="sm"
                   >
-                    Confirm and activate
+                    {t("costTracking.holiday.activate")}
                   </Button>
                 )}
               </div>
@@ -203,15 +204,12 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
       <Dialog open={isRefreshOpen} onOpenChange={setIsRefreshOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Load official holiday notice</DialogTitle>
-            <DialogDescription>
-              Enter the HTTPS gov.cn URL for the State Council annual holiday notice. Dates are loaded as pending and do
-              not affect billing until confirmed.
-            </DialogDescription>
+            <DialogTitle>{t("costTracking.holiday.dialogTitle")}</DialogTitle>
+            <DialogDescription>{t("costTracking.holiday.dialogDescription")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="holiday-calendar-year">Calendar year</Label>
+              <Label htmlFor="holiday-calendar-year">{t("costTracking.holiday.calendarYear")}</Label>
               <Input
                 id="holiday-calendar-year"
                 inputMode="numeric"
@@ -220,7 +218,7 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="holiday-calendar-source">Official notice URL</Label>
+              <Label htmlFor="holiday-calendar-source">{t("costTracking.holiday.noticeUrl")}</Label>
               <Input
                 id="holiday-calendar-source"
                 onChange={(event) => setSourceUrl(event.target.value)}
@@ -231,10 +229,10 @@ const HolidayCalendarSettings: React.FC<HolidayCalendarSettingsProps> = ({ acces
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsRefreshOpen(false)}>
-              Cancel
+              {t("costTracking.holiday.cancel")}
             </Button>
             <Button disabled={isSubmitting || !sourceUrl.trim() || !year} onClick={() => void handleRefresh()}>
-              {isSubmitting ? "Loading…" : "Load for review"}
+              {t(isSubmitting ? "costTracking.holiday.loadingButton" : "costTracking.holiday.loadForReview")}
             </Button>
           </DialogFooter>
         </DialogContent>

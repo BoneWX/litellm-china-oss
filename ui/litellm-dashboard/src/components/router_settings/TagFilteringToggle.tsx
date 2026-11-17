@@ -1,6 +1,8 @@
 import React, { useId } from "react";
-import { CONFIG_OWNED_HINT, ConfigOwnedBadge } from "./ConfigOwned";
+import { useTranslation } from "react-i18next";
+import { ConfigOwnedBadge } from "./ConfigOwned";
 import { Switch } from "@/components/ui/switch";
+import { routerFieldDescription, routerFieldLabel } from "./routerFieldText";
 
 interface TagFilteringToggleProps {
   enabled: boolean;
@@ -15,6 +17,7 @@ const TagFilteringToggle: React.FC<TagFilteringToggleProps> = ({
   onToggle,
   ownedByConfig = false,
 }) => {
+  const { t } = useTranslation();
   const toggleId = useId();
 
   return (
@@ -22,11 +25,11 @@ const TagFilteringToggle: React.FC<TagFilteringToggleProps> = ({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <label htmlFor={toggleId} className="text-xs font-medium text-foreground uppercase tracking-wide">
-            {routerFieldsMetadata["enable_tag_filtering"]?.ui_field_name || "Enable Tag Filtering"}
+            {routerFieldLabel("enable_tag_filtering", routerFieldsMetadata["enable_tag_filtering"], t)}
           </label>
           {ownedByConfig && <ConfigOwnedBadge />}
           <p className="text-xs text-muted-foreground mt-0.5">
-            {routerFieldsMetadata["enable_tag_filtering"]?.field_description || ""}
+            {routerFieldDescription("enable_tag_filtering", routerFieldsMetadata["enable_tag_filtering"], t)}
             {routerFieldsMetadata["enable_tag_filtering"]?.link && (
               <>
                 {" "}
@@ -36,7 +39,7 @@ const TagFilteringToggle: React.FC<TagFilteringToggleProps> = ({
                   rel="noopener noreferrer"
                   className="text-info hover:text-info/80 underline"
                 >
-                  Learn more
+                  {t("routerSettings.tagFiltering.learnMore")}
                 </a>
               </>
             )}
@@ -47,7 +50,7 @@ const TagFilteringToggle: React.FC<TagFilteringToggleProps> = ({
           checked={enabled}
           onCheckedChange={onToggle}
           disabled={ownedByConfig}
-          title={ownedByConfig ? CONFIG_OWNED_HINT : undefined}
+          title={ownedByConfig ? t("routerSettings.configOwned.hint") : undefined}
           className="ml-4"
         />
       </div>

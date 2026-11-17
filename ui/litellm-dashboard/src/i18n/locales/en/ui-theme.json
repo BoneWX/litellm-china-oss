@@ -1,0 +1,21 @@
+{
+  "uiTheme": {
+    "title": "UI Theme Customization",
+    "description": "Customize your LiteLLM admin dashboard with a custom logo and favicon.",
+    "logoUrl": "Custom Logo URL",
+    "logoPlaceholder": "https://example.com/logo.png",
+    "logoHint": "Enter a URL for your custom logo or leave empty for default",
+    "logoDarkUrl": "Custom Logo URL (dark mode)",
+    "logoDarkPlaceholder": "https://example.com/logo-dark.png",
+    "logoDarkHint": "Enter a URL for a logo suited to dark backgrounds, or leave empty to reuse the logo above",
+    "faviconUrl": "Custom Favicon URL",
+    "faviconPlaceholder": "https://example.com/favicon.ico",
+    "faviconHint": "Enter a URL for your custom favicon (.ico, .png, or .svg) or leave empty for default",
+    "save": "Save Changes",
+    "reset": "Reset to Default",
+    "saved": "Theme settings updated successfully!",
+    "resetSuccess": "Theme settings reset to default!",
+    "updateFailed": "Failed to update theme settings",
+    "resetFailed": "Failed to reset theme settings"
+  }
+}

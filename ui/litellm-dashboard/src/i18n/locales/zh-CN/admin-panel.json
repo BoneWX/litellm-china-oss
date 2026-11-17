@@ -1,0 +1,749 @@
+{
+  "adminPanel": {
+    "page": {
+      "title": "管理访问",
+      "subtitle": "前往“内部用户”页面添加其他管理员。",
+      "tabs": {
+        "ssoSettings": "SSO 设置",
+        "securitySettings": "安全设置",
+        "uiSettings": "UI 设置",
+        "loggingSettings": "日志设置",
+        "plugins": "插件",
+        "webSearchInterception": "Web 搜索拦截"
+      },
+      "security": {
+        "title": "✨ 安全设置",
+        "deprecatedTitle": "SSO 配置已弃用",
+        "deprecatedDescription": "在此页面编辑 SSO 设置的方式已弃用，并将在未来版本中移除。请使用 SSO 设置标签页配置 SSO。",
+        "editSso": "编辑 SSO 设置",
+        "addSso": "添加 SSO",
+        "allowedIps": "允许的 IP",
+        "uiAccessControl": "UI 访问控制",
+        "loginWithoutSsoTitle": "不使用 SSO 登录",
+        "loginWithoutSso": "如需不使用 SSO 登录，可访问 <url/>"
+      },
+      "allowedIps": {
+        "title": "管理允许的 IP 地址",
+        "columns": {
+          "ipAddress": "IP 地址",
+          "action": "操作"
+        },
+        "allAllowed": "允许所有 IP 地址",
+        "delete": "删除",
+        "addIp": "添加 IP 地址",
+        "close": "关闭"
+      },
+      "addIp": {
+        "title": "添加允许的 IP 地址",
+        "placeholder": "输入 IP 地址",
+        "submit": "添加 IP 地址",
+        "required": "请输入 IP 地址"
+      },
+      "deleteIp": {
+        "title": "确认删除",
+        "message": "确定要删除 IP 地址：<ip/> 吗？",
+        "confirm": "是",
+        "close": "关闭"
+      },
+      "uiAccessControlModal": {
+        "title": "UI 访问控制设置"
+      },
+      "toasts": {
+        "premiumRequired": "此功能仅适用于高级版用户，请升级账户。",
+        "uiAccessControlPremiumRequired": "只有高级版用户才能配置 UI 访问控制",
+        "fetchIpsFailed": "获取允许的 IP 失败：{{error}}",
+        "addIpSuccess": "IP 地址添加成功",
+        "addIpFailed": "添加 IP 地址失败：{{error}}",
+        "deleteIpSuccess": "IP 地址删除成功",
+        "deleteIpFailed": "删除 IP 地址失败：{{error}}",
+        "uiAccessControlUpdated": "UI 访问控制设置更新成功"
+      }
+    },
+    "ssoSettings": {
+      "header": {
+        "title": "SSO 配置",
+        "description": "管理单点登录认证设置",
+        "loading": "正在加载 SSO 配置"
+      },
+      "actions": {
+        "edit": "编辑 SSO 设置",
+        "delete": "删除 SSO 设置"
+      },
+      "details": {
+        "provider": "提供商",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "proxyBaseUrl": "代理基础 URL",
+        "tenant": "租户",
+        "authorizationEndpoint": "授权端点",
+        "tokenEndpoint": "Token 端点",
+        "userInfoEndpoint": "用户信息端点",
+        "scopes": "Scopes",
+        "teamIdsJwtField": "团队 ID 的 JWT 字段",
+        "samlIdpMetadataUrl": "IdP 元数据 URL",
+        "samlIdpMetadataXml": "IdP 元数据 XML",
+        "samlSpEntityId": "SP Entity ID",
+        "samlAllowUnsolicited": "允许 IdP 发起的（未经请求的）响应",
+        "provided": "已提供",
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "notConfigured": "未配置",
+        "copyValue": "复制值",
+        "copied": "已复制到剪贴板"
+      },
+      "redactableField": {
+        "notConfigured": "未配置",
+        "showValue": "显示值",
+        "hideValue": "隐藏值"
+      },
+      "emptyPlaceholder": {
+        "title": "未找到 SSO 配置",
+        "description": "配置单点登录（SSO），让团队成员可通过身份提供商无缝登录。",
+        "configure": "配置 SSO"
+      },
+      "roleMappings": {
+        "title": "角色映射",
+        "groupClaim": "组声明",
+        "defaultRole": "默认角色",
+        "columns": {
+          "role": "角色",
+          "mappedGroups": "映射的组"
+        },
+        "noGroups": "未映射组"
+      },
+      "roles": {
+        "internalUserViewer": "内部只读用户",
+        "internalUser": "内部用户",
+        "proxyAdminViewer": "代理管理员只读用户",
+        "proxyAdmin": "代理管理员"
+      },
+      "providers": {
+        "google": "Google SSO",
+        "microsoft": "Microsoft SSO",
+        "okta": "Okta / Auth0 SSO",
+        "generic": "通用 SSO",
+        "saml": "SAML SSO",
+        "fallback": "{{name}} SSO"
+      },
+      "form": {
+        "fields": {
+          "ssoProvider": "SSO 提供商",
+          "proxyAdminEmail": "代理管理员邮箱",
+          "proxyBaseUrl": "代理基础 URL",
+          "useRoleMappings": "使用角色映射",
+          "useTeamMappings": "使用团队映射",
+          "groupClaim": "组声明",
+          "defaultRole": "默认角色",
+          "proxyAdminTeams": "代理管理员团队",
+          "adminViewerTeams": "管理员只读团队",
+          "internalUserTeams": "内部用户团队",
+          "internalViewerTeams": "内部只读用户团队",
+          "teamIdsJwtField": "团队 ID 的 JWT 字段",
+          "googleClientId": "Google Client ID",
+          "googleClientSecret": "Google Client Secret",
+          "microsoftClientId": "Microsoft Client ID",
+          "microsoftClientSecret": "Microsoft Client Secret",
+          "microsoftTenant": "Microsoft 租户",
+          "genericClientId": "通用 Client ID",
+          "genericClientSecret": "通用 Client Secret",
+          "authorizationEndpoint": "授权端点",
+          "tokenEndpoint": "Token 端点",
+          "userinfoEndpoint": "用户信息端点",
+          "scopes": "Scopes",
+          "samlIdpMetadataUrl": "IdP 元数据 URL",
+          "samlIdpMetadataXml": "IdP 元数据 XML",
+          "samlSpEntityId": "SP Entity ID",
+          "samlAllowUnsolicited": "允许 IdP 发起的（未经请求的）响应"
+        },
+        "placeholders": {
+          "samlIdpMetadataUrl": "https://idp.example.com/metadata（使用此项或下方元数据 XML）",
+          "samlIdpMetadataXml": "如果没有元数据 URL，请在此粘贴 IdP 元数据 XML",
+          "samlSpEntityId": "默认使用 <proxy base url>/sso/saml/metadata"
+        },
+        "defaultRoles": {
+          "internalUserViewer": "内部只读用户",
+          "internalUser": "内部用户",
+          "proxyAdminViewer": "管理员只读用户",
+          "proxyAdmin": "代理管理员"
+        },
+        "errors": {
+          "providerRequired": "请选择 SSO 提供商",
+          "userEmailRequired": "请输入代理管理员邮箱",
+          "proxyBaseUrlRequired": "请输入代理基础 URL",
+          "groupClaimRequired": "请输入组声明",
+          "teamIdsJwtFieldRequired": "请输入团队 ID 的 JWT 字段",
+          "fieldRequired": "请输入{{field}}",
+          "urlScheme": "URL 必须以 http:// 或 https:// 开头",
+          "urlTrailingSlash": "URL 不能以斜杠结尾"
+        }
+      },
+      "addModal": {
+        "title": "添加 SSO",
+        "cancel": "取消",
+        "submit": "添加 SSO",
+        "submitting": "正在添加...",
+        "toasts": {
+          "success": "SSO 设置添加成功",
+          "saveFailed": "保存 SSO 设置失败：{{error}}"
+        }
+      },
+      "editModal": {
+        "title": "编辑 SSO 设置",
+        "cancel": "取消",
+        "save": "保存",
+        "saving": "正在保存...",
+        "toasts": {
+          "success": "SSO 设置更新成功",
+          "saveFailed": "保存 SSO 设置失败：{{error}}",
+          "processFailed": "处理 SSO 设置失败：{{error}}"
+        }
+      },
+      "deleteModal": {
+        "title": "确认清除 SSO 设置",
+        "alert": "此操作无法撤销。",
+        "message": "确定要清除所有 SSO 设置吗？此更改后用户将无法再使用 SSO 登录。",
+        "resourceTitle": "SSO 设置",
+        "provider": "提供商",
+        "providerFallback": "通用",
+        "toasts": {
+          "success": "SSO 设置清除成功",
+          "failed": "清除 SSO 设置失败：{{error}}"
+        }
+      }
+    },
+    "ssoModals": {
+      "titleEdit": "编辑 SSO 设置",
+      "titleAdd": "添加 SSO",
+      "useRoleMappings": "使用角色映射",
+      "clear": "清除",
+      "save": "保存",
+      "clearConfirm": {
+        "title": "确认清除 SSO 设置",
+        "message": "确定要清除所有 SSO 设置吗？此操作无法撤销。",
+        "warning": "此更改后用户将无法再使用 SSO 登录。",
+        "cancel": "取消",
+        "confirm": "是，清除"
+      },
+      "instructions": {
+        "title": "SSO 设置说明",
+        "intro": "按以下步骤完成 SSO 设置：",
+        "step1": "1. 不要退出当前标签页",
+        "step2": "2. 打开新标签页并访问代理基础 URL",
+        "step3": "3. 确认 SSO 配置正确，且能在新标签页登录",
+        "step4": "4. 如果第 3 步成功，即可关闭当前标签页",
+        "done": "完成"
+      },
+      "toasts": {
+        "noAccessToken": "没有可用的访问 Token",
+        "saveFailed": "保存 SSO 设置失败：{{error}}",
+        "clearSuccess": "SSO 设置清除成功",
+        "clearFailed": "清除 SSO 设置失败"
+      }
+    },
+    "scim": {
+      "title": "SCIM 配置",
+      "description": "跨域身份管理系统（SCIM）可自动配置和管理 LiteLLM 中的用户与组。",
+      "tenantUrl": {
+        "title": "SCIM 租户 URL",
+        "description": "在身份提供商的 SCIM 集成设置中使用此 URL。",
+        "copy": "复制"
+      },
+      "token": {
+        "title": "认证 Token",
+        "alertTitle": "使用 SCIM",
+        "alertDescription": "需要通过 SCIM Token 调用 SCIM API 进行认证。请在下方创建 Token，并在 SCIM 提供商配置中使用。",
+        "nameLabel": "Token 名称",
+        "namePlaceholder": "SCIM 访问 Token",
+        "nameRequired": "请输入 Token 名称",
+        "create": "创建 SCIM Token"
+      },
+      "created": {
+        "title": "你的 SCIM Token",
+        "warning": "请立即复制此 Token。之后将无法再次查看。",
+        "copy": "复制",
+        "createAnother": "创建另一个 Token"
+      },
+      "toasts": {
+        "notLoggedIn": "需要登录后才能创建 SCIM Token",
+        "created": "SCIM Token 创建成功",
+        "createFailed": "创建 SCIM Token 失败：{{error}}",
+        "urlCopied": "URL 已复制到剪贴板",
+        "tokenCopied": "Token 已复制到剪贴板"
+      }
+    },
+    "uiAccessControl": {
+      "description": "配置可访问 UI 的用户，以及如何从 JWT Token 中提取组信息。",
+      "fields": {
+        "accessMode": "UI 访问模式",
+        "accessModeHint": "控制可访问 UI 的用户",
+        "accessModePlaceholder": "选择访问模式",
+        "restrictedGroup": "受限 SSO 组",
+        "jwtField": "SSO 组 JWT 字段",
+        "jwtFieldHint": "包含团队/组信息的 JWT 字段名称。可使用点号访问嵌套字段。"
+      },
+      "modes": {
+        "allAuthenticatedUsers": "所有已认证用户",
+        "restrictedSsoGroup": "受限 SSO 组"
+      },
+      "errors": {
+        "restrictedGroupRequired": "请输入受限 SSO 组"
+      },
+      "submit": "更新 UI 访问控制",
+      "toasts": {
+        "noAccessToken": "没有可用的访问 Token",
+        "saveFailed": "保存 UI 访问设置失败"
+      }
+    },
+    "uiSettings": {
+      "title": "UI 设置",
+      "loadingAriaLabel": "正在加载 UI 设置",
+      "errors": {
+        "loadFailed": "无法加载 UI 设置",
+        "updateFailed": "无法更新 UI 设置"
+      },
+      "toasts": {
+        "updated": "UI 设置更新成功",
+        "updatedRefreshing": "UI 设置更新成功，正在刷新页面...",
+        "pageVisibilityUpdated": "页面可见性设置更新成功"
+      },
+      "usageRange": {
+        "label": "默认用量时间范围",
+        "help": "所有用户打开用量页面时的默认起始范围。共享链接和手动日期选择优先。日历范围使用浏览器时区。",
+        "managedByConfig": "由部署配置管理。"
+      },
+      "settings": {
+        "disableModelAdd": {
+          "label": "禁止内部用户添加模型"
+        },
+        "disableTeamAdminDelete": {
+          "label": "禁止团队管理员删除团队成员"
+        },
+        "requireAuthForPublicAIHub": {
+          "label": "公开 AI Hub 需要认证"
+        },
+        "forwardClientHeaders": {
+          "label": "将客户端 Header 转发到 LLM API",
+          "description": "将客户端 Header（Authorization、anthropic-beta 和 x-* 自定义 Header）转发到上游 LLM。使用 Max 订阅的 Claude Code（转发 OAuth Token）或将自定义/追踪 Header 传给提供商时启用。此项独立于 BYOK 开关，只启用需要的项目。"
+        },
+        "forwardLLMProviderAuthHeaders": {
+          "label": "转发 LLM 提供商认证 Header",
+          "description": "将提供商认证 Header（x-api-key、x-goog-api-key、api-key、ocp-apim-subscription-key）转发到上游 LLM，并覆盖该请求中部署配置的密钥。Claude Code BYOK（客户端自带 API 密钥）时启用。此项独立于客户端 Header 开关，只启用需要的项目。"
+        },
+        "enableProjects": {
+          "ariaLabel": "启用项目 UI",
+          "label": "[BETA] 启用项目（页面将刷新）",
+          "description": "启用后，在 UI 侧边栏显示项目功能，并在密钥管理显示项目字段。"
+        },
+        "enableChat": {
+          "ariaLabel": "启用聊天页面",
+          "label": "启用聊天页面（页面将刷新）",
+          "description": "启用后，在 UI 侧边栏显示聊天页面，用户可与 LLM 聊天，并通过 OAuth 连接自己的 MCP 服务器凭证。"
+        },
+        "disableAgents": {
+          "label": "禁止内部用户使用智能体"
+        },
+        "allowAgentsTeamAdmins": {
+          "label": "允许团队管理员使用智能体"
+        },
+        "disableVectorStores": {
+          "label": "禁止内部用户使用向量存储"
+        },
+        "allowVectorStoresTeamAdmins": {
+          "label": "允许团队管理员使用向量存储"
+        },
+        "scopeUserSearch": {
+          "label": "将用户搜索限制在组织内",
+          "description": "启用后，用户搜索端点会按组织限制结果；关闭后，任何已认证用户都可以搜索所有用户。"
+        },
+        "disableCustomApiKeys": {
+          "label": "禁用自定义虚拟密钥值",
+          "description": "启用后，用户不能指定自定义密钥值，所有密钥都必须自动生成。"
+        }
+      },
+      "moyai": {
+        "connectedTo": "已连接到 {{url}}",
+        "notConnected": "未连接",
+        "disconnect": "断开连接",
+        "connectLink": "从 Moyai 页面连接"
+      }
+    },
+    "pageVisibility": {
+      "title": "内部用户页面可见性",
+      "selectedCount_one": "已选择 {{count}} 个页面",
+      "selectedCount_other": "已选择 {{count}} 个页面",
+      "notSet": "未设置（所有页面可见）",
+      "defaultHint": "默认情况下，内部用户可看到所有页面。选择特定页面可限制可见范围。",
+      "adminOnlyNote": "注意：此处只显示内部用户角色可访问的页面。仅管理员可访问的页面不会显示，因为无论此项如何设置，它们都不能开放给内部用户。",
+      "configure": "配置页面可见性",
+      "save": "保存页面可见性设置",
+      "reset": "恢复默认（所有页面）"
+    },
+    "teamAdminEditableFields": {
+      "title": "团队管理员可编辑字段",
+      "enabledCount_one": "已启用 {{count}} 个字段",
+      "enabledCount_other": "已启用 {{count}} 个字段",
+      "noneEnabled": "团队管理员不能编辑团队设置",
+      "defaultDescription": "团队管理员可修改其管理团队的以下设置字段。",
+      "unsupported": "当前代理版本尚不支持为团队管理员启用团队设置字段。",
+      "raiseMaxBudgetHelp": {
+        "ariaLabel": "关于提高团队最大预算",
+        "tooltip": "允许团队管理员同时提高预算；如果团队有组织预算，则受组织预算上限约束。只有代理管理员可以移除此项。"
+      },
+      "metadataHelp": {
+        "ariaLabel": "关于编辑团队元数据",
+        "tooltip": "允许团队管理员添加、修改和删除自己的元数据键。代理用作设置的键仍由代理管理员管理；团队元数据 schema 中声明的键可以修改但不能删除。"
+      },
+      "learnMore": "了解更多",
+      "saving": "正在保存...",
+      "save": "保存",
+      "toasts": {
+        "updated": "团队管理员可编辑字段更新成功"
+      }
+    },
+    "hashicorpVault": {
+      "description": "管理密钥管理器配置",
+      "loadingAriaLabel": "正在加载 Hashicorp Vault 配置",
+      "errors": {
+        "loadFailed": "无法加载 Hashicorp Vault 配置"
+      },
+      "authMethodLabel": "认证方式",
+      "authMethods": {
+        "tlsCertificate": "TLS 证书",
+        "token": "Token",
+        "none": "无"
+      },
+      "notConfigured": "未配置",
+      "actions": {
+        "testConnection": "测试连接",
+        "testing": "正在测试...",
+        "edit": "编辑配置",
+        "delete": "删除配置",
+        "clearField": "清除{{field}}"
+      },
+      "secretsInfo": {
+        "title": "密钥必须使用字段名“key”存储",
+        "docsLink": "查看文档"
+      },
+      "toasts": {
+        "connectionSuccess": "连接 Vault 成功！",
+        "deleted": "Hashicorp Vault 配置已删除",
+        "fieldCleared": "{{field}}已清除",
+        "updated": "Hashicorp Vault 配置更新成功"
+      },
+      "deleteModal": {
+        "title": "删除 Hashicorp Vault 配置？",
+        "message": "使用 Vault 密钥的模型将在保存新配置前无法访问 API 密钥。",
+        "resourceTitle": "Vault 配置",
+        "vaultAddress": "Vault 地址"
+      },
+      "clearModal": {
+        "title": "清除{{field}}？",
+        "message": "这将移除已保存的值。",
+        "resourceTitle": "字段",
+        "fieldLabel": "字段"
+      },
+      "fields": {
+        "vaultAddr": "Vault 地址",
+        "vaultNamespace": "命名空间",
+        "vaultLoginNamespace": "登录命名空间",
+        "vaultSecretNamespace": "密钥命名空间",
+        "vaultMountName": "KV 挂载名称",
+        "vaultPathPrefix": "路径前缀",
+        "vaultToken": "Token",
+        "approleRoleId": "Role ID",
+        "approleSecretId": "Secret ID",
+        "approleMountPath": "挂载路径",
+        "clientCert": "客户端证书",
+        "clientKey": "客户端密钥",
+        "vaultCertRole": "证书角色"
+      },
+      "emptyPlaceholder": {
+        "title": "未找到 Vault 配置",
+        "description": "配置 Hashicorp Vault，以安全管理 LiteLLM 部署中的提供商 API 密钥和密钥。",
+        "configure": "配置 Vault"
+      },
+      "editModal": {
+        "title": "编辑 Hashicorp Vault 配置",
+        "groups": {
+          "connection": {
+            "title": "连接"
+          },
+          "token": {
+            "title": "Token 认证",
+            "subtitle": "使用 Vault Token 认证。只需一种认证方式。"
+          },
+          "appRole": {
+            "title": "AppRole 认证",
+            "subtitle": "使用 AppRole 凭证认证。只需一种认证方式。"
+          },
+          "tls": {
+            "title": "TLS",
+            "subtitle": "用于 mTLS 的可选客户端证书。"
+          }
+        },
+        "keepExistingPlaceholder": "留空以保留现有值（{{value}}）",
+        "errors": {
+          "invalidUrl": "必须以 http:// 或 https:// 开头"
+        },
+        "cancel": "取消",
+        "saving": "正在保存...",
+        "save": "保存"
+      }
+    },
+    "cyberArk": {
+      "description": "管理密钥管理器配置",
+      "loadingAriaLabel": "正在加载 CyberArk 配置",
+      "errors": {
+        "loadFailed": "无法加载 CyberArk 配置"
+      },
+      "authMethodLabel": "认证方式",
+      "authMethods": {
+        "apiKey": "API 密钥",
+        "tlsCertificate": "TLS 证书",
+        "none": "无"
+      },
+      "notConfigured": "未配置",
+      "actions": {
+        "testConnection": "测试连接",
+        "testing": "正在测试...",
+        "edit": "编辑配置",
+        "delete": "删除配置",
+        "clearField": "清除{{field}}"
+      },
+      "hotReloadInfo": {
+        "title": "配置更改会在所有代理实例间热重载",
+        "docsLink": "查看文档"
+      },
+      "toasts": {
+        "connectionSuccess": "连接 CyberArk Conjur 成功！",
+        "deleted": "CyberArk 配置已删除",
+        "fieldCleared": "{{field}}已清除",
+        "updated": "CyberArk 配置更新成功"
+      },
+      "deleteModal": {
+        "title": "删除 CyberArk 配置？",
+        "message": "使用 CyberArk 密钥的模型将在保存新配置前无法访问 API 密钥。",
+        "resourceTitle": "CyberArk 配置",
+        "serverUrl": "Conjur 服务器 URL"
+      },
+      "clearModal": {
+        "title": "清除{{field}}？",
+        "message": "这将移除已保存的值。",
+        "resourceTitle": "字段",
+        "fieldLabel": "字段"
+      },
+      "fields": {
+        "apiBase": "Conjur 服务器 URL",
+        "account": "账户",
+        "username": "用户名",
+        "apiKey": "API 密钥",
+        "clientCert": "客户端证书",
+        "clientKey": "客户端密钥",
+        "sslVerify": "SSL 验证",
+        "refreshInterval": "Token 刷新间隔（秒）"
+      },
+      "emptyPlaceholder": {
+        "title": "未找到 CyberArk 配置",
+        "description": "配置 CyberArk Conjur，以安全管理 LiteLLM 部署中的提供商 API 密钥和密钥。",
+        "configure": "配置 CyberArk"
+      },
+      "editModal": {
+        "title": "编辑 CyberArk 配置",
+        "groups": {
+          "connection": {
+            "title": "连接"
+          },
+          "apiKey": {
+            "title": "API 密钥认证",
+            "subtitle": "使用 Conjur API 密钥认证。只需一种认证方式。"
+          },
+          "certificate": {
+            "title": "证书认证",
+            "subtitle": "使用客户端 TLS 证书和密钥认证。只需一种认证方式。"
+          },
+          "advanced": {
+            "title": "高级",
+            "subtitle": "可选 TLS 和 Token 缓存设置。"
+          }
+        },
+        "keepExistingPlaceholder": "留空以保留现有值（{{value}}）",
+        "errors": {
+          "invalidUrl": "必须以 http:// 或 https:// 开头"
+        },
+        "cancel": "取消",
+        "saving": "正在保存...",
+        "save": "保存"
+      }
+    },
+    "pluginSettings": {
+      "title": "插件",
+      "description": "将外部服务注册为插件。添加后，用户可从侧边栏左上角的模式切换器切换到插件。",
+      "manifestHint": "每个插件必须提供 <code>{{endpoint}}</code>，返回导航项和功能信息。",
+      "addPlugin": "添加插件",
+      "columns": {
+        "name": "名称",
+        "displayName": "显示名称",
+        "url": "URL",
+        "pluginKey": "插件密钥",
+        "actions": "操作"
+      },
+      "noData": "无数据",
+      "editAriaLabel": "编辑 {{name}}",
+      "deleteAriaLabel": "删除 {{name}}",
+      "modal": {
+        "addTitle": "添加插件",
+        "editTitle": "编辑插件",
+        "fields": {
+          "name": {
+            "label": "名称（标识符）",
+            "description": "用于 URL 和配置。不能包含空格。例如 litellm-platform-plugin"
+          },
+          "displayName": {
+            "label": "显示名称"
+          },
+          "url": {
+            "label": "URL",
+            "description": "插件服务的基础 URL"
+          },
+          "pluginKey": {
+            "label": "插件密钥",
+            "description": "可选。插件自身的凭证，仅在 LiteLLM 将 API 调用反向代理到插件后端（/plugin-proxy/<name>/*）时，以 Authorization: Bearer <key> 注入。iframe 等使用转发 LiteLLM 用户 Token 的插件请留空；该路径使用用户 Token，不使用此密钥。",
+            "keepCurrentPlaceholder": "留空以保留当前密钥",
+            "newPlaceholder": "sk-...（可选）",
+            "show": "显示插件密钥",
+            "hide": "隐藏插件密钥"
+          }
+        },
+        "cancel": "取消",
+        "save": "保存"
+      },
+      "errors": {
+        "required": "必填",
+        "invalidUrl": "必须是有效 URL"
+      }
+    },
+    "loggingSettings": {
+      "title": "日志设置",
+      "description": "控制请求和响应数据写入消费日志方式的代理级设置。",
+      "fields": {
+        "storePrompts": {
+          "label": "在消费日志中保存提示词",
+          "hint": "启用后，提示词会保存到消费日志中，用于跟踪和分析。"
+        },
+        "retentionPeriod": {
+          "label": "消费日志最长保留时间（可选）",
+          "placeholder": "例如 7d、30d",
+          "hint": "设置消费日志的最长保留时间（例如 '7d' 为 7 天，'30d' 为 30 天）。留空表示不限制。"
+        },
+        "cleanupBatchSize": {
+          "label": "消费日志清理批次大小（可选）",
+          "placeholder": "例如 1000",
+          "hint": "清理时每条 DELETE 语句删除的行数。留空则使用默认值 1000。"
+        },
+        "cleanupMaxBatches": {
+          "label": "消费日志清理最大批次数（可选）",
+          "placeholder": "例如 500",
+          "hint": "每次清理时每张表最多执行的 DELETE 语句数量。留空则使用默认值 500。"
+        },
+        "cleanupRunBudget": {
+          "label": "消费日志清理总时间预算（可选）",
+          "placeholder": "例如 5m",
+          "hint": "单次清理的总实际耗时预算，所有待清理表共享（例如 '5m'）。留空则使用默认值 5m。"
+        },
+        "cleanupBatchTimeout": {
+          "label": "消费日志清理批次超时（可选）",
+          "placeholder": "例如 30s",
+          "hint": "应用于每个清理批次的 Postgres 语句和锁超时，避免清理长期占用连接（例如 '30s'）。留空则使用默认值 30s。"
+        }
+      },
+      "savingAriaLabel": "正在加载",
+      "saving": "正在保存...",
+      "save": "保存设置",
+      "toasts": {
+        "updated": "消费日志设置更新成功",
+        "saveFailed": "保存消费日志设置失败：{{error}}",
+        "clearFailed": "清除以下已保存值失败：{{fields}}"
+      }
+    },
+    "webSearchInterception": {
+      "notLoggedIn": "请登录后配置 Web 搜索拦截设置。",
+      "errors": {
+        "loadFailed": "无法加载 Web 搜索拦截设置",
+        "updateFailed": "无法更新设置"
+      },
+      "notApplied": {
+        "title": "当前响应页面的代理尚未应用配置",
+        "description": "集群已启用拦截，但处理此页面的代理尚未应用配置。更改或重启后约 10 秒内属于正常现象。若持续存在，请检查该代理日志：它处理的请求尚未被拦截。"
+      },
+      "info": {
+        "title": "Web 搜索拦截",
+        "description": "使用已配置的搜索工具执行 Web 搜索工具调用，而不转发到上游，使没有原生 Web 搜索能力的模型也能返回最新结果。点击“保存设置”将更改应用到所有 Pod（10 秒内生效）。"
+      },
+      "fields": {
+        "enabled": {
+          "label": "启用 Web 搜索拦截",
+          "hint": "启用后，Web 搜索工具调用将通过所选搜索工具在服务端执行"
+        },
+        "providers": {
+          "label": "提供商",
+          "hint": "要拦截哪些 LLM 提供商。留空则仅拦截 Bedrock。",
+          "placeholder": "选择提供商（默认 Bedrock）"
+        },
+        "searchTool": {
+          "label": "搜索工具",
+          "hint": "使用哪个已配置搜索工具执行搜索。留空则使用第一个可用工具。",
+          "placeholder": "选择搜索工具（默认第一个可用项）"
+        },
+        "maxAgenticLoops": {
+          "label": "最大 Agentic 循环次数",
+          "hint": "单个被拦截请求最多可链式发起多少次后续模型调用。留空则使用默认值 3。"
+        }
+      },
+      "save": "保存设置",
+      "toasts": {
+        "updated": "设置更新成功。更改将在 10 秒内应用到所有 Pod。"
+      }
+    },
+    "userBannerSettings": {
+      "title": "用户横幅",
+      "description": "向所有仪表盘用户发布公告。支持 Markdown；取消发布前，横幅会显示在每个页面的页头下方。用户可关闭，内容变化后会重新显示。",
+      "publish": "发布用户横幅",
+      "message": {
+        "label": "消息",
+        "placeholder": "**计划维护** 将于今晚 UTC 22:00 进行。参见[状态页](https://example.com)。",
+        "missing": "发布前请填写消息。"
+      },
+      "severity": {
+        "label": "严重程度",
+        "ariaLabel": "横幅严重程度",
+        "placeholder": "严重程度",
+        "options": {
+          "info": "信息",
+          "warning": "警告",
+          "error": "错误"
+        }
+      },
+      "preview": "预览",
+      "saving": "正在保存...",
+      "save": "保存横幅",
+      "toasts": {
+        "updated": "用户横幅更新成功"
+      }
+    },
+    "backgroundChat": {
+      "toasts": {
+        "saved": "后台聊天设置已保存。"
+      },
+      "errors": {
+        "loadFailed": "无法加载后台聊天设置。"
+      },
+      "retry": "重试",
+      "label": "在后台继续聊天",
+      "description": "用户关闭浏览器后，继续执行回复和工具运行。重新打开同一浏览器即可查看结果。",
+      "requiresRedis": "需要 Redis。<cachingLink>前往缓存 → Coordination Redis 配置</cachingLink>，然后重启代理。",
+      "managedByConfig": "由配置文件管理。请更新其中的后台轮询设置。",
+      "dbConfigRequired": "启用数据库配置后才能保存此设置。",
+      "autoApply": "代理刷新配置后会自动应用更改。"
+    }
+  }
+}

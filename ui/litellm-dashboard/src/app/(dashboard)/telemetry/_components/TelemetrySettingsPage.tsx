@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import { Switch } from "@/components/ui/switch";
 import { FieldLabel } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -21,22 +23,24 @@ import { TelemetryEnterpriseDialog } from "./TelemetryEnterpriseDialog";
 
 const TABS = ["proxy", "ui"] as const;
 
-const destinationText = (settings: TelemetrySettings): string => {
-  const every = `every ${settings.flush_interval_seconds} s`;
+const destinationText = (settings: TelemetrySettings, t: TFunction): string => {
   switch (settings.destination) {
     case "http":
-      return `One JSON report per worker ${every} and on shutdown, by HTTP POST to LITELLM_TELEMETRY_ENDPOINT. A failed send is retried next window`;
+      return t("telemetry.destinationHttp", { seconds: settings.flush_interval_seconds });
     case "local_table":
-      return `One report per worker ${every} and on shutdown, stored in this proxy's LiteLLM_TelemetryReport table for ${settings.retention_days} days. Nothing leaves the proxy. Admins can export from GET /telemetry/reports`;
+      return t("telemetry.destinationLocal", {
+        seconds: settings.flush_interval_seconds,
+        days: settings.retention_days,
+      });
     case null:
-      return "No destination is chosen, so nothing is recorded";
+      return t("telemetry.destinationNone");
   }
 };
 
-const DESTINATION_LABELS: Record<TelemetryDestination, string> = {
-  local_table: "Local table (LiteLLM_TelemetryReport in this proxy's database)",
-  http: "HTTP (POST to LITELLM_TELEMETRY_ENDPOINT)",
-};
+const DESTINATION_LABEL_KEYS = {
+  local_table: "telemetry.localTable",
+  http: "telemetry.http",
+} as const;
 
 type SettingsUpdate = ReturnType<typeof useUpdateTelemetrySettings>;
 
@@ -57,15 +61,14 @@ function DestinationPicker({
   update: SettingsUpdate;
   requestEnable: () => void;
 }) {
+  const { t } = useTranslation();
   const unchangeable = !settings.editable || settings.destination_set_by_environment;
   const locked = unchangeable || update.isPending || !isOn(settings);
   const missing = settings.destination === null && enabledGroups(settings).size > 0;
   return (
     <section className="space-y-2">
-      <h3 className="font-medium">Destination</h3>
-      {missing && (
-        <p className="text-xs text-destructive">Telemetry is on but no destination is chosen, so nothing is recorded</p>
-      )}
+      <h3 className="font-medium">{t("telemetry.destination")}</h3>
+      {missing && <p className="text-xs text-destructive">{t("telemetry.missingDestination")}</p>}
       <RadioGroup
         value={settings.destination ?? ""}
         disabled={locked}
@@ -75,19 +78,19 @@ function DestinationPicker({
             : update.mutate({ groups: [...enabledGroups(settings)], destination: value as TelemetryDestination })
         }
       >
-        {(Object.keys(DESTINATION_LABELS) as TelemetryDestination[]).map((destination) => (
+        {(Object.keys(DESTINATION_LABEL_KEYS) as TelemetryDestination[]).map((destination) => (
           <FieldLabel key={destination} className="text-xs font-normal">
             <RadioGroupItem
               value={destination}
               disabled={!settings.available_destinations.includes(destination)}
-              aria-label={DESTINATION_LABELS[destination]}
+              aria-label={t(DESTINATION_LABEL_KEYS[destination])}
             />
-            {DESTINATION_LABELS[destination]}
+            {t(DESTINATION_LABEL_KEYS[destination])}
           </FieldLabel>
         ))}
       </RadioGroup>
       {settings.destination_set_by_environment && (
-        <p className="text-xs text-muted-foreground">Set by LITELLM_TELEMETRY_DESTINATION</p>
+        <p className="text-xs text-muted-foreground">{t("telemetry.setByEnvironment")}</p>
       )}
     </section>
   );
@@ -104,6 +107,7 @@ function GroupList({
   update: SettingsUpdate;
   requestEnable: () => void;
 }) {
+  const { t } = useTranslation();
   const requires: Requires = new Map(settings.groups.map((info) => [info.group, info.requires ?? null]));
   const enabled = enabledGroups(settings);
   const depths = relativeDepths(groups, requires);
@@ -129,18 +133,20 @@ function GroupList({
           >
             <Switch
               size="sm"
-              aria-label={copy.title}
+              aria-label={t(copy.title)}
               checked={enabled.has(group)}
               disabled={locked}
               onCheckedChange={(on) => onToggle(group, on)}
             />
             <div className="space-y-0.5 text-xs text-muted-foreground">
-              <div className="text-sm font-medium text-foreground">{copy.title}</div>
-              {copy.slices !== undefined && <p>Slices by: {copy.slices}</p>}
+              <div className="text-sm font-medium text-foreground">{t(copy.title)}</div>
+              {copy.slices !== undefined && <p>{t("telemetry.slicesBy", { value: t(copy.slices) })}</p>}
               <p>
-                {copy.slices !== undefined ? "Counts" : "Sends"}: {copy.counts}
+                {t(copy.slices !== undefined ? "telemetry.counts" : "telemetry.sends", {
+                  value: t(copy.counts),
+                })}
               </p>
-              <p>Helps catch: {copy.helps}</p>
+              <p>{t("telemetry.helpsCatch", { value: t(copy.helps) })}</p>
             </div>
           </li>
         );
@@ -159,32 +165,32 @@ function TelemetrySwitch({
   update: SettingsUpdate;
   requestEnable: () => void;
 }) {
+  const { t } = useTranslation();
   const on = isOn(settings);
   return (
     <div className="flex items-center gap-2 text-sm font-medium">
       <Switch
-        aria-label="Telemetry"
+        aria-label={t("telemetry.title")}
         checked={on}
         disabled={!settings.editable || update.isPending}
         onCheckedChange={(next) =>
           next ? requestEnable() : update.mutate({ groups: [], destination: savedDestination(settings) })
         }
       />
-      <span aria-hidden>{on ? "On" : "Off"}</span>
+      <span aria-hidden>{t(on ? "telemetry.on" : "telemetry.off")}</span>
     </div>
   );
 }
 
 function ReportPreview({ settings }: { settings: TelemetrySettings }) {
+  const { t } = useTranslation();
   return (
     <section className="space-y-1">
       <h3 className="font-medium">
-        {settings.report_is_sample ? "Sample report" : "Last report sent from this worker"}
+        {t(settings.report_is_sample ? "telemetry.sampleReport" : "telemetry.lastReport")}
       </h3>
       <p className="text-xs text-muted-foreground">
-        {settings.report_is_sample
-          ? "Made-up traffic through the real filter, with the groups that are on (all groups while telemetry is off)"
-          : "Exactly what this worker last sent or stored"}
+        {t(settings.report_is_sample ? "telemetry.sampleReportHint" : "telemetry.lastReportHint")}
       </p>
       <pre className="max-h-96 overflow-auto rounded-md bg-muted p-3 text-xs">
         {JSON.stringify(settings.report, null, 2)}
@@ -194,31 +200,30 @@ function ReportPreview({ settings }: { settings: TelemetrySettings }) {
 }
 
 export default function TelemetrySettingsPage() {
+  const { t } = useTranslation();
   const [tab, setTab] = useUrlTab(TABS, "proxy");
   const { data: settings, isLoading, error } = useTelemetrySettings();
   const update = useUpdateTelemetrySettings();
   const { premiumUser } = useAuthorized();
   const [enableDialogOpen, setEnableDialogOpen] = useState(false);
   const requestEnable = () => setEnableDialogOpen(true);
-  if (isLoading) return <Page>Loading telemetry settings...</Page>;
+  if (isLoading) return <Page>{t("telemetry.loading")}</Page>;
   if (settings === undefined)
-    return <Page className="text-destructive">Could not load telemetry settings: {error?.message}</Page>;
+    return <Page className="text-destructive">{t("telemetry.loadFailed", { error: error?.message })}</Page>;
   return (
     <Page className="text-sm">
       <PageTabs value={tab} onValueChange={(value) => setTab(value as (typeof TABS)[number])}>
         <PageHeader>
           <PageHeaderTitle>
             <Activity />
-            Telemetry
+            {t("telemetry.title")}
           </PageHeaderTitle>
-          <PageHeaderDescription>
-            Choose what privacy-safe, aggregated usage data this proxy shares
-          </PageHeaderDescription>
+          <PageHeaderDescription>{t("telemetry.description")}</PageHeaderDescription>
           <PageHeaderControls>
             <TelemetrySwitch settings={settings} update={update} requestEnable={requestEnable} />
             <PageTabsList>
-              <PageTabsTrigger value="proxy">Proxy requests</PageTabsTrigger>
-              <PageTabsTrigger value="ui">Admin UI</PageTabsTrigger>
+              <PageTabsTrigger value="proxy">{t("telemetry.proxyRequests")}</PageTabsTrigger>
+              <PageTabsTrigger value="ui">{t("telemetry.adminUi")}</PageTabsTrigger>
             </PageTabsList>
           </PageHeaderControls>
         </PageHeader>
@@ -227,20 +232,16 @@ export default function TelemetrySettingsPage() {
         </PageTabsContent>
         <PageTabsContent value="ui" className="gap-4">
           <GroupList groups={UI_GROUPS} settings={settings} update={update} requestEnable={requestEnable} />
-          <p className="text-xs text-muted-foreground">
-            Sent only while Page navigation is on, to this proxy at POST /telemetry/ui_events, and counted into the same
-            report as proxy traffic
-          </p>
+          <p className="text-xs text-muted-foreground">{t("telemetry.uiEventsHint")}</p>
         </PageTabsContent>
       </PageTabs>
       <DestinationPicker settings={settings} update={update} requestEnable={requestEnable} />
       <section className="space-y-1">
-        <h3 className="font-medium">How and when it is sent</h3>
-        <p className="text-xs text-muted-foreground">{destinationText(settings)}. Changes apply from the next window</p>
+        <h3 className="font-medium">{t("telemetry.howSent")}</h3>
         <p className="text-xs text-muted-foreground">
-          Off by default. Each switch adds aggregated counts, never prompts, responses, keys, ids or header values.
-          LITELLM_TELEMETRY_DISABLED=true turns everything off
+          {t("telemetry.sendWindow", { description: destinationText(settings, t) })}
         </p>
+        <p className="text-xs text-muted-foreground">{t("telemetry.privacy")}</p>
       </section>
       <ReportPreview settings={settings} />
       <TelemetryEnterpriseDialog
