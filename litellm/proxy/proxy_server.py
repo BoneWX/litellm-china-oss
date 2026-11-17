@@ -4273,17 +4273,13 @@ async def ensure_spend_counter_initialized(
     is_warm: Final = await _is_spend_counter_cache_warm(counter_key=counter_key)
     if is_warm is False:
         # Shares the per-counter lock with get_current_spend.
-        db_spend: Final = await SpendCounterReseed.coalesced(
+        await SpendCounterReseed.coalesced(
             prisma_client=prisma_client,
             spend_counter_cache=spend_counter_cache,
             counter_key=counter_key,
             require_cache_warm=True,
+            fallback_spend_getter=lambda: _get_source_cache_base_spend(source_cache_key=source_cache_key),
         )
-        if db_spend is None:
-            # DB unavailable - fall back to in-process cache (may be stale).
-            base_spend: Final = await _get_source_cache_base_spend(source_cache_key=source_cache_key)
-            if base_spend > 0:
-                await increment_spend_counter_cache(counter_key=counter_key, increment=base_spend)
 
 
 _ensure_spend_counter_initialized: Final = ensure_spend_counter_initialized
