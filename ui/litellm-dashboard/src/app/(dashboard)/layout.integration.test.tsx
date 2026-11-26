@@ -91,8 +91,6 @@ beforeEach(() => {
           const release = { version: "", release_url: "", bug_fixes: 0, new_features: 0, other_updates: 0 };
           return Response.json(release);
         }
-        case "/public/litellm_blog_posts":
-          return Response.json({ posts: [] });
         default:
           throw new Error(`Unexpected request: ${url}`);
       }

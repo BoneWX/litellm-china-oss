@@ -17,14 +17,12 @@ _REMOTE_URLS: Final = {
     "LITELLM_MODEL_COST_MAP_URL": "https://cost-map.offline-mode.example/model_prices.json",
     "LITELLM_ANTHROPIC_BETA_HEADERS_URL": "https://beta-headers.offline-mode.example/config.json",
     "LITELLM_AUTOROUTER_PRESETS_URL": "https://autorouter.offline-mode.example/presets.json",
-    "LITELLM_BLOG_POSTS_URL": "https://blog.offline-mode.example/rss.xml",
 }
 _SELF_INITIATED_HOSTS: Final = frozenset(
     {
         "cost-map.offline-mode.example:443",
         "beta-headers.offline-mode.example:443",
         "autorouter.offline-mode.example:443",
-        "blog.offline-mode.example:443",
         "raw.githubusercontent.com:443",
         "docs.litellm.ai:443",
         "api.pwnedpasswords.com:443",
@@ -37,7 +35,6 @@ _PER_FEATURE_FLAGS: Final = (
     "LITELLM_LOCAL_ANTHROPIC_BETA_HEADERS",
     "LITELLM_LOCAL_AUTOROUTER_PRESETS",
     "LITELLM_LOCAL_POLICY_TEMPLATES",
-    "LITELLM_LOCAL_BLOG_POSTS",
     "LITELLM_DISABLE_LATEST_RELEASE_CHECK",
     "LITELLM_LICENSE",
 )
@@ -123,7 +120,7 @@ def test_offline_mode_stops_every_self_initiated_request(
             release: Final = _json(isolated, "GET", "/get/latest_release_info")
             presets: Final = object_value(_json(isolated, "GET", "/public/autorouter_presets"))
             templates: Final = _json(isolated, "GET", "/policy/templates")
-            blog: Final = object_value(_json(isolated, "GET", "/public/litellm_blog_posts"))
+            removed_blog_endpoint: Final = isolated.request("GET", "/public/litellm_blog_posts")
             user: Final = object_value(
                 _json(isolated, "POST", "/user/new", {"user_email": f"offline-{uuid.uuid4().hex}@example.com"})
             )
@@ -167,14 +164,7 @@ def test_offline_mode_stops_every_self_initiated_request(
     assert release is None
     assert sorted(presets) == sorted(object_value(_bundled("proxy/public_endpoints/autorouter_presets.json")))
     assert templates == _bundled("policy_templates_backup.json")
-    assert [object_value(post)["url"] for post in _list(blog["posts"])] == [
-        object_value(post)["url"] for post in _list(object_value(_bundled("blog_posts.json"))["posts"])
-    ]
+    assert removed_blog_endpoint.status_code == 404
     assert password_set["user_id"] == user["user_id"], password_set
     assert tokens["tokenizer_type"] == "openai_tokenizer", tokens
     assert isinstance(kimi_tokens["total_tokens"], int) and kimi_tokens["total_tokens"] > 0, kimi_tokens
-
-
-def _list(value: JsonValue) -> list[JsonValue]:
-    assert isinstance(value, list), value
-    return value

@@ -44,10 +44,6 @@ vi.mock("@/app/(dashboard)/hooks/useDisableShowPrompts", () => ({
   useDisableShowPrompts: () => mockUseDisableShowPromptsImpl(),
 }));
 
-vi.mock("@/app/(dashboard)/hooks/useDisableBlogPosts", () => ({
-  useDisableBlogPosts: () => false,
-}));
-
 vi.mock("@/app/(dashboard)/hooks/useDisableBouncingIcon", () => ({
   useDisableBouncingIcon: () => mockUseDisableBouncingIconImpl(),
 }));
@@ -250,7 +246,7 @@ describe("SidebarAccountMenu", () => {
 
     await openMenu(user);
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
@@ -271,7 +267,7 @@ describe("SidebarAccountMenu", () => {
 
     await openMenu(user);
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
@@ -287,7 +283,7 @@ describe("SidebarAccountMenu", () => {
 
     await openMenu(user);
 
-    const toggle = screen.getByLabelText("Toggle hide all prompts");
+    const toggle = screen.getByLabelText("Hide All Prompts");
     expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
@@ -308,7 +304,7 @@ describe("SidebarAccountMenu", () => {
 
     await openMenu(user);
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).toBeChecked();
   });
 

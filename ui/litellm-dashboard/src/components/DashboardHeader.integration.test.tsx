@@ -30,18 +30,6 @@ beforeEach(() => {
       if (url.endsWith("/api/plugins")) {
         return Response.json([{ name: "metrics", display_name: "Metrics", url: "/metrics" }]);
       }
-      if (url.endsWith("/public/litellm_blog_posts")) {
-        return Response.json({
-          posts: [
-            {
-              title: "Gateway update",
-              description: "Release notes",
-              date: "2026-01-01",
-              url: "https://example.com/update",
-            },
-          ],
-        });
-      }
       return Response.json({}, { status: 404 });
     }),
   );
@@ -74,7 +62,7 @@ describe("mobile header nested controls", () => {
     "selects a portalled gateway item with %s without dismissing More",
     async (pointer) => {
       const { user, tools } = await openTools();
-      await user.click(within(tools).getByRole("button", { name: "Switch workspace, current: AI Gateway" }));
+      await user.click(within(tools).getByRole("button", { name: /Switch workspace.*AI Gateway/ }));
       const item = await screen.findByRole("menuitem", { name: "Metrics" });
       if (pointer === "touch") {
         await user.pointer([
@@ -84,18 +72,16 @@ describe("mobile header nested controls", () => {
       } else {
         await user.click(item);
       }
-      expect(within(tools).getByRole("button", { name: "Switch workspace, current: Metrics" })).toBeVisible();
+      expect(within(tools).getByRole("button", { name: /Switch workspace.*Metrics/ })).toBeVisible();
       expect(screen.getByRole("dialog", { name: "Gateway tools" })).toBeVisible();
     },
   );
 
-  it("lets a nested blog link receive the click before closing its menu", async () => {
-    const { user, tools } = await openTools();
-    await user.click(within(tools).getByRole("button", { name: "Blog" }));
-    const link = await screen.findByRole("link", { name: /Gateway update/ });
-    expect(link).toHaveAttribute("href", "https://example.com/update");
-    await user.click(link);
-    expect(screen.queryByRole("menu", { name: "Blog" })).not.toBeInTheDocument();
+  it("does not request or render blog posts from the header", async () => {
+    const { tools } = await openTools();
+    const requestedUrls = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
+    expect(requestedUrls.some((url) => url.includes("/public/litellm_blog_posts"))).toBe(false);
+    expect(within(tools).queryByRole("button", { name: "Blog" })).not.toBeInTheDocument();
     expect(screen.getByRole("dialog", { name: "Gateway tools" })).toBeVisible();
   });
 

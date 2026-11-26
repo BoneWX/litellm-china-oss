@@ -556,7 +556,6 @@ jobs:
               --ignore=tests/unit/proxy/google_endpoints/test_gemini_agents_endpoints.py
               --ignore=tests/unit/proxy/google_endpoints/test_google_endpoint_routing.py
               --ignore=tests/unit/proxy/google_endpoints/test_google_gemini_proxy_request.py
-              --ignore=tests/unit/proxy/public_endpoints/test_blog_posts_endpoint.py
               tests/unit/proxy/anthropic_endpoints
               tests/unit/proxy/google_endpoints
               tests/unit/proxy/container_endpoints
@@ -946,7 +945,6 @@ jobs:
               tests/unit/proxy/google_endpoints/test_gemini_agents_endpoints.py
               tests/unit/proxy/google_endpoints/test_google_endpoint_routing.py
               tests/unit/proxy/google_endpoints/test_google_gemini_proxy_request.py
-              tests/unit/proxy/public_endpoints/test_blog_posts_endpoint.py
               tests/unit/proxy/response_polling
               tests/unit/proxy/test_custom_tokenizer_bug.py
               tests/unit/proxy/test_get_favicon.py

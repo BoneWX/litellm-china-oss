@@ -203,7 +203,7 @@ describe("UserDropdown", () => {
       expect(screen.getAllByText("test@example.com").length).toBeGreaterThan(0);
     });
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
@@ -228,7 +228,7 @@ describe("UserDropdown", () => {
       expect(screen.getAllByText("test@example.com").length).toBeGreaterThan(0);
     });
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
@@ -248,7 +248,7 @@ describe("UserDropdown", () => {
       expect(screen.getAllByText("test@example.com").length).toBeGreaterThan(0);
     });
 
-    const toggle = screen.getByLabelText("Toggle hide all prompts");
+    const toggle = screen.getByLabelText("Hide All Prompts");
     expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
@@ -274,7 +274,7 @@ describe("UserDropdown", () => {
       expect(screen.getAllByText("test@example.com").length).toBeGreaterThan(0);
     });
 
-    const toggle = screen.getByLabelText("Toggle hide all prompts");
+    const toggle = screen.getByLabelText("Hide All Prompts");
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
@@ -347,7 +347,7 @@ describe("UserDropdown", () => {
       expect(screen.getAllByText("test@example.com").length).toBeGreaterThan(0);
     });
 
-    const toggle = screen.getByLabelText("Toggle hide new feature indicators");
+    const toggle = screen.getByLabelText("Hide New Feature Indicators");
     expect(toggle).toBeChecked();
   });
 });

@@ -13,11 +13,6 @@ from typing_extensions import ReadOnly, TypedDict
 
 import litellm
 from litellm._logging import verbose_logger
-from litellm.litellm_core_utils.get_blog_posts import (
-    BlogPostsResponse,
-    GetBlogPosts,
-    get_blog_posts,
-)
 from litellm.litellm_core_utils.get_model_cost_map import GetModelCostMap
 from litellm.litellm_core_utils.offline_mode import is_offline_mode
 from litellm.proxy._types import (
@@ -517,25 +512,6 @@ async def get_litellm_model_cost_map(catalog_only: bool = False):
             status_code=500,
             detail=f"Internal Server Error ({e})",
         )
-
-
-@router.get(
-    "/public/litellm_blog_posts",
-    tags=["public"],
-    response_model=BlogPostsResponse,
-)
-async def get_litellm_blog_posts() -> BlogPostsResponse:
-    """
-    Public endpoint to get the latest LiteLLM blog posts, each with its RSS categories as ``tags``.
-
-    Fetches the docs RSS feed with a 1-hour in-process cache.
-    Falls back to the bundled local backup on any failure.
-    """
-    try:
-        return BlogPostsResponse(posts=get_blog_posts(url=litellm.blog_posts_url))
-    except Exception as e:
-        verbose_logger.warning("LiteLLM: get_litellm_blog_posts endpoint fallback triggered: %s", str(e))
-        return BlogPostsResponse(posts=GetBlogPosts.load_local_blog_posts())
 
 
 _AUTOROUTER_PRESETS_ADAPTER: Final = TypeAdapter(dict[str, AutoRouterPresetRecord])

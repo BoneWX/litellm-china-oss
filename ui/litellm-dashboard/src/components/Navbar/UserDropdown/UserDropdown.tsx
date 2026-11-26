@@ -1,5 +1,4 @@
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
-import { useDisableBlogPosts } from "@/app/(dashboard)/hooks/useDisableBlogPosts";
 import { useDisableBouncingIcon } from "@/app/(dashboard)/hooks/useDisableBouncingIcon";
 import { useDisableLiteAdmin } from "@/app/(dashboard)/hooks/useDisableLiteAdmin";
 import { ARIA_AGENT_LABEL } from "@/components/liteadmin/aria-brand";
@@ -83,7 +82,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ onLogout, variant = "navbar
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const disableShowPrompts = useDisableShowPrompts();
-  const disableBlogPosts = useDisableBlogPosts();
   const disableBouncingIcon = useDisableBouncingIcon();
   const [disableLiteAdmin, setDisableLiteAdmin] = useDisableLiteAdmin(userId);
   const canUseLiteAdmin = userId && !isViewOnly && isProxyAdminRole(role);
@@ -176,23 +174,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ onLogout, variant = "navbar
             }
           }}
           aria-label={t("shell.account.hidePrompts")}
-        />
-      </div>
-      <div className="flex w-full items-center justify-between gap-2">
-        <span className="text-muted-foreground">{t("shell.account.hideBlogPosts")}</span>
-        <Switch
-          size="sm"
-          checked={disableBlogPosts}
-          onCheckedChange={(checked) => {
-            if (checked) {
-              setLocalStorageItem("disableBlogPosts", "true");
-              emitLocalStorageChange("disableBlogPosts");
-            } else {
-              removeLocalStorageItem("disableBlogPosts");
-              emitLocalStorageChange("disableBlogPosts");
-            }
-          }}
-          aria-label={t("shell.account.hideBlogPosts")}
         />
       </div>
       <div className="flex w-full items-center justify-between gap-2">

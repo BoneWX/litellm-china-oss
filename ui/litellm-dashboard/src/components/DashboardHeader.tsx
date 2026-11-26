@@ -10,16 +10,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ToolbarSeparator } from "@/components/shared/ToolbarSeparator";
 import { getBreadcrumb } from "@/components/leftnav";
-import { BlogDropdown } from "@/components/Navbar/BlogDropdown/BlogDropdown";
-import { DocsLink } from "@/components/Navbar/DocsLink/DocsLink";
-import { CommunityEngagementButtons } from "@/components/Navbar/CommunityEngagementButtons/CommunityEngagementButtons";
 import { NotificationsBell } from "@/components/Navbar/NotificationsBell/NotificationsBell";
 import ViewSwitcher from "@/components/Navbar/ViewSwitcher";
 import LiteAdmin from "@/components/liteadmin/LiteAdmin";
 import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import WorkerDropdown from "@/components/Navbar/WorkerDropdown/WorkerDropdown";
 import { useWorker } from "@/hooks/useWorker";
-import { useDisableShowPrompts } from "@/app/(dashboard)/hooks/useDisableShowPrompts";
 import { clearTokenCookies } from "@/utils/cookieUtils";
 import { clearStoredReturnUrl, getLoginUrl } from "@/utils/returnUrlUtils";
 import { usePathname } from "next/navigation";
@@ -50,7 +46,6 @@ export function DashboardHeader({
   if (isDesktop && mobileToolsOpen) setMobileToolsOpen(false);
   const { isControlPlane, selectedWorker } = useWorker();
   const showWorkerSwitch = isControlPlane && selectedWorker !== null;
-  const hideCommunityLinks = useDisableShowPrompts();
 
   const handleWorkerSwitch = (workerId: string) => {
     clearTokenCookies();
@@ -86,9 +81,6 @@ export function DashboardHeader({
               <ToolbarSeparator />
             </>
           )}
-          <DocsLink />
-          <BlogDropdown />
-          {!hideCommunityLinks && <CommunityEngagementButtons />}
           <ToolbarSeparator />
           <ThemeToggle />
           {deploymentHealth}
@@ -117,9 +109,6 @@ export function DashboardHeader({
               {showWorkerSwitch && <WorkerDropdown onWorkerSwitch={handleWorkerSwitch} />}
               <div className="flex flex-wrap items-center gap-2">
                 <ThemeToggle />
-                <DocsLink />
-                <BlogDropdown />
-                {!hideCommunityLinks && <CommunityEngagementButtons />}
               </div>
             </PopoverContent>
           </Popover>

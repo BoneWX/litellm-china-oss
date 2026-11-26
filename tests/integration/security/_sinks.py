@@ -76,7 +76,6 @@ LOCAL_CATALOGS: Final = MappingProxyType(
         name: "True"
         for name in (
             "LITELLM_LOCAL_MODEL_COST_MAP",
-            "LITELLM_LOCAL_BLOG_POSTS",
             "LITELLM_LOCAL_ANTHROPIC_BETA_HEADERS",
             "LITELLM_LOCAL_AUTOROUTER_PRESETS",
             "LITELLM_LOCAL_POLICY_TEMPLATES",

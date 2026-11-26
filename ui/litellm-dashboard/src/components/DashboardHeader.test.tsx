@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { DashboardHeader } from "./DashboardHeader";
-import { NAV_PRODUCT_LINK_CLASS } from "@/components/Navbar/navProductLinkClass";
 import { CommandPaletteProvider } from "@/components/CommandPalette/CommandPaletteProvider";
 
 const { mockUsePluginMode, mockUseUISettings, state } = vi.hoisted(() => {
@@ -23,11 +22,6 @@ vi.mock("@/app/(dashboard)/hooks/uiSettings/useUISettings", () => ({ useUISettin
 vi.mock("next/navigation", () => ({ usePathname: () => state.pathname }));
 vi.mock("usehooks-ts", () => ({ useMediaQuery: () => state.isDesktop }));
 vi.mock("@/hooks/useWorker", () => ({ useWorker: () => ({ isControlPlane: false, selectedWorker: null }) }));
-vi.mock("@/app/(dashboard)/hooks/useDisableShowPrompts", () => ({ useDisableShowPrompts: () => false }));
-vi.mock("@/components/Navbar/BlogDropdown/BlogDropdown", () => ({ BlogDropdown: () => null }));
-vi.mock("@/components/Navbar/CommunityEngagementButtons/CommunityEngagementButtons", () => ({
-  CommunityEngagementButtons: () => null,
-}));
 vi.mock("@/components/Navbar/NotificationsBell/NotificationsBell", () => ({ NotificationsBell: () => null }));
 vi.mock("@/components/Navbar/WorkerDropdown/WorkerDropdown", () => ({ default: () => null }));
 vi.mock("@/components/liteadmin/LiteAdmin", () => ({ default: () => <button>Aria Agent</button> }));
@@ -88,14 +82,12 @@ describe("DashboardHeader breadcrumb", () => {
     expect(screen.queryByText("Observability")).not.toBeInTheDocument();
   });
 
-  it("styles Docs with the shared product-link class instead of a muted toolbar button", () => {
+  it("omits external documentation, blog, and community shortcuts", () => {
     renderDashboardHeader();
 
-    const docs = screen.getByRole("link", { name: "Docs" });
-    for (const cls of NAV_PRODUCT_LINK_CLASS.trim().split(/\s+/)) {
-      expect(docs).toHaveClass(cls);
-    }
-    expect(docs).not.toHaveClass("text-muted-foreground");
+    expect(screen.queryByRole("link", { name: "Docs" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Blog" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /github|slack/i })).not.toBeInTheDocument();
   });
 
   it("renders the tools divider centered rather than stretched to the top of the row", () => {
@@ -107,13 +99,11 @@ describe("DashboardHeader breadcrumb", () => {
     expect(separators[0].className).toContain("data-vertical:self-center");
   });
 
-  it("should place Aria Agent in the header tools ahead of Docs", () => {
+  it("keeps Aria Agent in the header tools", () => {
     renderDashboardHeader();
 
     const liteAdmin = within(screen.getByRole("banner")).getByRole("button", { name: "Aria Agent" });
-    expect(liteAdmin.compareDocumentPosition(screen.getByRole("link", { name: "Docs" }))).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
+    expect(liteAdmin).toBeInTheDocument();
   });
 
   it("should keep the gateway selector and tools available from the compact header menu", async () => {
@@ -122,8 +112,10 @@ describe("DashboardHeader breadcrumb", () => {
       fireEvent.click(screen.getByRole("button", { name: "More options" }));
     });
     const tools = await screen.findByRole("dialog", { name: "Gateway tools" });
-    expect(within(tools).getByRole("button", { name: "Switch workspace, current: AI Gateway" })).toBeInTheDocument();
-    expect(within(tools).getByRole("link", { name: "Docs" })).toBeInTheDocument();
+    expect(within(tools).getByRole("button", { name: /Switch workspace.*AI Gateway/ })).toBeInTheDocument();
+    expect(within(tools).queryByRole("link", { name: "Docs" })).not.toBeInTheDocument();
+    expect(within(tools).queryByRole("button", { name: "Blog" })).not.toBeInTheDocument();
+    expect(within(tools).queryByRole("link", { name: /github|slack/i })).not.toBeInTheDocument();
     expect(within(screen.getByRole("banner")).getByRole("button", { name: "Aria Agent" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Aria Agent" })).toHaveLength(1);
   });
