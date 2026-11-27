@@ -116,7 +116,7 @@ def test_a_payload_the_parser_does_not_know_stays_the_legacy_function_named_span
             'WITH team_rows AS (UPDATE "LiteLLM_TeamTable" SET models = $1 RETURNING team_id) SELECT team_id FROM team_rows',
             ("update", "LiteLLM_TeamTable"),
         ),
-        ('LOCK TABLE "LiteLLM_LensIngestionKey" IN EXCLUSIVE MODE', ("lock", "LiteLLM_LensIngestionKey")),
+        ('LOCK TABLE "LiteLLM_VerificationToken" IN EXCLUSIVE MODE', ("lock", "LiteLLM_VerificationToken")),
         ("BEGIN", (None, None)),
     ],
 )

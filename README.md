@@ -14,6 +14,8 @@
 
 | 日期 | 模块 | 更新内容 |
 | --- | --- | --- |
+| 2026-11-27 | 管理后台 / 模型分析 | 移除 Beta“模型排行榜”入口、独立页面、`GET /model-insights` 和 `GET /model-insights/tasks`；用量页模型统计与每日模型用量汇总保持不变 |
+| 2026-11-27 | 管理后台 / 智能体 | 移除 Beta“Lens”入口、独立页面、管理端代理、追踪读写 API、OTLP 发送和 Helm/Docker 连接配置 |
 | 2026-11-27 | 管理后台 / UI API | 移除通知铃铛、Auto Router 公告和 `GET /get/latest_release_info` 在线版本检查 |
 | 2026-11-27 | 管理后台 / 公开 API | 移除 LiteLLM Blog 动态入口、首页动态、`GET /public/litellm_blog_posts`，并停止访问外部 RSS |
 | 2026-11-27 | 管理后台 / UI API | 移除工作区菜单中的 Moyai 入口、独立连接页及 `/moyai/connect/*` 快速连接接口 |
@@ -95,6 +97,20 @@ ui/litellm-dashboard/src/i18n/locales/zh-CN/
 - AI 网关、模型、虚拟密钥、预算、用量、聊天、智能体、MCP 和日志功能不受影响。
 - 不再读取 `moyai_url` UI 设置，也不需要数据库迁移。
 - 数据库中已有的 `moyai_url` 配置和此前创建的外部连接密钥不会自动删除。
+
+### 移除 Beta 模型排行榜与 Lens
+
+本发行版移除了管理后台侧边栏中的 Beta“模型排行榜”和“Lens”入口，以及对应的独立页面和后端接口。
+
+升级后：
+
+- `/ui/model-insights`、`/ui/lens`、`GET /model-insights` 和 `GET /model-insights/tasks` 不再可用。
+- Lens 管理端代理、追踪读取/查询接口、内部消费日志导出和相关运行时中间件已移除。
+- Claude Code 网关使用的 OTLP `POST /v1/traces`、`POST /v1/logs` 接收能力保留，不影响该网关。
+- 用量页、模型调用、消费日志、计费、预算、认证、团队和用户管理不受影响。
+- 每日模型用量汇总仍会正常写入，供现有用量统计和后续分析使用。
+- 数据库中的 `LiteLLM_Lens*` 历史表和迁移记录暂不自动删除，已有数据会保留；本次升级不需要额外数据库迁移。
+- 部署模板中的 Lens 连接环境变量、Ingress 路由、Docker tracing 示例、CI 分片和 Grafana 导出面板已移除。
 
 ### Key 用量与预算计数修复
 

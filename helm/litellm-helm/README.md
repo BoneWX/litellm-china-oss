@@ -254,10 +254,6 @@ it would need to update the `config.yaml` file which is a exposed ConfigMap, and
 therefore, read-only. This is a limitation of this helm chart, not the Admin UI
 itself.
 
-## Connect Lens
-
-This chart does not deploy Lens. Deploy Lens from [its own chart](https://github.com/BerriAI/lens/tree/main/helm/lens), then set `lens.enabled: true`, `lens.url`, `lens.publicUrl`, `lens.gatewaySecret.name` and `lens.serviceTokenSecret.name`. The secret keys default to `gateway-secret` and `service-token`. Set `lens.service.name` when that Lens runs in this release's namespace and the chart ingress should route `/lens-ingest` to it. The old `lensWorker` values are no longer read, and enabling them fails the render
-
 ## Shutdown accounting
 
 `GRACEFUL_SHUTDOWN_TIMEOUT` defaults to 30 seconds. Pending success callbacks share the time remaining since SIGTERM or the first `/health/drain` call. Callback flushing reserves the existing 10-second teardown headroom for cancellation, tracked accounting tasks and persistence. Exhausting this budget can discard callbacks, which is logged

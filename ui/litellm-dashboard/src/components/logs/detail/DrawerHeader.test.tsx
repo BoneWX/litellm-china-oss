@@ -112,9 +112,9 @@ describe("DrawerHeader back link", () => {
   };
 
   it("names where the drawer was opened from and closes back to it", async () => {
-    const onClose = renderWithBack({ label: "Lens trace", icon: <svg data-testid="lens-icon" /> });
-    const back = screen.getByRole("button", { name: "Back to Lens trace" });
-    expect(within(back).getByTestId("lens-icon")).toBeInTheDocument();
+    const onClose = renderWithBack({ label: "Request trace", icon: <svg data-testid="trace-icon" /> });
+    const back = screen.getByRole("button", { name: "Back to Request trace" });
+    expect(within(back).getByTestId("trace-icon")).toBeInTheDocument();
     await userEvent.click(back);
     expect(onClose).toHaveBeenCalledOnce();
   });

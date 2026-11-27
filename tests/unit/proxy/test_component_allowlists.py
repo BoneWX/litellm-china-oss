@@ -29,7 +29,7 @@ import sys
 from collections.abc import AsyncGenerator, Mapping
 from contextlib import asynccontextmanager
 from functools import partial
-from typing import Final, Literal, NoReturn
+from typing import Final, Literal
 
 import pytest
 from fastapi import FastAPI
@@ -66,10 +66,7 @@ if _REPO_ROOT not in sys.path:
 
 from backend.routes.allowlist import BACKEND_MOUNT_PATHS
 from gateway.routes.allowlist import GATEWAY_MOUNT_PATHS
-from litellm.proxy import tracing_endpoints
 from litellm.proxy._lazy_features import LazyFeature, attach_lazy_features
-from litellm.proxy.auth.authorization_dependencies import get_log_team_lookup
-from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
 from litellm.proxy.proxy_server import app
 from litellm.integrations.prometheus_metrics_endpoint import make_metrics_asgi_app
 from tests.test_litellm_rust.support.child_interpreter import run_child_interpreter
@@ -226,33 +223,6 @@ def test_composed_lifespan_propagates_lifecycle_failures(
             events.append("serving")
     assert caught.value is failure
     assert events == (["startup"] if phase == "startup" else ["startup", "serving", "shutdown"])
-
-
-@pytest.mark.parametrize("component_lifespan", (_gateway_lifespan, _backend_lifespan), ids=("gateway", "backend"))
-@pytest.mark.parametrize("endpoint", ("/v1/traces", "/v1/logs"), ids=("traces", "logs"))
-@pytest.mark.parametrize("authorization", (None, "Bearer team-a-key", "Bearer team-b-key"))
-def test_retired_otlp_routes_reject_uploads_without_dependencies_on_each_component(
-    component_lifespan: Lifespan[Starlette], endpoint: str, authorization: str | None
-) -> None:
-    application: Final = FastAPI()
-    application.include_router(tracing_endpoints.router)
-
-    def unused_dependency() -> NoReturn:
-        pytest.fail("Retired uploads must not resolve authentication, tenant, or storage dependencies")
-
-    application.dependency_overrides[tracing_endpoints.provide_receiver] = unused_dependency
-    application.dependency_overrides[get_log_team_lookup] = unused_dependency
-    application.dependency_overrides[user_api_key_auth] = unused_dependency
-    application.router.lifespan_context = partial(component_lifespan, lifespan=application.router.lifespan_context)
-    headers: Final = {"content-type": "application/json"} | (
-        {"Authorization": authorization} if authorization is not None else {}
-    )
-
-    with TestClient(application) as client:
-        response: Final = client.post(endpoint, content=b'{"resourceLogs": []}', headers=headers)
-
-    assert response.status_code == 410, response.text
-    assert response.json() == {"message": "Send traces and logs directly to the Lens endpoint shown in Lens setup."}
 
 
 def test_gateway_plus_backend_covers_full_app():

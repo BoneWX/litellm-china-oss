@@ -73,33 +73,6 @@ tests:
                   port:
                     number: 4000
 
-  - it: keeps Lens ingestion ahead of the gateway catch-all
-    set:
-      ingress.enabled: true
-      ingress.componentHosts.ui: ui.example.com
-      ingress.componentHosts.backend: backend.example.com
-      ingress.componentHosts.gateway: gateway.example.com
-      ui.backendUrl: https://backend.example.com
-      ui.publicUrl: https://ui.example.com
-      backend.gatewayUrl: https://gateway.example.com
-      lens.enabled: true
-      lens.service.name: existing-lens
-      lens.url: http://existing-lens:4318
-      lens.publicUrl: https://gateway.example.com/lens-ingest
-      lens.serviceTokenSecret.name: existing-lens-signing
-      lens.gatewaySecret.name: existing-lens-signing
-    asserts:
-      - equal:
-          path: spec.rules[2].http.paths[0].path
-          value: /lens-ingest
-      - equal:
-          path: spec.rules[2].http.paths[0].backend.service.name
-          value: existing-lens
-      - equal:
-          path: spec.rules[2].http.paths[1].path
-          value: /
-    template: ingress.yaml
-
   - it: rejects a partial component host configuration
     set:
       ingress.enabled: true

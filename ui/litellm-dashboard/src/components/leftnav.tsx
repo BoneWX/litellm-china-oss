@@ -25,7 +25,6 @@ import {
 } from "@/components/shared/Sidebar";
 import {
   Activity,
-  Aperture,
   BarChart3,
   Bell,
   Blocks,
@@ -59,7 +58,6 @@ import {
   ShieldCheck,
   Tags,
   Terminal,
-  Trophy,
   User,
   Users,
   Wallet,
@@ -224,10 +222,8 @@ const ITEM_TRANSLATION_KEYS = {
   "vector-stores": "navigation.items.vectorStores",
   "tool-policies": "navigation.items.toolPolicies",
   new_usage: "navigation.items.usage",
-  "model-insights": "navigation.items.modelInsights",
   "cost-optimization": "navigation.items.costOptimization",
   logs: "navigation.items.logs",
-  lens: "navigation.items.lens",
   "guardrails-monitor": "navigation.items.guardrailsMonitor",
   teams: "navigation.items.teams",
   projects: "navigation.items.projects",
@@ -352,14 +348,6 @@ const menuGroups: MenuGroup[] = [
         label: "Usage",
       },
       {
-        key: "model-insights",
-        page: "model-insights",
-        icon: <Trophy {...ICON} />,
-        roles: all_admin_roles,
-        beta: true,
-        label: "Model Leaderboard",
-      },
-      {
         key: "cost-optimization",
         page: "cost-optimization",
         icon: <PiggyBank {...ICON} />,
@@ -367,13 +355,6 @@ const menuGroups: MenuGroup[] = [
         label: "Cost Optimization",
       },
       { key: "logs", page: "logs", label: "Logs", icon: <Activity {...ICON} /> },
-      {
-        key: "lens",
-        page: "lens",
-        label: "Lens",
-        beta: true,
-        icon: <Aperture {...ICON} />,
-      },
       {
         key: "guardrails-monitor",
         page: "guardrails-monitor",

@@ -71,12 +71,8 @@ async def _no_sleep(seconds: float) -> None:
     return None
 
 
-def test_model_usage_task_type_reads_task_tag_or_defaults() -> None:
-    assert model_usage_task_type('["team-a", "task:classification"]') == "classification"
-    assert model_usage_task_type('["task:made-up"]') == "uncategorized"
-    assert model_usage_task_type('["debugging"]') == "uncategorized"
-    assert model_usage_task_type("[]") == "uncategorized"
-    assert model_usage_task_type("not json") == "uncategorized"
+def test_model_usage_task_type_defaults() -> None:
+    assert model_usage_task_type() == "uncategorized"
 
 
 def test_build_model_usage_transaction_keys_on_day_model_and_task() -> None:
@@ -88,7 +84,7 @@ def test_build_model_usage_transaction_keys_on_day_model_and_task() -> None:
             model_group="fast-chat",
             model="openai/gpt-5.4-mini",
             custom_llm_provider="openai",
-            task_type="debugging",
+            task_type="uncategorized",
         ),
         spend=0.25,
         prompt_tokens=10,

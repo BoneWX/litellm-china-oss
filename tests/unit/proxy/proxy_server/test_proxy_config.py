@@ -16,7 +16,6 @@ import os
 import re
 import sys
 from collections.abc import Awaitable, Callable, Mapping
-from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -54,7 +53,6 @@ from litellm.proxy.proxy_server import (
     validate_deployment_max_agentic_loops,
 )
 from litellm.proxy.utils import evict_config_param
-from litellm.tracing.config import is_lens_tracing_enabled
 
 from .conftest import normalize
 
@@ -156,83 +154,6 @@ async def test_proxy_config_keeps_database_models_and_deletes_stale_models(
 
 
 from tests._master_key import MASTER_KEY
-
-
-@pytest.mark.asyncio
-async def test_proxy_config_loads_lens_store_from_yaml(tmp_path, monkeypatch) -> None:
-    config_file: Final = tmp_path / "tracing.yaml"
-    config_file.write_text("model_list: []\ngeneral_settings:\n  tracing:\n    store:\n      type: lens\n")
-    monkeypatch.setattr("litellm.proxy.proxy_server.prisma_client", None)
-    monkeypatch.setattr("litellm.proxy.proxy_server.store_model_in_db", False)
-    monkeypatch.delenv("LITELLM_CONFIG_BUCKET_NAME", raising=False)
-
-    _, _, settings = await ProxyConfig().load_config(router=None, config_file_path=str(config_file))
-    assert is_lens_tracing_enabled(settings["tracing"], {}) is True
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("shutdown_error", [False, True])
-async def test_tracing_config_automatically_exports_spend_without_a_storage_dependency(
-    shutdown_error: bool, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    import httpx
-
-    from litellm.proxy.tracing_runtime import manage_tracing
-    from litellm.tracing.exporter import LensExporter
-    from litellm.tracing.remote import LensConnection
-
-    monkeypatch.setenv("LITELLM_LENS_URL", "http://lens.test")
-    monkeypatch.setenv("LITELLM_LENS_SERVICE_TOKEN", "test-service-token-with-32-characters")
-    received: Final = asyncio.Future[httpx.Request]()
-
-    def accept(request: httpx.Request) -> httpx.Response:
-        received.set_result(request)
-        return httpx.Response(204)
-
-    def client(connection: LensConnection) -> httpx.AsyncClient:
-        return httpx.AsyncClient(base_url=connection.url, transport=httpx.MockTransport(accept))
-
-    outcome: Final = pytest.raises(RuntimeError, match="shutdown failure") if shutdown_error else nullcontext()
-    with outcome:
-        async with manage_tracing(enabled=True, client_factory=client):
-            logger: Final = next(
-                callback for callback in litellm._async_success_callback if isinstance(callback, LensExporter)
-            )
-            await logger.async_log_success_event(
-                {"standard_logging_object": {"id": "response-1", "response_cost": 0.25}}, None, None, None
-            )
-            if shutdown_error:
-                raise RuntimeError("shutdown failure")
-
-    request: Final = received.result()
-    rows: Final = json.loads(request.content)
-    assert request.url.path == "/internal/spend"
-    assert rows[0]["spend"] == 0.25
-    assert rows[0]["response_id"] == "response-1"
-    assert logger not in litellm._async_success_callback
-    assert logger.task is not None and logger.task.done() and not logger.task.cancelled()
-
-
-@pytest.mark.asyncio
-async def test_tracing_logs_an_error_naming_the_store_when_lens_is_misconfigured(
-    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
-) -> None:
-    from litellm.proxy.tracing_runtime import manage_tracing
-
-    monkeypatch.delenv("LITELLM_LENS_URL", raising=False)
-    monkeypatch.delenv("LITELLM_LENS_SERVICE_TOKEN", raising=False)
-
-    with caplog.at_level(logging.ERROR, logger="LiteLLM Proxy"):
-        async with manage_tracing(enabled=True) as receiver:
-            assert receiver is None
-
-    failures: Final = [
-        record.getMessage()
-        for record in caplog.records
-        if record.levelno == logging.ERROR and "lens" in record.getMessage()
-    ]
-    assert len(failures) == 1
-    assert "LITELLM_LENS_URL" in failures[0]
 
 
 @pytest.mark.asyncio

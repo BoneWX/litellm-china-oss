@@ -66,10 +66,10 @@ describe("createApiClient", () => {
     const html = new Response("<!DOCTYPE html><html></html>", { headers: { "Content-Type": "text/html" } });
     const client = createApiClient({ getBaseUrl: () => "", fetchImpl: vi.fn(async () => html) });
 
-    const error = await client.get("/lens").catch((e: unknown) => e);
+    const error = await client.get("/v1/models").catch((e: unknown) => e);
 
     expect(error).toBeInstanceOf(ApiError);
-    expect((error as ApiError).message).toBe("Expected JSON from /lens but the server returned text/html");
+    expect((error as ApiError).message).toBe("Expected JSON from /v1/models but the server returned text/html");
   });
 
   it("throws ApiError with the derived message and invokes onError on a non-2xx response", async () => {

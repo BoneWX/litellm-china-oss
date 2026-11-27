@@ -13,11 +13,9 @@ from typing_extensions import LiteralString
 
 from litellm.constants import (
     INTERNAL_CALL_ORIGIN_METADATA_KEY,
-    MODEL_INSIGHTS_DEFAULT_TASK,
-    MODEL_INSIGHTS_TASK_TAG_PREFIX,
+    MODEL_USAGE_DEFAULT_TASK,
 )
 from litellm.proxy._types import DB_RETRY_SAFE_ERROR_TYPES, SpendLogsPayload
-from litellm.proxy.db.model_insights_tasks import load_model_insight_tasks
 from litellm.proxy.db.rollup_lock_timeout import ROLLUP_LOCK_TIMEOUT_SQL, rollup_lock_timeout_setting
 from litellm.types.utils import BACKGROUND_RESPONSE_COST_POLL_CALL_ORIGIN
 
@@ -25,7 +23,6 @@ if TYPE_CHECKING:
     from litellm.proxy.utils import PrismaClient
 
 _METADATA: Final = TypeAdapter(dict[str, object])
-_TAGS: Final = TypeAdapter(list[object])
 
 
 class _UpsertTable(Protocol):
@@ -63,21 +60,8 @@ class ModelUsageTransaction:
     counts_as_request: bool = True
 
 
-def model_usage_task_type(request_tags: str) -> str:
-    try:
-        tags: Final = _TAGS.validate_json(request_tags)
-    except ValidationError:
-        return MODEL_INSIGHTS_DEFAULT_TASK
-    return next(
-        (
-            task
-            for tag in tags
-            if isinstance(tag, str)
-            and tag.startswith(MODEL_INSIGHTS_TASK_TAG_PREFIX)
-            and (task := tag.removeprefix(MODEL_INSIGHTS_TASK_TAG_PREFIX)) in load_model_insight_tasks()
-        ),
-        MODEL_INSIGHTS_DEFAULT_TASK,
-    )
+def model_usage_task_type() -> str:
+    return MODEL_USAGE_DEFAULT_TASK
 
 
 def _internal_call_origin(metadata: str) -> object:
@@ -106,7 +90,7 @@ def build_model_usage_transaction(payload: SpendLogsPayload) -> ModelUsageTransa
             model_group=payload["model_group"] or model,
             model=model,
             custom_llm_provider=payload["custom_llm_provider"] or "unknown",
-            task_type=model_usage_task_type(payload["request_tags"]),
+            task_type=model_usage_task_type(),
         ),
         spend=payload["spend"],
         prompt_tokens=payload["prompt_tokens"],

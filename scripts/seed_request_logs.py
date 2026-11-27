@@ -363,7 +363,9 @@ class SeedOptions(BaseModel):
 def seed_arguments(argv: Sequence[str] | None = None) -> SeedOptions:
     parser: Final = argparse.ArgumentParser(description="Insert synthetic request logs of controlled sizes into a local proxy DB")
     parser.add_argument("--profile", choices=PROFILES, default="default")
-    parser.add_argument("--timeout-seconds", type=float, default=os.environ.get("LENS_DEV_SEED_TIMEOUT_SECONDS", "120"))
+    parser.add_argument(
+        "--timeout-seconds", type=float, default=os.environ.get("LITELLM_DEV_SEED_TIMEOUT_SECONDS", "120")
+    )
     arguments: Final = SeedOptions.model_validate(vars(parser.parse_args(argv)))
     if not math.isfinite(arguments.timeout_seconds) or arguments.timeout_seconds <= 0:
         parser.error("--timeout-seconds must be finite and positive")
@@ -402,7 +404,7 @@ async def seed(profile: Profile = "default", timeout_seconds: float = 120) -> in
     template: Final = metadata_template()
     now: Final = datetime.now(timezone.utc)
     proxy_url: Final = os.environ.get("PROXY_BASE_URL", "http://127.0.0.1:4000")
-    ui_base: Final = os.environ.get("LENS_DEV_UI_URL", proxy_url)
+    ui_base: Final = os.environ.get("LITELLM_DEV_UI_URL", proxy_url)
     async with (
         httpx.AsyncClient(
             base_url=proxy_url,

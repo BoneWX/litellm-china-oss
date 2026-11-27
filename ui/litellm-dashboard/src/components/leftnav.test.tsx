@@ -520,13 +520,14 @@ describe("Sidebar (leftnav)", () => {
       expect(screen.getByText("Memory")).toBeInTheDocument();
     });
 
-    it("hides Guardrails Monitor from an internal user while keeping Usage and Cost Optimization", () => {
+    it("hides Beta observability tools and Guardrails Monitor from an internal user", () => {
       mockUseAuthorized.mockReturnValue(authFor("internal"));
       renderWithProviders(<Sidebar {...defaultProps} />);
 
       expect(screen.queryByText("Guardrails Monitor")).not.toBeInTheDocument();
       expect(screen.getByText("Usage")).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: "Lens Beta" })).toHaveAttribute("href", "/ui/lens");
+      expect(screen.queryByText("Lens")).not.toBeInTheDocument();
+      expect(screen.queryByText("Model Leaderboard")).not.toBeInTheDocument();
       expect(screen.getByText("Cost Optimization")).toBeInTheDocument();
     });
 

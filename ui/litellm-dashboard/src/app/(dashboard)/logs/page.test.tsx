@@ -65,7 +65,7 @@ describe("LogsPage", () => {
     useOrganizationsMock.mockReturnValue({ data: [] });
   });
 
-  it("keeps request and audit logs here while traces live in Lens", () => {
+  it("keeps request and audit logs here", () => {
     renderAs("Admin");
 
     for (const label of ["Request Logs", "Audit Logs", "Deleted Keys", "Deleted Teams"]) {
