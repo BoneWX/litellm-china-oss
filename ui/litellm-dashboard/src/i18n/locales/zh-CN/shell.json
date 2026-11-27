@@ -77,8 +77,6 @@
       "chat": "聊天",
       "chatDescription": "使用大模型、MCP 和智能体的聊天界面",
       "chatDisabled": "管理员可在设置中启用",
-      "moyai": "Moyai",
-      "moyaiDescription": "云端编码智能体",
       "aiGateway": "AI 网关"
     },
     "navbar": {

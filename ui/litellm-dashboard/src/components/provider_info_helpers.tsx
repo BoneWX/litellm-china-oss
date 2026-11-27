@@ -16,7 +16,7 @@ import cursorLogo from "../../public/assets/logos/cursor.svg";
 import databricksLogo from "../../public/assets/logos/databricks.svg";
 import deepgramLogo from "../../public/assets/logos/deepgram.png";
 import deepinfraLogo from "../../public/assets/logos/deepinfra.png";
-import opencodeLogo from "../../public/assets/moyai/logos/opencode.svg";
+import opencodeLogo from "../../public/assets/logos/opencode.svg";
 import deepseekLogo from "../../public/assets/logos/deepseek.svg";
 import edenaiLogo from "../../public/assets/logos/edenai.svg";
 import elevenlabsLogo from "../../public/assets/logos/elevenlabs.png";

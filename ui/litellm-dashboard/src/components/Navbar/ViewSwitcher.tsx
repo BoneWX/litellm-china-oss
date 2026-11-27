@@ -1,6 +1,5 @@
 import { useTerminology } from "@/contexts/TerminologyContext";
 import React from "react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,13 +13,11 @@ import { usePluginMode } from "@/contexts/PluginModeContext";
 import { useUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUISettings";
 import { uiHref } from "@/utils/uiHref";
 import { cn } from "@/lib/cva.config";
-import moyaiHead from "../../../public/assets/moyai/moyai-head.svg";
 import { useTranslation } from "react-i18next";
 
 const GATEWAY = "ai-gateway";
 const CHAT = "chat";
-const MOYAI = "moyai";
-type WorkspaceIconName = typeof GATEWAY | typeof CHAT | typeof MOYAI;
+type WorkspaceIconName = typeof GATEWAY | typeof CHAT;
 
 function isWorkspaceRoute(pathname: string, workspace: string): boolean {
   const routes = [uiHref(workspace)];
@@ -30,12 +27,10 @@ function isWorkspaceRoute(pathname: string, workspace: string): boolean {
 
 function activeWorkspaceFor(
   isChatRoute: boolean,
-  isMoyaiRoute: boolean,
   pluginLabel: string | undefined,
   gatewayLabel: string,
 ): { label: string; icon: WorkspaceIconName } {
   if (isChatRoute) return { label: "Chat", icon: CHAT };
-  if (isMoyaiRoute) return { label: "Moyai", icon: MOYAI };
   return { label: pluginLabel ?? gatewayLabel, icon: GATEWAY };
 }
 
@@ -48,13 +43,6 @@ function WorkspaceIcon({ workspace }: { workspace: WorkspaceIconName }) {
         className="flex size-6 flex-none items-center justify-center rounded-md bg-primary/10 text-primary ring-1 ring-inset ring-primary/15"
       >
         <MessageCircle className="size-4" />
-      </span>
-    );
-  }
-  if (workspace === MOYAI) {
-    return (
-      <span data-slot="workspace-icon" aria-hidden="true" className="flex size-6 flex-none items-center justify-center">
-        <Image src={moyaiHead.src} alt="" width={20} height={20} unoptimized className="size-5 object-contain" />
       </span>
     );
   }
@@ -89,17 +77,14 @@ export default function ViewSwitcher({ className, contentClassName }: ViewSwitch
   const pathname = usePathname();
 
   const chatEnabled = Boolean(uiSettings?.values?.enable_chat_ui);
-  const moyaiUrl = (uiSettings?.values?.moyai_url as string | undefined) ?? null;
 
   const normalizedPathname = (pathname ?? "").replace(/\/+$/, "");
   const isChatRoute = isWorkspaceRoute(normalizedPathname, CHAT);
-  const isMoyaiRoute = isWorkspaceRoute(normalizedPathname, MOYAI);
-  const isStandaloneRoute = isChatRoute || isMoyaiRoute;
+  const isStandaloneRoute = isChatRoute;
 
   const gatewayLabel = term(t("shell.workspace.aiGateway"));
   const { label: activeLabel, icon: activeIcon } = activeWorkspaceFor(
     isChatRoute,
-    isMoyaiRoute,
     plugins.find((p) => p.name === mode)?.display_name,
     gatewayLabel,
   );
@@ -154,24 +139,6 @@ export default function ViewSwitcher({ className, contentClassName }: ViewSwitch
       onClick: () => selectMode(e.key),
     })),
     chatItem,
-    {
-      key: MOYAI,
-      label: (
-        <div className="flex w-full items-center justify-between gap-6 py-0.5">
-          <span className="flex items-center gap-2">
-            <WorkspaceIcon workspace={MOYAI} />
-            <span className="flex flex-col">
-              <span className="font-medium">{t("shell.workspace.moyai")}</span>{" "}
-              <span className="text-xs leading-snug text-muted-foreground">
-                {t("shell.workspace.moyaiDescription")}
-              </span>
-            </span>
-          </span>
-          {isMoyaiRoute && <Check className="size-4 text-info" />}
-        </div>
-      ),
-      onClick: () => window.location.assign(moyaiUrl ?? uiHref(MOYAI)),
-    },
   ];
 
   return (

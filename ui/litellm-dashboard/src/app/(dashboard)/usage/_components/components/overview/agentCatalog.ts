@@ -7,7 +7,7 @@ import langchainLogo from "../../../../../../../public/assets/logos/langchain.sv
 import litellmLogo from "../../../../../../../public/assets/logos/litellm_monogram.svg";
 import openaiLogo from "../../../../../../../public/assets/logos/openai_small.svg";
 import openaiAgentsLogo from "../../../../../../../public/assets/logos/openai-agents.svg";
-import opencodeLogo from "../../../../../../../public/assets/moyai/logos/opencode.svg";
+import opencodeLogo from "../../../../../../../public/assets/logos/opencode.svg";
 import pydanticAiLogo from "../../../../../../../public/assets/logos/pydantic-ai-color.svg";
 import xaiLogo from "../../../../../../../public/assets/logos/xai.svg";
 import type { components } from "@/lib/http/schema";

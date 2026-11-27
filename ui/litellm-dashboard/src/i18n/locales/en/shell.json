@@ -77,8 +77,6 @@
       "chat": "Chat",
       "chatDescription": "Chat UI for using LLMs, MCPs and Agents",
       "chatDisabled": "Admins can enable this in Settings",
-      "moyai": "Moyai",
-      "moyaiDescription": "Cloud Coding Agent",
       "aiGateway": "AI Gateway"
     },
     "navbar": {

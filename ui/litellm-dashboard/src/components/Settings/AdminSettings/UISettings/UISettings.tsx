@@ -11,8 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { uiHref } from "@/utils/uiHref";
 import { relativeTimeOptions } from "@/components/shared/date_range_presets";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -80,7 +78,6 @@ export default function UISettings() {
     relativeTimeOptions.find((option) => option.settingValue === values.usage_default_time_range)?.settingValue ??
     "last_7_days";
   const usageRangeConfigOwned = data?.source?.usage_default_time_range === "config";
-  const moyaiUrl = (values.moyai_url as string | undefined) ?? null;
   const isDisabledForInternalUsers = Boolean(values.disable_model_add_for_internal_users);
   const isDisabledTeamAdminDeleteTeamUser = Boolean(values.disable_team_admin_delete_team_user);
   const isAgentsDisabled = Boolean(values.disable_agents_for_internal_users);
@@ -267,20 +264,6 @@ export default function UISettings() {
     );
   };
 
-  const handleDisconnectMoyai = () => {
-    updateSettings(
-      { moyai_url: null },
-      {
-        onSuccess: () => {
-          toast.success(t("adminPanel.uiSettings.toasts.updated"));
-        },
-        onError: (error) => {
-          toast.fromError(error);
-        },
-      },
-    );
-  };
-
   const handleToggleDisableCustomApiKeys = (checked: boolean) => {
     updateSettings(
       { disable_custom_api_keys: checked },
@@ -449,27 +432,6 @@ export default function UISettings() {
             />
 
             <BackgroundChatSettings />
-
-            <Separator />
-            <div className="flex items-start justify-between gap-3">
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">Moyai</p>
-                <p className="text-sm text-muted-foreground">
-                  {moyaiUrl
-                    ? t("adminPanel.uiSettings.moyai.connectedTo", { url: moyaiUrl })
-                    : t("adminPanel.uiSettings.moyai.notConnected")}
-                </p>
-              </div>
-              {moyaiUrl ? (
-                <Button variant="outline" size="sm" disabled={isUpdating} onClick={handleDisconnectMoyai}>
-                  {t("adminPanel.uiSettings.moyai.disconnect")}
-                </Button>
-              ) : (
-                <a href={uiHref("moyai")} className="text-sm text-primary underline underline-offset-4">
-                  {t("adminPanel.uiSettings.moyai.connectLink")}
-                </a>
-              )}
-            </div>
 
             <Separator />
             <SettingRow

@@ -69,9 +69,9 @@ describe("ViewSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: AI Gateway" }));
+    await user.click(screen.getByRole("button", { name: "Switch workspace. Current: AI Gateway" }));
     const chat = await screen.findByRole("menuitem", {
-      name: "Chat Chat UI for using LLMs, MCPs, Agents Admins can enable in Settings",
+      name: "Chat Chat UI for using LLMs, MCPs and Agents Admins can enable this in Settings",
     });
     expect(chat).toHaveAttribute("aria-disabled", "true");
     expect(within(chat).queryByRole("img")).not.toBeInTheDocument();
@@ -83,7 +83,7 @@ describe("ViewSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    await user.click(await screen.findByRole("button", { name: "Switch workspace, current: SI Gateway" }));
+    await user.click(await screen.findByRole("button", { name: "Switch workspace. Current: SI Gateway" }));
     expect(await screen.findByRole("menuitem", { name: "SI Gateway" })).toBeInTheDocument();
     expect(screen.queryByRole("menuitem", { name: "AI Gateway" })).not.toBeInTheDocument();
   });
@@ -97,9 +97,9 @@ describe("ViewSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    await user.click(await screen.findByRole("button", { name: "Switch workspace, current: Metrics" }));
+    await user.click(await screen.findByRole("button", { name: "Switch workspace. Current: Metrics" }));
     await user.click(await screen.findByRole("menuitem", { name: "Observability" }));
-    expect(screen.getByRole("button", { name: "Switch workspace, current: Observability" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch workspace. Current: Observability" })).toBeInTheDocument();
     expect(assignSpy).not.toHaveBeenCalled();
   });
 
@@ -108,8 +108,8 @@ describe("ViewSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: AI Gateway" }));
-    const chat = await screen.findByRole("menuitem", { name: "Chat Chat UI for using LLMs, MCPs, Agents" });
+    await user.click(screen.getByRole("button", { name: "Switch workspace. Current: AI Gateway" }));
+    const chat = await screen.findByRole("menuitem", { name: "Chat Chat UI for using LLMs, MCPs and Agents" });
     await user.click(chat);
     expect(assignSpy).toHaveBeenCalledWith("/ui/chat");
     expect(localStorage.getItem("litellm_plugin_mode")).toBeNull();
@@ -123,7 +123,7 @@ describe("ViewSwitcher", () => {
       const user = userEvent.setup();
       renderSwitcher();
 
-      const trigger = screen.getByRole("button", { name: "Switch workspace, current: Chat" });
+      const trigger = screen.getByRole("button", { name: "Switch workspace. Current: Chat" });
       expect(trigger).toHaveTextContent("Chat");
       expect(within(trigger).queryByRole("img")).not.toBeInTheDocument();
       await user.click(trigger);
@@ -141,7 +141,7 @@ describe("ViewSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
+    await user.click(screen.getByRole("button", { name: "Switch workspace. Current: Chat" }));
     await user.click(await screen.findByRole("menuitem", { name: "Metrics" }));
     expect(assignSpy).toHaveBeenCalledWith("/gateway/ui/");
     expect(localStorage.getItem("litellm_plugin_mode")).toBe("metrics");
@@ -155,56 +155,10 @@ describe("ViewSwitcher", () => {
       const user = userEvent.setup();
       renderSwitcher();
 
-      await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
+      await user.click(screen.getByRole("button", { name: "Switch workspace. Current: Chat" }));
       await user.click(await screen.findByRole("menuitem", { name: "AI Gateway" }));
       expect(assignSpy).toHaveBeenCalledWith("/");
     },
   );
 
-  it.each(["/ui/moyai", "/ui/moyai/sessions/one"])(
-    "should show Moyai's icon at %s and let users switch to Chat",
-    async (pathname) => {
-      state.pathname = pathname;
-      getUiSettingsMock.mockResolvedValue({ values: { enable_chat_ui: true } });
-      const user = userEvent.setup();
-      renderSwitcher();
-
-      const trigger = screen.getByRole("button", { name: "Switch workspace, current: Moyai" });
-      expect(within(trigger).getByAltText("")).toHaveAttribute("src", expect.stringContaining("moyai-head.svg"));
-      await user.click(trigger);
-      await user.click(await screen.findByRole("menuitem", { name: "Chat Chat UI for using LLMs, MCPs, Agents" }));
-      expect(assignSpy).toHaveBeenCalledWith("/ui/chat");
-    },
-  );
-
-  it("should switch from Chat to the connected Moyai deployment", async () => {
-    state.pathname = "/ui/chat";
-    const settings = { values: { enable_chat_ui: true, moyai_url: "https://moyai.example.com" } };
-    getUiSettingsMock.mockResolvedValue(settings);
-    const user = userEvent.setup();
-    renderSwitcher();
-
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
-    await user.click(await screen.findByRole("menuitem", { name: "Moyai Cloud Coding Agent" }));
-    expect(assignSpy).toHaveBeenCalledWith("https://moyai.example.com");
-  });
-
-  it("should keep the local Moyai route available when Chat is disabled", async () => {
-    const user = userEvent.setup();
-    renderSwitcher();
-
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: AI Gateway" }));
-    await user.click(await screen.findByRole("menuitem", { name: "Moyai Cloud Coding Agent" }));
-    expect(assignSpy).toHaveBeenCalledWith("/ui/moyai");
-  });
-
-  it("should navigate from Moyai back to the gateway", async () => {
-    state.pathname = "/ui/moyai";
-    const user = userEvent.setup();
-    renderSwitcher();
-
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: Moyai" }));
-    await user.click(await screen.findByRole("menuitem", { name: "AI Gateway" }));
-    expect(assignSpy).toHaveBeenCalledWith("/ui/");
-  });
 });

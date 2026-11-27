@@ -3082,12 +3082,6 @@
           "label": "Disable custom Virtual key values",
           "description": "If true, users cannot specify custom key values. All keys must be auto-generated."
         }
-      },
-      "moyai": {
-        "connectedTo": "Connected to {{url}}",
-        "notConnected": "Not connected",
-        "disconnect": "Disconnect",
-        "connectLink": "Connect from the Moyai page"
       }
     },
     "pageVisibility": {

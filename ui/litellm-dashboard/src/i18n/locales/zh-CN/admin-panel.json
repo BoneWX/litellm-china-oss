@@ -359,12 +359,6 @@
           "label": "禁用自定义虚拟密钥值",
           "description": "启用后，用户不能指定自定义密钥值，所有密钥都必须自动生成。"
         }
-      },
-      "moyai": {
-        "connectedTo": "已连接到 {{url}}",
-        "notConnected": "未连接",
-        "disconnect": "断开连接",
-        "connectLink": "从 Moyai 页面连接"
       }
     },
     "pageVisibility": {

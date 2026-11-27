@@ -16,6 +16,7 @@
 | --- | --- | --- |
 | 2026-11-27 | 管理后台 / UI API | 移除通知铃铛、Auto Router 公告和 `GET /get/latest_release_info` 在线版本检查 |
 | 2026-11-27 | 管理后台 / 公开 API | 移除 LiteLLM Blog 动态入口、首页动态、`GET /public/litellm_blog_posts`，并停止访问外部 RSS |
+| 2026-11-27 | 管理后台 / UI API | 移除工作区菜单中的 Moyai 入口、独立连接页及 `/moyai/connect/*` 快速连接接口 |
 | 2026-11-17 | 管理后台 | 完成主要页面和复杂交互页面的简体中文覆盖 |
 | 2026-11-17 | 前端构建 | Next.js 升级至 `16.4.6`，更新依赖锁定文件 |
 | 2026-11-17 | 预算计数 | 修复并发冷启动时历史 Key 用量被重复累加、导致错误 `429` 的问题 |
@@ -81,6 +82,17 @@ ui/litellm-dashboard/src/i18n/locales/zh-CN/
 - `GET /get/latest_release_info` 返回 `404`。
 - `LITELLM_DISABLE_LATEST_RELEASE_CHECK` 不再生效。
 - 该通知铃铛原本只展示版本更新和 Auto Router 公告，不承载预算、请求失败或团队告警；这些功能不受影响。
+
+### 移除 Moyai 快速连接
+
+本发行版移除了工作区菜单中的 Moyai 入口、独立 Moyai 页面、管理设置中的连接状态，以及 `POST /moyai/connect/start` 和 `POST /moyai/connect/exchange` 快速连接接口。
+
+升级后：
+
+- 两个 Moyai 快速连接接口返回 `404`。
+- AI 网关、模型、虚拟密钥、预算、用量、聊天、智能体、MCP 和日志功能不受影响。
+- 不再读取 `moyai_url` UI 设置，也不需要数据库迁移。
+- 数据库中已有的 `moyai_url` 配置和此前创建的外部连接密钥不会自动删除。
 
 ### Key 用量与预算计数修复
 
