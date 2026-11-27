@@ -201,7 +201,7 @@ it("should retrieve the completed tool run after closing and reopening without s
   renderChat(id);
   expect(await screen.findByText("There are 12 widgets in stock.")).toBeVisible();
   expect(screen.getByRole("button", { name: "lookup_inventory" })).toBeVisible();
-  expect(screen.getByLabelText(/^Cost:/)).toHaveTextContent("$0.125");
+  expect(screen.getByLabelText(/^Cost:/)).toHaveTextContent("￥0.125");
   expect(screen.getByLabelText(/^TTFT:/)).toHaveTextContent("0.25s");
   expect(screen.getByLabelText(/^Total Latency:/)).toHaveTextContent("12.50s");
   await waitFor(() =>

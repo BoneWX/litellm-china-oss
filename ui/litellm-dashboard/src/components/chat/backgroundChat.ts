@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import type { Response } from "openai/resources/responses/responses";
+import i18n from "@/i18n/i18n";
 import { getGatewayBaseUrl } from "@/components/networking";
 import { parseUsageCost } from "@/components/llm_calls/usage_cost";
 import { extractPromptCacheTokens } from "@/utils/promptCacheUsage";
@@ -67,8 +68,8 @@ export function backgroundResponseUpdate(response: TimedResponse): AssistantMess
   });
   const status = response.status ?? "in_progress";
   const errors: Partial<Record<ChatBackgroundRun["status"], string>> = {
-    failed: response.error?.message || "The background run failed.",
-    incomplete: "The run ended before completing its answer.",
+    failed: response.error?.message || i18n.t("chat.errors.backgroundRunFailed"),
+    incomplete: i18n.t("chat.errors.backgroundRunIncomplete"),
   };
   const backgroundError = errors[status];
   const cost = response.usage && "cost" in response.usage ? parseUsageCost(response.usage.cost) : undefined;
@@ -142,7 +143,7 @@ export async function watchBackgroundChat({
       if (error instanceof OpenAI.APIError && error.status === 404) {
         onUpdate({
           backgroundRun: { id: responseId, status: "expired" },
-          backgroundError: "This saved run is no longer available. Its result may have expired on the server.",
+          backgroundError: i18n.t("chat.errors.savedRunUnavailable"),
         });
         return;
       }

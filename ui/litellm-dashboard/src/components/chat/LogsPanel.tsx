@@ -10,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CURRENCY_SYMBOL } from "@/utils/currency";
+import { useTranslation } from "react-i18next";
+import { formatChatDateTime } from "./chatFormat";
 
 const LOGS_QUERY_KEY = "chat-user-logs";
 const PAGE_SIZE = 50;
@@ -85,18 +87,20 @@ function formatDuration(row: LogRow): string {
 }
 
 function StatusBadge({ status }: { status?: string }) {
+  const { t } = useTranslation();
   const isFailure = status === "failure";
   return (
     <span className={`inline-flex items-center gap-1.5 text-xs ${isFailure ? "text-destructive" : "text-success"}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${isFailure ? "bg-destructive" : "bg-success"}`} />
-      {isFailure ? "Failure" : "Success"}
+      {isFailure ? t("chat.logs.failure") : t("chat.logs.success")}
     </span>
   );
 }
 
 function JsonBlock({ value }: { value: unknown }) {
+  const { t } = useTranslation();
   if (value == null || value === "") {
-    return <p className="m-0 text-xs text-muted-foreground">Not available</p>;
+    return <p className="m-0 text-xs text-muted-foreground">{t("chat.logs.notAvailable")}</p>;
   }
   const text = typeof value === "string" ? value : JSON.stringify(value, null, 2);
   return (
@@ -124,45 +128,60 @@ function LogsSkeleton() {
 }
 
 function LogsEmpty() {
+  const { t } = useTranslation();
   return (
     <div className="rounded-lg border border-dashed py-12 text-center text-sm text-muted-foreground">
       <ScrollText className="mx-auto mb-3 h-6 w-6 text-muted-foreground/50" />
-      No logs for this period
+      {t("chat.logs.empty")}
     </div>
   );
 }
 
 function LogsError({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed py-12 text-center text-sm text-muted-foreground">
       <AlertCircle className="h-6 w-6 text-destructive/70" />
-      Failed to load your logs
+      {t("chat.logs.loadFailed")}
       <Button variant="outline" size="sm" onClick={onRetry}>
-        Retry
+        {t("chat.logs.retry")}
       </Button>
     </div>
   );
 }
 
 function LogsTable({ rows, onRowClick }: { rows: LogRow[]; onRowClick: (row: LogRow) => void }) {
+  const { t, i18n } = useTranslation();
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead className="text-[11px] font-medium uppercase tracking-wide">Time</TableHead>
-            <TableHead className="text-[11px] font-medium uppercase tracking-wide">Model</TableHead>
-            <TableHead className="text-[11px] font-medium uppercase tracking-wide">Status</TableHead>
-            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">Tokens</TableHead>
-            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">Duration</TableHead>
-            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">Cost</TableHead>
+            <TableHead className="text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.time")}
+            </TableHead>
+            <TableHead className="text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.model")}
+            </TableHead>
+            <TableHead className="text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.status")}
+            </TableHead>
+            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.tokens")}
+            </TableHead>
+            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.duration")}
+            </TableHead>
+            <TableHead className="text-right text-[11px] font-medium uppercase tracking-wide">
+              {t("chat.logs.columns.cost")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.request_id} className="cursor-pointer" onClick={() => onRowClick(row)}>
               <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
-                {moment(row.startTime).format("MMM D, HH:mm:ss")}
+                {formatChatDateTime(row.startTime, i18n.language)}
               </TableCell>
               <TableCell className="text-sm">{row.model || "-"}</TableCell>
               <TableCell>
@@ -192,39 +211,45 @@ function LogDetailDialog({
   isLoading: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={!!log} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)] overflow-hidden sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Request details</DialogTitle>
+          <DialogTitle>{t("chat.logs.requestDetails")}</DialogTitle>
           <DialogDescription className="break-all font-mono text-xs">{log?.request_id}</DialogDescription>
         </DialogHeader>
         {log && (
           <div className="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-md border bg-card p-3">
-                <div className="mb-0.5 text-xs text-muted-foreground">Model</div>
+                <div className="mb-0.5 text-xs text-muted-foreground">{t("chat.logs.model")}</div>
                 <div className="text-sm text-foreground">{log.model || "-"}</div>
               </div>
               <div className="rounded-md border bg-card p-3">
-                <div className="mb-0.5 text-xs text-muted-foreground">Cost</div>
+                <div className="mb-0.5 text-xs text-muted-foreground">{t("chat.logs.cost")}</div>
                 <div className="text-sm text-foreground">{formatCost(log.spend)}</div>
               </div>
               <div className="rounded-md border bg-card p-3">
-                <div className="mb-0.5 text-xs text-muted-foreground">Tokens</div>
+                <div className="mb-0.5 text-xs text-muted-foreground">{t("chat.logs.tokens")}</div>
                 <div className="text-sm text-foreground">
-                  {formatTokens(log.total_tokens)} ({formatTokens(log.prompt_tokens)} in /{" "}
-                  {formatTokens(log.completion_tokens)} out)
+                  {t("chat.logs.tokenBreakdown", {
+                    total: formatTokens(log.total_tokens),
+                    input: formatTokens(log.prompt_tokens),
+                    output: formatTokens(log.completion_tokens),
+                  })}
                 </div>
               </div>
               <div className="rounded-md border bg-card p-3">
-                <div className="mb-0.5 text-xs text-muted-foreground">Duration</div>
+                <div className="mb-0.5 text-xs text-muted-foreground">{t("chat.logs.duration")}</div>
                 <div className="text-sm text-foreground">{formatDuration(log)}</div>
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Request</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t("chat.logs.request")}
+              </div>
               {isLoading ? (
                 <Skeleton className="h-16 w-full" />
               ) : (
@@ -232,7 +257,9 @@ function LogDetailDialog({
               )}
             </div>
             <div className="flex flex-col gap-1.5">
-              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Response</div>
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t("chat.logs.response")}
+              </div>
               {isLoading ? <Skeleton className="h-16 w-full" /> : <JsonBlock value={details?.response} />}
             </div>
           </div>
@@ -243,6 +270,7 @@ function LogDetailDialog({
 }
 
 const LogsPanel: React.FC<Props> = ({ accessToken, userId }) => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<TimeRange>("24h");
   const [page, setPage] = useState(1);
   const [selectedLog, setSelectedLog] = useState<LogRow | null>(null);
@@ -288,16 +316,16 @@ const LogsPanel: React.FC<Props> = ({ accessToken, userId }) => {
         <LogsTable rows={rows} onRowClick={setSelectedLog} />
         <div className="mt-3 flex items-center justify-between">
           <p className="m-0 text-xs text-muted-foreground">
-            {total.toLocaleString()} request{total === 1 ? "" : "s"}
-            {totalPages > 1 ? ` · Page ${page} of ${totalPages}` : ""}
+            {t("chat.logs.requestCount", { total: total.toLocaleString() })}
+            {totalPages > 1 ? ` · ${t("chat.logs.pageOf", { page, totalPages })}` : ""}
           </p>
           {totalPages > 1 && (
             <div className="flex gap-1">
               <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-                Previous
+                {t("chat.logs.previous")}
               </Button>
               <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
-                Next
+                {t("chat.logs.next")}
               </Button>
             </div>
           )}
@@ -310,8 +338,8 @@ const LogsPanel: React.FC<Props> = ({ accessToken, userId }) => {
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="mb-0.5 text-base font-semibold tracking-tight text-foreground">Your Logs</h2>
-          <p className="m-0 text-sm text-muted-foreground">Request logs for your account only</p>
+          <h2 className="mb-0.5 text-base font-semibold tracking-tight text-foreground">{t("chat.logs.title")}</h2>
+          <p className="m-0 text-sm text-muted-foreground">{t("chat.logs.description")}</p>
         </div>
         <div className="flex gap-1">
           {TIME_RANGE_OPTIONS.map((opt) => (

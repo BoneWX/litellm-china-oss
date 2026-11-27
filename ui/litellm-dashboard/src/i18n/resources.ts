@@ -1,5 +1,6 @@
 import apiKeysEn from "./locales/en/api-keys.json";
 import authEn from "./locales/en/auth.json";
+import chatEn from "./locales/en/chat.json";
 import commonEn from "./locales/en/common.json";
 import costTrackingEn from "./locales/en/cost-tracking.json";
 import homeEn from "./locales/en/home.json";
@@ -18,6 +19,7 @@ import adminPanelZhCN from "./locales/zh-CN/admin-panel.json";
 import authZhCN from "./locales/zh-CN/auth.json";
 import budgetScheduleZhCN from "./locales/zh-CN/budget-schedule.json";
 import budgetsZhCN from "./locales/zh-CN/budgets.json";
+import chatZhCN from "./locales/zh-CN/chat.json";
 import commonZhCN from "./locales/zh-CN/common.json";
 import costTrackingZhCN from "./locales/zh-CN/cost-tracking.json";
 import deploymentHealthZhCN from "./locales/zh-CN/deployment-health.json";
@@ -54,6 +56,7 @@ export const enResources = {
   ...baseEn,
   ...apiKeysEn,
   ...authEn,
+  ...chatEn,
   ...commonEn,
   ...costTrackingEn,
   ...homeEn,
@@ -74,6 +77,7 @@ export const zhCNResources = {
   ...authZhCN,
   ...budgetScheduleZhCN,
   ...budgetsZhCN,
+  ...chatZhCN,
   ...commonZhCN,
   ...costTrackingZhCN,
   ...deploymentHealthZhCN,

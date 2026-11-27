@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import i18n from "@/i18n/i18n";
 import { makeOpenAIResponsesRequest } from "@/components/llm_calls/responses_api";
 import { backgroundResponseUpdate } from "./backgroundChat";
 import { generateChatImages } from "./imageHelpers";
@@ -30,7 +31,7 @@ function requestErrorMessage(
   messages: ChatRequestOptions["messages"],
   mode: ChatRequestOptions["mode"],
 ): string {
-  const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+  const message = error instanceof Error ? error.message : i18n.t("chat.errors.somethingWentWrong");
   const hasFile =
     mode === "chat" && messages.some((item) => item.attachments?.some((attachment) => attachment.kind === "file"));
   const fileRejectionStatus = error instanceof OpenAI.APIError && (error.status === 400 || error.status === 422);
@@ -61,7 +62,7 @@ export async function runChatRequest({
   try {
     signal.throwIfAborted();
     if (research && !background) {
-      onUpdate({ content: "Enable background chats before starting deep research." });
+      onUpdate({ content: i18n.t("chat.errors.enableBackgroundResearch") });
       return;
     }
     if (mode === "image") {

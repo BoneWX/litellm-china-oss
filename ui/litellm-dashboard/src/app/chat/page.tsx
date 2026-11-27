@@ -19,7 +19,9 @@ import { useBackgroundChat } from "@/components/chat/useBackgroundChat";
 import { runChatRequest } from "@/components/chat/runChatRequest";
 import { readChatAttachment, MAX_CHAT_ATTACHMENTS, CHAT_ATTACHMENT_ACCEPT } from "@/components/chat/attachmentHelpers";
 import ChatFileChip from "@/components/chat/ChatFileChip";
+import { conversationTitleForDisplay } from "@/components/chat/conversationTitles";
 import { useQueryState } from "nuqs";
+import { useTranslation } from "react-i18next";
 
 const LOCALSTORAGE_MODEL_KEY = "litellm_chat_selected_model";
 
@@ -46,9 +48,10 @@ function AttachmentPreview({
   disabled: boolean;
   onRemove: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   if (!attachments.length) return null;
   return (
-    <div className="flex w-full flex-wrap gap-3 px-4 pt-4" aria-label="Attached files">
+    <div className="flex w-full flex-wrap gap-3 px-4 pt-4" aria-label={t("chat.page.attachedFiles")}>
       {attachments.map((attachment) => (
         <div key={attachment.id} className={attachment.kind === "file" ? "relative max-w-64" : "relative w-20"}>
           {attachment.kind === "file" ? (
@@ -65,7 +68,7 @@ function AttachmentPreview({
             type="button"
             variant="secondary"
             size="icon-xs"
-            aria-label={`Remove ${attachment.name}`}
+            aria-label={t("chat.page.removeAttachment", { name: attachment.name })}
             className="absolute -right-2 -top-2 rounded-full"
             disabled={disabled}
             onClick={() => onRemove(attachment.id)}
@@ -79,6 +82,7 @@ function AttachmentPreview({
 }
 
 export default function ChatConversationPage() {
+  const { t } = useTranslation();
   const [, setConversationIdInUrl] = useQueryState("id", { history: "push" });
   const router = useRouter();
   const {
@@ -141,9 +145,9 @@ export default function ChatConversationPage() {
     models.some(
       (model) => model.model_group === selectedModel && model.supports_web_search && model.supports_reasoning,
     );
-  let researchUnavailableReason = "Choose a reasoning model with web search.";
-  if (!useBackground) researchUnavailableReason = "Enable background chats in Admin Settings to use deep research.";
-  if (storageUnavailable) researchUnavailableReason = "Allow chat history storage to use deep research.";
+  let researchUnavailableReason = t("chat.page.researchNeedsModel");
+  if (!useBackground) researchUnavailableReason = t("chat.page.researchNeedsBackground");
+  if (storageUnavailable) researchUnavailableReason = t("chat.page.researchNeedsStorage");
   const [inputText, setInputText] = useState("");
   const [mcpPopoverOpen, setMcpPopoverOpen] = useState(false);
   const [storageBannerDismissed, setStorageBannerDismissed] = useState(false);
@@ -181,9 +185,9 @@ export default function ChatConversationPage() {
           setMode(modelChatMode(available[0]));
         }
       })
-      .catch(() => toast.error("Could not load models"))
+      .catch(() => toast.error(t("chat.page.couldNotLoadModels")))
       .finally(() => setIsLoadingModels(false));
-  }, [accessToken]);
+  }, [accessToken, t]);
 
   useLayoutEffect(() => {
     if (
@@ -215,7 +219,7 @@ export default function ChatConversationPage() {
   const selectModel = useCallback(
     (model: ModelGroup) => {
       if (modelChatMode(model) === "image" && attachments.length > 0) {
-        setAttachmentError("Remove the attached files before switching to image generation.");
+        setAttachmentError(t("chat.page.removeFilesBeforeImage"));
         return;
       }
       responsesSessionGenerationRef.current += 1;
@@ -230,14 +234,14 @@ export default function ChatConversationPage() {
         return;
       }
     },
-    [attachments.length],
+    [attachments.length, t],
   );
 
   const addAttachments = async (files: File[]) => {
     if (mode !== "chat" || files.length === 0) return;
     if (isStreaming || readAttachmentsRef.current) return;
     if (attachments.length + files.length > MAX_CHAT_ATTACHMENTS) {
-      setAttachmentError(`Attach up to ${MAX_CHAT_ATTACHMENTS} files per message.`);
+      setAttachmentError(t("chat.page.attachLimit", { count: MAX_CHAT_ATTACHMENTS }));
       return;
     }
     const draftVersion = draftVersionRef.current;
@@ -249,7 +253,7 @@ export default function ChatConversationPage() {
       if (draftVersion === draftVersionRef.current) setAttachments((current) => [...current, ...images]);
     } catch (error) {
       if (draftVersion === draftVersionRef.current)
-        setAttachmentError(error instanceof Error ? error.message : "Could not read these files.");
+        setAttachmentError(error instanceof Error ? error.message : t("chat.page.couldNotReadFiles"));
     } finally {
       readAttachmentsRef.current = false;
       setIsReadingAttachments(false);
@@ -290,7 +294,7 @@ export default function ChatConversationPage() {
       const model = generationModel ?? selectedModel;
       const doResearch = requestMode === "chat" && researchRequested;
       if (doResearch && !canResearch) {
-        setAttachmentError("Deep research needs a reasoning model with web search and background chats enabled.");
+        setAttachmentError(t("chat.page.deepResearchNeedsSetup"));
         return;
       }
       if (!hasMessageContent(trimmed, images, requestMode) || !model) return;
@@ -389,6 +393,7 @@ export default function ChatConversationPage() {
       responsesSessionId,
       useBackground,
       setConversationIdInUrl,
+      t,
     ],
   );
 
@@ -415,12 +420,12 @@ export default function ChatConversationPage() {
       if (idx < 0) return;
       const original = msgs[idx];
       if (!original.imageGeneration && (mode !== "chat" || !selectedModel)) {
-        setAttachmentError("Choose a chat model before resending this message.");
+        setAttachmentError(t("chat.page.chooseChatModel"));
         return;
       }
       if (!newContent.trim() && !original.attachments?.length) return;
       if (original.research && !canResearch) {
-        setAttachmentError("Choose a reasoning model with web search and background chats before resending research.");
+        setAttachmentError(t("chat.page.chooseResearchModel"));
         return;
       }
       const priorMessages = msgs.slice(0, idx);
@@ -443,6 +448,7 @@ export default function ChatConversationPage() {
       mode,
       selectedModel,
       canResearch,
+      t,
     ],
   );
 
@@ -495,20 +501,17 @@ export default function ChatConversationPage() {
 
   const backgroundHint = () => {
     if (background.cancelling || (isRequestInFlight && cancelOnAcceptance === activeConversationId))
-      return "Requesting cancellation…";
-    if (background.pending && storageUnavailable)
-      return "Keep this tab open. This run could not be saved in this browser.";
-    if (background.pending) return "Running in the background. You can close this tab and return to this chat.";
+      return t("chat.page.requestingCancellation");
+    if (background.pending && storageUnavailable) return t("chat.page.keepOpenUnsaved");
+    if (background.pending) return t("chat.page.runningInBackground");
     if (useBackground) return null;
-    return "Keep this tab open. Background runs are not available for this chat.";
+    return t("chat.page.keepOpenUnavailable");
   };
 
   const inputBar = (inConversation: boolean) => {
     const hint = mode === "chat" || background.pending ? backgroundHint() : null;
-    const defaultPlaceholder = inConversation
-      ? "Send a message..."
-      : "Ask a question, attach a file, or paste something to work on…";
-    const chatPlaceholder = research ? "What should I research on the web?" : defaultPlaceholder;
+    const defaultPlaceholder = inConversation ? t("chat.page.sendMessage") : t("chat.page.askAnything");
+    const chatPlaceholder = research ? t("chat.page.researchPlaceholder") : defaultPlaceholder;
     const preparing = isLoadingModels || isReadingAttachments;
     const researchBlocked = research && !canResearch;
     const submitDisabled =
@@ -531,9 +534,9 @@ export default function ChatConversationPage() {
           onChange={setInputText}
           onSubmit={() => void handleSend({ text: inputText, research })}
           onCancel={handleStop}
-          placeholder={mode === "image" ? "Describe the image you want to create…" : chatPlaceholder}
+          placeholder={mode === "image" ? t("chat.page.imagePlaceholder") : chatPlaceholder}
           isLoading={isStreaming}
-          submitLabel={mode === "image" ? "Generate image" : "Send"}
+          submitLabel={mode === "image" ? t("chat.page.generateImage") : t("chat.page.send")}
           submitDisabled={submitDisabled}
           onPaste={(event) => {
             const images = Array.from(event.clipboardData.files).filter((file) => file.type.startsWith("image/"));
@@ -566,7 +569,7 @@ export default function ChatConversationPage() {
                   type="file"
                   accept={CHAT_ATTACHMENT_ACCEPT}
                   multiple
-                  aria-label="Upload files"
+                  aria-label={t("chat.page.uploadFiles")}
                   className="sr-only"
                   disabled={isStreaming || isReadingAttachments}
                   onChange={handleAttachmentInput}
@@ -575,8 +578,8 @@ export default function ChatConversationPage() {
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Attach files"
-                  title="Attach images, PDF, Word (.docx), Excel (.xlsx), text, or code files (up to 4 files, 10 MB each)"
+                  aria-label={t("chat.page.attachFiles")}
+                  title={t("chat.page.attachFilesHelp")}
                   disabled={isStreaming || isReadingAttachments || attachments.length >= MAX_CHAT_ATTACHMENTS}
                   onClick={() => attachmentInputRef.current?.click()}
                 >
@@ -589,11 +592,11 @@ export default function ChatConversationPage() {
                         variant="ghost"
                         size="sm"
                         disabled={isStreaming}
-                        aria-label="Connect tools"
+                        aria-label={t("chat.page.connectTools")}
                         className="gap-1.5 text-muted-foreground"
                       >
                         <Plus className="size-3.5" />
-                        <span>Tools</span>
+                        <span>{t("chat.page.tools")}</span>
                         {selectedMCPServers.length > 0 && (
                           <span className="text-primary">{selectedMCPServers.length}</span>
                         )}
@@ -614,7 +617,7 @@ export default function ChatConversationPage() {
                         }}
                       >
                         <BookOpen className="size-4" />
-                        Deep research
+                        {t("chat.page.deepResearch")}
                       </Button>
                       {!canResearch && (
                         <p className="max-w-64 px-2 pb-1 text-xs text-muted-foreground">{researchUnavailableReason}</p>
@@ -632,11 +635,11 @@ export default function ChatConversationPage() {
                     variant="secondary"
                     size="sm"
                     disabled={isStreaming}
-                    aria-label="Turn off deep research"
+                    aria-label={t("chat.page.turnOffDeepResearch")}
                     onClick={() => setResearch(false)}
                   >
                     <BookOpen className="size-3.5" />
-                    Deep research
+                    {t("chat.page.deepResearch")}
                     <X className="size-3.5" />
                   </Button>
                 )}
@@ -644,18 +647,18 @@ export default function ChatConversationPage() {
             ) : (
               <span className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ImageIcon className="size-4" />
-                Create an image from your description
+                {t("chat.page.imageDescriptionHint")}
               </span>
             )
           }
         />
         {isReadingAttachments && (
           <p role="status" className="mt-2 text-xs text-muted-foreground">
-            Preparing files…
+            {t("chat.page.preparingFiles")}
           </p>
         )}
         {attachments.some((attachment) => attachment.kind === "file") && (
-          <p className="mt-2 text-xs text-muted-foreground">File support depends on the selected model and provider.</p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("chat.page.fileSupportHint")}</p>
         )}
         {attachmentError && (
           <p role="alert" className="mt-2 text-sm text-destructive">
@@ -664,16 +667,14 @@ export default function ChatConversationPage() {
         )}
         {!isLoadingModels && !selectedModel && (
           <p className="mt-2 text-sm text-muted-foreground">
-            {mode === "image"
-              ? "No image-generation models are available. Ask your admin to add one to Model Hub."
-              : "No chat models are available for your account."}
+            {mode === "image" ? t("chat.page.noImageModels") : t("chat.page.noChatModels")}
           </p>
         )}
         {background.connectionError && (
           <div role="alert" className="mt-2 flex items-center gap-2 text-sm text-destructive">
             <span>{background.connectionError}</span>
             <Button variant="ghost" size="sm" onClick={background.reconnect}>
-              Reconnect
+              {t("chat.page.reconnect")}
             </Button>
           </div>
         )}
@@ -684,7 +685,7 @@ export default function ChatConversationPage() {
         )}
         {lastMessage?.backgroundRun?.status === "cancelled" && (
           <p role="status" className="mt-2 text-xs text-muted-foreground">
-            Cancellation requested
+            {t("chat.page.cancellationRequested")}
           </p>
         )}
         {hint && (
@@ -693,7 +694,7 @@ export default function ChatConversationPage() {
           </p>
         )}
         <p className="moyai-chat-home-composer-hint">
-          {mode === "image" ? "Describe an image · Enter to generate" : "Drop files or paste images · Enter to send"}
+          {mode === "image" ? t("chat.page.imageComposerHint") : t("chat.page.chatComposerHint")}
         </p>
       </div>
     );
@@ -703,7 +704,7 @@ export default function ChatConversationPage() {
     <>
       {storageUnavailable && !storageBannerDismissed && (
         <div className="bg-warning/10 border-b border-warning/20 px-5 py-1.5 text-[13px] text-warning flex justify-between items-center">
-          <span>Some chat history or attachments could not be saved or restored.</span>
+          <span>{t("chat.page.storageWarning")}</span>
           <Button
             variant="ghost"
             size="icon-xs"
@@ -733,7 +734,7 @@ export default function ChatConversationPage() {
         ) : (
           <div className="moyai-chat-conversation">
             <header className="moyai-chat-conversation-header">
-              <h1>{activeConversation!.title}</h1>
+              <h1>{conversationTitleForDisplay(activeConversation!.title)}</h1>
             </header>
             <div className="moyai-chat-transcript-layout">
               <div ref={messagesScrollRef} className="moyai-chat-transcript" style={{ overflowAnchor: "none" }}>
@@ -757,7 +758,7 @@ export default function ChatConversationPage() {
                     }
                   }}
                   className="absolute bottom-[100px] left-1/2 -translate-x-1/2 z-chrome rounded-full border bg-background/75 text-muted-foreground shadow-sm backdrop-blur-md hover:bg-background/95"
-                  aria-label="Scroll to bottom"
+                  aria-label={t("chat.page.scrollToBottom")}
                 >
                   <ChevronDown className="h-3 w-3" />
                 </Button>

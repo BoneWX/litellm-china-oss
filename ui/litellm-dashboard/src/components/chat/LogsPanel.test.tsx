@@ -1,8 +1,9 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import LogsPanel from "./LogsPanel";
 import { renderWithProviders } from "../../../tests/test-utils";
 import { uiSpendLogDetailsCall, uiSpendLogsCall } from "../networking";
+import i18n from "@/i18n/i18n";
 
 vi.mock("../networking", () => ({
   uiSpendLogsCall: vi.fn(),
@@ -38,6 +39,22 @@ describe("LogsPanel", () => {
     vi.clearAllMocks();
     mockedLogsCall.mockResolvedValue(paginated([sampleRow]));
     mockedDetailsCall.mockResolvedValue({ messages: [{ role: "user", content: "hi" }], response: { ok: true } });
+  });
+
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
+  it("renders the account log view in Simplified Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    renderWithProviders(<LogsPanel accessToken="tok-zh" userId="user-zh" />);
+
+    expect(await screen.findByText("我的日志")).toBeInTheDocument();
+    expect(await screen.findByText("成功")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("gpt-4o"));
+
+    expect(await screen.findByText("请求详情")).toBeInTheDocument();
+    expect(screen.getByText("响应")).toBeInTheDocument();
   });
 
   it("scopes the query to the current user so it only shows their own logs", async () => {

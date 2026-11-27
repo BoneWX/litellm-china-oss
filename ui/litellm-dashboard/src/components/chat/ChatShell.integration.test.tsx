@@ -5,6 +5,7 @@ import { renderWithProviders } from "@/../tests/test-utils";
 import type { ReactElement } from "react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ChatShell from "./ChatShell";
+import i18n from "@/i18n/i18n";
 
 const render = (ui: ReactElement) => renderWithProviders(<ThemeProvider>{ui}</ThemeProvider>);
 
@@ -45,11 +46,28 @@ describe("ChatShell", () => {
     );
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
     vi.unstubAllGlobals();
     mockPush.mockClear();
     mockUsePathname.mockReturnValue("/ui/chat");
     mockUseMediaQuery.mockReturnValue(true);
+  });
+
+  it("should translate the chat navigation into Simplified Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    const user = userEvent.setup();
+    render(
+      <ChatShell>
+        <div />
+      </ChatShell>,
+    );
+
+    expect(screen.getByRole("button", { name: "对话" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("button", { name: "账户工具" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "设置" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "账户工具" }));
+    expect(await screen.findByRole("menuitem", { name: "日志", exact: true })).toBeInTheDocument();
   });
 
   it("should render the workspace and mark Chats active on the base chat route", () => {
@@ -63,7 +81,7 @@ describe("ChatShell", () => {
     expect(screen.getByRole("button", { name: "Workspace" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("button", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Switch workspace, current: Chat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch workspace. Current: Chat" })).toBeInTheDocument();
     expect(screen.getByTestId("conversation-list")).toBeInTheDocument();
   });
 
@@ -138,7 +156,7 @@ describe("ChatShell", () => {
     );
     await user.click(screen.getByRole("button", { name: "Close sidebar" }));
     expect(screen.getByRole("button", { name: "Open sidebar" })).toHaveAttribute("aria-expanded", "false");
-    await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
+    await user.click(screen.getByRole("button", { name: "Switch workspace. Current: Chat" }));
     expect(await screen.findByRole("menuitem", { name: "AI Gateway", exact: true })).toBeInTheDocument();
     await user.keyboard("{Escape}");
     await user.click(screen.getByRole("button", { name: "Open sidebar" }));
@@ -154,8 +172,8 @@ describe("ChatShell", () => {
       </ChatShell>,
     );
 
-    expect(screen.queryByRole("navigation", { name: "Chat workspace" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Switch workspace, current: Chat" })).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Chat navigation" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch workspace. Current: Chat" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Open chat navigation" }));
     expect(await screen.findByRole("dialog", { name: "LiteLLM Chat" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Models" }));

@@ -145,7 +145,7 @@ describe("Chat layout product navigation", () => {
       );
 
       expect(screen.getByRole("heading", { name: "Chat content" })).toBeVisible();
-      await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
+      await user.click(screen.getByRole("button", { name: "Switch workspace. Current: Chat" }));
       expect(await screen.findByRole("menuitem", { name: "Observability" })).toBeInTheDocument();
       expect(localStorage.getItem("litellm_plugin_mode")).toBe(plugin.name);
 
@@ -178,7 +178,7 @@ describe("Chat layout product navigation", () => {
       );
 
       expect(screen.getByRole("heading", { name: "Chat content" })).toBeVisible();
-      await user.click(screen.getByRole("button", { name: "Switch workspace, current: Chat" }));
+      await user.click(screen.getByRole("button", { name: "Switch workspace. Current: Chat" }));
       expect(await screen.findByRole("menuitem", { name: "Observability" })).toBeInTheDocument();
       await user.click(screen.getByRole("menuitem", { name: "AI Gateway", exact: true }));
 

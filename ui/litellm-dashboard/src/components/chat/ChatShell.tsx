@@ -39,6 +39,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import ViewSwitcher from "@/components/Navbar/ViewSwitcher";
 import ConversationList from "./ConversationList";
 import LanguageToggle from "@/components/LanguageToggle/LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 export function getChatRoutes() {
   const base = uiHref("chat");
@@ -79,6 +80,7 @@ function NavItem({ icon, label, onClick, active = false }: NavItemProps) {
 }
 
 const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = stripTrailingSlash(usePathname() ?? "");
   const {
@@ -102,12 +104,12 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const darkLogo = logoUrlDark || logoUrl;
   const routes = getChatRoutes();
   const isChatsRoute = pathname === routes.chats;
-  const accountName = userEmail?.split("@")[0] || userId || "Account";
+  const accountName = userEmail?.split("@")[0] || userId || t("chat.shell.account");
   const workspaceItems = [
-    { label: "Credentials", route: routes.credentials, Icon: KeyRound },
-    { label: "API Keys", route: routes.apiKeys, Icon: Lock },
-    { label: "Logs", route: routes.logs, Icon: ScrollText },
-    { label: "Usage", route: routes.usage, Icon: BarChart3 },
+    { label: t("chat.shell.credentials"), route: routes.credentials, Icon: KeyRound },
+    { label: t("chat.shell.apiKeys"), route: routes.apiKeys, Icon: Lock },
+    { label: t("chat.shell.logs"), route: routes.logs, Icon: ScrollText },
+    { label: t("chat.shell.usage"), route: routes.usage, Icon: BarChart3 },
   ];
   const workspaceActive = workspaceItems.some((item) => item.route === pathname);
   const navigate = (href: string) => {
@@ -124,8 +126,8 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           variant="ghost"
           size="icon-sm"
           className="moyai-chat-search"
-          aria-label="Search chats"
-          title="Search chats (⌘K)"
+          aria-label={t("chat.shell.searchChats")}
+          title={t("chat.shell.searchChatsShortcut")}
           onClick={() => setSearchOpen(true)}
         >
           <Search className="size-4" />
@@ -133,7 +135,7 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={collapsed ? "Open sidebar" : "Close sidebar"}
+          aria-label={collapsed ? t("chat.shell.openSidebar") : t("chat.shell.closeSidebar")}
           aria-expanded={!collapsed}
           onClick={() => (isDesktop ? setSidebarCollapsed(!sidebarCollapsed) : setSidebarOpen(false))}
         >
@@ -146,24 +148,24 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         className="chat-new-conversation moyai-chat-rail-button w-full justify-start"
       >
         <Plus className="size-4" />
-        New Chat
+        {t("chat.shell.newChat")}
       </Button>
-      <nav aria-label="Chat workspace" className="moyai-chat-destinations">
+      <nav aria-label={t("chat.shell.navigation")} className="moyai-chat-destinations">
         <NavItem
           icon={<MessageSquare className="size-4" />}
-          label="Chats"
+          label={t("chat.shell.chats")}
           onClick={() => navigate(routes.chats)}
           active={isChatsRoute}
         />
         <NavItem
           icon={<Network className="size-4" />}
-          label="Models"
+          label={t("chat.shell.models")}
           onClick={() => navigate(routes.models)}
           active={pathname === routes.models}
         />
         <NavItem
           icon={<LayoutGrid className="size-4" />}
-          label="Integrations"
+          label={t("chat.shell.integrations")}
           onClick={() => navigate(routes.integrations)}
           active={pathname === routes.integrations}
         />
@@ -178,7 +180,7 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             }
           >
             <Settings2 className="size-4" />
-            <span className="flex-1 text-left">Workspace</span>
+            <span className="flex-1 text-left">{t("chat.shell.workspace")}</span>
             <ChevronDown className="size-3.5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="start" className="chat-theme min-w-44">
@@ -199,7 +201,7 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               }
             >
               <Info className="size-4" />
-              Share feedback
+              {t("chat.shell.shareFeedback")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -220,7 +222,11 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         />
       </div>
       {lightLogo && darkLogo && (
-        <div className="flex h-12 shrink-0 items-center px-1 pb-2" role="img" aria-label="Organization logo">
+        <div
+          className="flex h-12 shrink-0 items-center px-1 pb-2"
+          role="img"
+          aria-label={t("chat.shell.organizationLogo")}
+        >
           <Image
             src={lightLogo}
             alt=""
@@ -245,10 +251,15 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </span>
         <LanguageToggle compact />
         <ThemeToggle />
-        <Button variant="ghost" size="icon-sm" aria-label="Settings" onClick={() => navigate(routes.credentials)}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("chat.shell.settings")}
+          onClick={() => navigate(routes.credentials)}
+        >
           <Settings className="size-4" />
         </Button>
-        <Button variant="ghost" size="icon-sm" aria-label="Sign out" onClick={handleLogout}>
+        <Button variant="ghost" size="icon-sm" aria-label={t("chat.shell.signOut")} onClick={handleLogout}>
           <LogOut className="size-4" />
         </Button>
       </footer>
@@ -260,7 +271,7 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       className={`chat-theme chat-workspace moyai-chat-shell flex h-full w-full overflow-hidden text-foreground ${collapsed ? "moyai-chat-collapsed" : ""}`}
     >
       {isDesktop ? (
-        <aside aria-label="Chat navigation" className="chat-glass-sidebar moyai-chat-sidebar">
+        <aside aria-label={t("chat.shell.navigation")} className="chat-glass-sidebar moyai-chat-sidebar">
           {sidebar}
         </aside>
       ) : (
@@ -272,7 +283,7 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   variant="ghost"
                   size="icon-lg"
                   className="moyai-chat-mobile-trigger"
-                  aria-label="Open chat navigation"
+                  aria-label={t("chat.shell.openNavigation")}
                 />
               }
             >
@@ -286,8 +297,8 @@ const ChatShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="chat-theme chat-mobile-sidebar moyai-chat-sidebar"
           >
             <SheetHeader className="sr-only">
-              <SheetTitle>LiteLLM Chat</SheetTitle>
-              <SheetDescription>Conversations and chat workspace navigation</SheetDescription>
+              <SheetTitle>{t("chat.shell.title")}</SheetTitle>
+              <SheetDescription>{t("chat.shell.navigationDescription")}</SheetDescription>
             </SheetHeader>
             {sidebar}
           </SheetContent>

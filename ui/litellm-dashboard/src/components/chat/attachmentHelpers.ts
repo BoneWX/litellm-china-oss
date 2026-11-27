@@ -3,6 +3,7 @@ import type { ResponsesMessage } from "@/components/llm_calls/responses_api";
 import { v4 as uuid } from "uuid";
 import { CHAT_IMAGE_ACCEPT, MAX_CHAT_IMAGE_BYTES, isChatImageUrl, readChatImage } from "./imageHelpers";
 import type { ChatAttachment, ChatFileAttachment, ChatMessage } from "./types";
+import i18n from "@/i18n/i18n";
 
 export const MAX_CHAT_ATTACHMENTS = 4;
 const DOCUMENT_TYPES: Record<string, string> = {
@@ -56,17 +57,19 @@ export async function readChatAttachment(file: File): Promise<ChatAttachment> {
   if (file.type.startsWith("image/")) return readChatImage(file);
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const mimeType = Object.hasOwn(DOCUMENT_TYPES, extension) ? DOCUMENT_TYPES[extension] : undefined;
-  if (!mimeType) throw new Error("Choose an image, PDF, Word (.docx), Excel (.xlsx), text, or code file.");
-  if (file.size === 0) throw new Error(`${file.name} is empty. Choose another file.`);
-  if (file.size > MAX_CHAT_IMAGE_BYTES) throw new Error(`${file.name} is too large. Files must be 10 MB or smaller.`);
+  if (!mimeType) throw new Error(i18n.t("chat.errors.chooseFile"));
+  if (file.size === 0) throw new Error(i18n.t("chat.errors.fileEmpty", { name: file.name }));
+  if (file.size > MAX_CHAT_IMAGE_BYTES) {
+    throw new Error(i18n.t("chat.errors.fileTooLarge", { name: file.name }));
+  }
   const url = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") resolve(reader.result);
-      else reject(new Error(`Could not read ${file.name}. Choose the file again.`));
+      else reject(new Error(i18n.t("chat.errors.fileReadFailed", { name: file.name })));
     };
-    reader.onerror = () => reject(new Error(`Could not read ${file.name}. Choose the file again.`));
-    reader.onabort = () => reject(new Error(`Reading ${file.name} was canceled.`));
+    reader.onerror = () => reject(new Error(i18n.t("chat.errors.fileReadFailed", { name: file.name })));
+    reader.onabort = () => reject(new Error(i18n.t("chat.errors.fileReadCanceled", { name: file.name })));
     reader.readAsDataURL(new Blob([file], { type: mimeType }));
   });
   return { id: uuid(), kind: "file", name: file.name, url, mimeType };
@@ -97,13 +100,13 @@ export function toResponsesMessages(
     for (const attachment of message.attachments) {
       if (attachment.kind === "file") {
         if (!isChatFileData(attachment)) {
-          throw new Error(`A saved file (${attachment.name}) is unavailable. Start a new chat and attach it again.`);
+          throw new Error(i18n.t("chat.errors.savedFileUnavailable", { name: attachment.name }));
         }
         content.push({ type: "input_file", filename: attachment.name, file_data: attachment.url });
         continue;
       }
       if (!isChatImageUrl(attachment.url)) {
-        throw new Error(`A saved image (${attachment.name}) is unavailable. Start a new chat and attach it again.`);
+        throw new Error(i18n.t("chat.errors.savedImageUnavailable", { name: attachment.name }));
       }
       content.push({ type: "input_image", image_url: attachment.url, detail: "auto" });
     }

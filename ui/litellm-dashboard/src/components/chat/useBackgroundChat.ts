@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cancelBackgroundChat, isBackgroundRunPending, watchBackgroundChat } from "./backgroundChat";
 import type { AssistantMessageUpdate, ChatBackgroundRun } from "./types";
+import i18n from "@/i18n/i18n";
 
 export function useBackgroundChat(
   conversationId: string | null,
@@ -29,8 +30,7 @@ export function useBackgroundChat(
       onUpdate: (update: AssistantMessageUpdate) => updateMessage(conversationId, update),
     };
     void watchBackgroundChat(polling).catch(() => {
-      if (!controller.signal.aborted)
-        setFailure({ responseId, retry, message: "Connection lost. Your run may still be running on the server." });
+      if (!controller.signal.aborted) setFailure({ responseId, retry, message: i18n.t("chat.errors.connectionLost") });
     });
     return () => {
       controller.abort();
@@ -51,7 +51,7 @@ export function useBackgroundChat(
       if (controllerRef.current === controller) reconnect();
     } catch {
       if (controllerRef.current === controller) {
-        setFailure({ responseId, retry, message: "Could not stop the run. Reconnect and try Stop again." });
+        setFailure({ responseId, retry, message: i18n.t("chat.errors.stopRunFailed") });
       }
     } finally {
       setCancellingId(null);

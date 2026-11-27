@@ -9,6 +9,7 @@ import {
   withoutImageData,
   withRestoredImages,
 } from "./chatImageStorage";
+import { DEFAULT_CONVERSATION_TITLE, DEFAULT_IMAGE_CONVERSATION_TITLE } from "./conversationTitles";
 
 const STORAGE_KEY_PREFIX = "litellm_chat_history_v1";
 const MAX_CONVERSATIONS = 100;
@@ -179,7 +180,7 @@ export function useChatHistory(
     const now = Date.now();
     const newConversation: Conversation = {
       id,
-      title: "New conversation",
+      title: DEFAULT_CONVERSATION_TITLE,
       model,
       messages: [],
       mcpServerNames: [],
@@ -204,11 +205,13 @@ export function useChatHistory(
         const updatedMessages = [...conv.messages, newMessage];
         let title = conv.title;
         if (
-          title === "New conversation" &&
+          title === DEFAULT_CONVERSATION_TITLE &&
           newMessage.role === "user" &&
           conv.messages.filter((m) => m.role === "user").length === 0
         ) {
-          title = generateTitle(newMessage.content || newMessage.attachments?.[0]?.name || "Image conversation");
+          title = generateTitle(
+            newMessage.content || newMessage.attachments?.[0]?.name || DEFAULT_IMAGE_CONVERSATION_TITLE,
+          );
         }
         return { ...conv, title, messages: updatedMessages, updatedAt: Date.now() };
       });
