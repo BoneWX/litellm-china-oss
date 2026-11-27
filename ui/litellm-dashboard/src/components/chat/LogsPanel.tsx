@@ -194,13 +194,13 @@ function LogDetailDialog({
 }) {
   return (
     <Dialog open={!!log} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)] overflow-hidden sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Request details</DialogTitle>
           <DialogDescription className="break-all font-mono text-xs">{log?.request_id}</DialogDescription>
         </DialogHeader>
         {log && (
-          <div className="flex flex-col gap-4">
+          <div className="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-md border bg-card p-3">
                 <div className="mb-0.5 text-xs text-muted-foreground">Model</div>
