@@ -14,6 +14,7 @@
 
 | 日期 | 模块 | 更新内容 |
 | --- | --- | --- |
+| 2026-11-27 | 管理后台 / 公开 API | 移除 LiteLLM Blog 动态入口、首页动态、`GET /public/litellm_blog_posts`，并停止访问外部 RSS |
 | 2026-11-17 | 管理后台 | 完成主要页面和复杂交互页面的简体中文覆盖 |
 | 2026-11-17 | 前端构建 | Next.js 升级至 `16.4.6`，更新依赖锁定文件 |
 | 2026-11-17 | 预算计数 | 修复并发冷启动时历史 Key 用量被重复累加、导致错误 `429` 的问题 |
@@ -56,6 +57,17 @@ litellm:v1.109.0-holiday-cny-20261117-coldseedfix
 ```text
 ui/litellm-dashboard/src/i18n/locales/zh-CN/
 ```
+
+### 移除 LiteLLM Blog 集成
+
+本发行版移除了管理后台 Blog 下拉入口、首页“LiteLLM 新动态”和“最新动态”模块，以及公开接口 `GET /public/litellm_blog_posts`。
+
+升级后：
+
+- 该接口返回 `404`。
+- 代理不再访问 `https://docs.litellm.ai/blog/rss.xml`。
+- `LITELLM_BLOG_POSTS_URL` 和 `LITELLM_LOCAL_BLOG_POSTS` 不再生效。
+- Python 包中不再包含 `litellm/blog_posts.json` 本地备份。
 
 ### Key 用量与预算计数修复
 
