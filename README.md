@@ -14,6 +14,7 @@
 
 | 日期 | 模块 | 更新内容 |
 | --- | --- | --- |
+| 2026-11-27 | 管理后台 / 开发工具 | 移除“学习资源”外部链接入口及其中英文文案、页面元数据；该功能没有对应的后端 API |
 | 2026-11-27 | 管理后台 / 模型分析 | 移除 Beta“模型排行榜”入口、独立页面、`GET /model-insights` 和 `GET /model-insights/tasks`；用量页模型统计与每日模型用量汇总保持不变 |
 | 2026-11-27 | 管理后台 / 智能体 | 移除 Beta“Lens”入口、独立页面、管理端代理、追踪读写 API、OTLP 发送和 Helm/Docker 连接配置 |
 | 2026-11-27 | 管理后台 / UI API | 移除通知铃铛、Auto Router 公告和 `GET /get/latest_release_info` 在线版本检查 |
@@ -111,6 +112,12 @@ ui/litellm-dashboard/src/i18n/locales/zh-CN/
 - 每日模型用量汇总仍会正常写入，供现有用量统计和后续分析使用。
 - 数据库中的 `LiteLLM_Lens*` 历史表和迁移记录暂不自动删除，已有数据会保留；本次升级不需要额外数据库迁移。
 - 部署模板中的 Lens 连接环境变量、Ingress 路由、Docker tracing 示例、CI 分片和 Grafana 导出面板已移除。
+
+### 移除学习资源入口
+
+本发行版移除了管理后台“开发工具”分组中的“学习资源”入口。该入口原本只在浏览器中打开上游 `https://models.litellm.ai/cookbook`，不经过 LiteLLM Proxy，也没有对应的后端接口或配置。
+
+API 参考、AI 中心、响应缓存和其它开发工具不受影响。
 
 ### Key 用量与预算计数修复
 

@@ -29,7 +29,6 @@ import {
   Bell,
   Blocks,
   Bot,
-  BookOpen,
   Building2,
   Boxes,
   ChevronRight,
@@ -233,7 +232,6 @@ const ITEM_TRANSLATION_KEYS = {
   budgets: "navigation.items.budgets",
   api_ref: "navigation.items.apiReference",
   "model-hub-table": "navigation.items.aiHub",
-  "learning-resources": "navigation.items.learningResources",
   caching: "navigation.items.responseCache",
   experimental: "navigation.items.experimental",
   prompts: "navigation.items.prompts",
@@ -399,13 +397,6 @@ const menuGroups: MenuGroup[] = [
     items: [
       { key: "api_ref", page: "api_ref", route: "api-reference", label: "API Reference", icon: <Code2 {...ICON} /> },
       { key: "model-hub-table", page: "model-hub-table", label: "AI Hub", icon: <LayoutGrid {...ICON} /> },
-      {
-        key: "learning-resources",
-        page: "learning-resources",
-        label: "Learning Resources",
-        icon: <BookOpen {...ICON} />,
-        external_url: "https://models.litellm.ai/cookbook",
-      },
       {
         key: "caching",
         page: "caching",

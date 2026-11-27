@@ -163,7 +163,7 @@ describe("Sidebar (leftnav)", () => {
       </TerminologyProvider>,
     );
 
-    expect(screen.getByText("SI GATEWAY")).toBeInTheDocument();
+    expect(screen.getByText("SI Gateway")).toBeInTheDocument();
     expect(screen.getByText("SI Hub")).toBeInTheDocument();
     expect(screen.queryByText("AI Hub")).not.toBeInTheDocument();
   });
@@ -283,14 +283,14 @@ describe("Sidebar (leftnav)", () => {
       "Budgets",
       "API Reference",
       "AI Hub",
-      "Learning Resources",
       "Experimental",
       "Settings",
     ];
 
     topLevelLabels.forEach((label) => {
-      expect(screen.getByText(label)).toBeInTheDocument();
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     });
+    expect(screen.queryByText("Learning Resources")).not.toBeInTheDocument();
   });
 
   it("expands a nested tab to reveal its children (Tools > Search Tools)", async () => {
@@ -687,7 +687,9 @@ describe("Sidebar (leftnav)", () => {
     renderWithProviders(<Sidebar {...defaultProps} enableProjectsUI />);
     for (const group of ["Agentic", "Tools", "Experimental", "Settings"]) {
       act(() => {
-        fireEvent.click(screen.getByText(group));
+        const label = screen.getAllByText(group).find((element) => element.closest("button"));
+        expect(label).not.toBeUndefined();
+        fireEvent.click(label!);
       });
     }
     const hrefs = screen.getAllByRole("link").map((link) => link.getAttribute("href") ?? "");
