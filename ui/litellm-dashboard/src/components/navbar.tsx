@@ -12,7 +12,6 @@ import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/cva.config";
-import { NotificationsBell } from "./Navbar/NotificationsBell/NotificationsBell";
 import UserDropdown from "./Navbar/UserDropdown/UserDropdown";
 import ThemeToggle from "./ThemeToggle/ThemeToggle";
 import ViewSwitcher from "./Navbar/ViewSwitcher";
@@ -141,8 +140,6 @@ const Navbar: React.FC<NavbarProps> = ({
                   <ThemeToggle />
                   <span className="mx-0.5 h-6 w-px shrink-0 bg-border" aria-hidden />
                   {deploymentHealth}
-                  <NotificationsBell accessToken={accessToken} />
-                  <span className="mx-0.5 h-6 w-px shrink-0 bg-border" aria-hidden />
                   <UserDropdown onLogout={handleLogout} />
                 </div>
               </div>

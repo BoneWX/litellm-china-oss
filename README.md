@@ -14,6 +14,7 @@
 
 | 日期 | 模块 | 更新内容 |
 | --- | --- | --- |
+| 2026-11-27 | 管理后台 / UI API | 移除通知铃铛、Auto Router 公告和 `GET /get/latest_release_info` 在线版本检查 |
 | 2026-11-27 | 管理后台 / 公开 API | 移除 LiteLLM Blog 动态入口、首页动态、`GET /public/litellm_blog_posts`，并停止访问外部 RSS |
 | 2026-11-17 | 管理后台 | 完成主要页面和复杂交互页面的简体中文覆盖 |
 | 2026-11-17 | 前端构建 | Next.js 升级至 `16.4.6`，更新依赖锁定文件 |
@@ -68,6 +69,18 @@ ui/litellm-dashboard/src/i18n/locales/zh-CN/
 - 代理不再访问 `https://docs.litellm.ai/blog/rss.xml`。
 - `LITELLM_BLOG_POSTS_URL` 和 `LITELLM_LOCAL_BLOG_POSTS` 不再生效。
 - Python 包中不再包含 `litellm/blog_posts.json` 本地备份。
+
+### 移除在线版本通知
+
+本发行版移除了管理后台顶部通知铃铛、固定 Auto Router 公告，以及 `GET /get/latest_release_info` 在线版本检查接口。
+
+升级后：
+
+- 管理后台不再自动比较当前版本与 LiteLLM 最新发布版本。
+- 代理不再为此功能访问 `docs.litellm.ai/release_notes/rss.xml` 或 GitHub Releases API。
+- `GET /get/latest_release_info` 返回 `404`。
+- `LITELLM_DISABLE_LATEST_RELEASE_CHECK` 不再生效。
+- 该通知铃铛原本只展示版本更新和 Auto Router 公告，不承载预算、请求失败或团队告警；这些功能不受影响。
 
 ### Key 用量与预算计数修复
 

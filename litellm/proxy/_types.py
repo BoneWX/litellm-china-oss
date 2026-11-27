@@ -593,7 +593,6 @@ class LiteLLMRoutes(enum.Enum):
         *MODEL_LIST_ROUTES,
         "/sso/get/ui_settings",
         "/get/user_banner",
-        "/get/latest_release_info",
     ]
 
     # NOTE: ROUTES ONLY FOR MASTER KEY - only the Master Key should be able to Reset Spend

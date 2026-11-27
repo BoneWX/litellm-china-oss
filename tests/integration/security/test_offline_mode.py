@@ -24,7 +24,6 @@ _SELF_INITIATED_HOSTS: Final = frozenset(
         "beta-headers.offline-mode.example:443",
         "autorouter.offline-mode.example:443",
         "raw.githubusercontent.com:443",
-        "docs.litellm.ai:443",
         "api.pwnedpasswords.com:443",
         "huggingface.co:443",
     }
@@ -35,7 +34,6 @@ _PER_FEATURE_FLAGS: Final = (
     "LITELLM_LOCAL_ANTHROPIC_BETA_HEADERS",
     "LITELLM_LOCAL_AUTOROUTER_PRESETS",
     "LITELLM_LOCAL_POLICY_TEMPLATES",
-    "LITELLM_DISABLE_LATEST_RELEASE_CHECK",
     "LITELLM_LICENSE",
 )
 
@@ -117,7 +115,6 @@ def test_offline_mode_stops_every_self_initiated_request(
             source: Final = object_value(_json(isolated, "GET", "/model/cost_map/source"))
             reloaded: Final = isolated.request("POST", "/reload/model_cost_map")
             beta_headers: Final = object_value(_json(isolated, "POST", "/reload/anthropic_beta_headers"))
-            release: Final = _json(isolated, "GET", "/get/latest_release_info")
             presets: Final = object_value(_json(isolated, "GET", "/public/autorouter_presets"))
             templates: Final = _json(isolated, "GET", "/policy/templates")
             removed_blog_endpoint: Final = isolated.request("GET", "/public/litellm_blog_posts")
@@ -161,7 +158,6 @@ def test_offline_mode_stops_every_self_initiated_request(
     assert source["is_env_forced"] is (offline_mode is not None), source
     assert reloaded.status_code == reload_status, reloaded.text
     assert beta_headers["status"] == "success", beta_headers
-    assert release is None
     assert sorted(presets) == sorted(object_value(_bundled("proxy/public_endpoints/autorouter_presets.json")))
     assert templates == _bundled("policy_templates_backup.json")
     assert removed_blog_endpoint.status_code == 404

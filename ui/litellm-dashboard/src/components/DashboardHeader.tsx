@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ToolbarSeparator } from "@/components/shared/ToolbarSeparator";
 import { getBreadcrumb } from "@/components/leftnav";
-import { NotificationsBell } from "@/components/Navbar/NotificationsBell/NotificationsBell";
 import ViewSwitcher from "@/components/Navbar/ViewSwitcher";
 import LiteAdmin from "@/components/liteadmin/LiteAdmin";
 import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
@@ -84,12 +83,10 @@ export function DashboardHeader({
           <ToolbarSeparator />
           <ThemeToggle />
           {deploymentHealth}
-          <NotificationsBell accessToken={accessToken} />
         </div>
         <div className="flex shrink-0 items-center gap-1 md:hidden">
           <CommandPaletteTrigger mobile />
           {deploymentHealth}
-          <NotificationsBell accessToken={accessToken} />
           <Popover open={!isDesktop && mobileToolsOpen} onOpenChange={setMobileToolsOpen}>
             <PopoverTrigger
               render={

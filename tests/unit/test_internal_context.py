@@ -76,7 +76,6 @@ _IN_MEMORY_ONLY_CALLERS: Final = frozenset(
         "litellm/proxy/guardrails/guardrail_hooks/straiker/straiker.py",
         "litellm/proxy/hooks/model_budget_shared_windows.py",
         "litellm/proxy/spend_tracking/key_metadata_recovery.py",
-        "litellm/proxy/ui_crud_endpoints/latest_release_endpoints.py",
         "litellm/responses/litellm_completion_transformation/transformation.py",
         "litellm/router_utils/client_initalization_utils.py",
         "litellm/router_utils/router_callbacks/track_deployment_metrics.py",

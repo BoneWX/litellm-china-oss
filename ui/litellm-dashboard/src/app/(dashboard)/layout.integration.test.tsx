@@ -87,10 +87,6 @@ beforeEach(() => {
           return Response.json({});
         case "/get/user_banner":
           return Response.json({ enabled: false, message: "", severity: "info" });
-        case "/get/latest_release_info": {
-          const release = { version: "", release_url: "", bug_fixes: 0, new_features: 0, other_updates: 0 };
-          return Response.json(release);
-        }
         default:
           throw new Error(`Unexpected request: ${url}`);
       }

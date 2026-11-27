@@ -5909,29 +5909,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/get/latest_release_info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Latest Release Info
-         * @description Newest stable release on the LiteLLM changelog, linked to its changelog page, with the PR count of its whole
-         *     minor line (e.g. v1.105.0 + v1.105.1) from GitHub split into new features, bug fixes and other updates.
-         *     Returns null when the changelog or GitHub can't be reached so the dashboard upgrade banner simply doesn't render.
-         *     Set LITELLM_DISABLE_LATEST_RELEASE_CHECK=true to return null without making any outbound request.
-         */
-        get: operations["latest_release_info_get_latest_release_info_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/get/mcp_semantic_filter_settings": {
         parameters: {
             query?: never;
@@ -34211,19 +34188,6 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** LatestReleaseInfo */
-        LatestReleaseInfo: {
-            /** Bug Fixes */
-            bug_fixes: number;
-            /** New Features */
-            new_features: number;
-            /** Other Updates */
-            other_updates: number;
-            /** Release Url */
-            release_url: string;
-            /** Version */
-            version: string;
-        };
         /** ListAccessGroupsResponse */
         ListAccessGroupsResponse: {
             /** Access Groups */
@@ -60756,26 +60720,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalUserSettingsResponse"];
-                };
-            };
-        };
-    };
-    latest_release_info_get_latest_release_info_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LatestReleaseInfo"] | null;
                 };
             };
         };

@@ -22,7 +22,6 @@ vi.mock("@/app/(dashboard)/hooks/uiSettings/useUISettings", () => ({ useUISettin
 vi.mock("next/navigation", () => ({ usePathname: () => state.pathname }));
 vi.mock("usehooks-ts", () => ({ useMediaQuery: () => state.isDesktop }));
 vi.mock("@/hooks/useWorker", () => ({ useWorker: () => ({ isControlPlane: false, selectedWorker: null }) }));
-vi.mock("@/components/Navbar/NotificationsBell/NotificationsBell", () => ({ NotificationsBell: () => null }));
 vi.mock("@/components/Navbar/WorkerDropdown/WorkerDropdown", () => ({ default: () => null }));
 vi.mock("@/components/liteadmin/LiteAdmin", () => ({ default: () => <button>Aria Agent</button> }));
 
